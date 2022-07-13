@@ -1,0 +1,40 @@
+---
+title: "Generalised linear models"
+format:
+  html:
+    toc: true
+    include-after-body:
+      - sync-tabs.html
+---
+
+Welcome to the wonderful world of generalised linear models!
+
+These sessions are intended to enable you to construct and use generalised linear models confidently.
+
+As with all of our statistics courses, we use:
+
+- No mathematical derivations
+- No pen and paper calculations
+
+At the same time this is **not** a “how to mindlessly use a stats program” course!
+
+## Core aims
+To introduce sufficient understanding and coding experience for analysing data with non-continuous response variables.
+
+:::callout-note
+## Course aims
+To know what to do when presented with an arbitrary data set e.g.
+
+1.	Construct
+    a.	a logistic model for binary response variables
+    b.	a logistic model for proportion response variables
+    c.	a Poisson model for count response variables
+    d.	a Negative Binomial model for count response variables
+2.	Plot the data and the fitted curve in each case for both continuous and categorical predictors
+3.	Assess the significance of fit
+4.	Assess assumption of the model
+:::
+
+## Datasets {#index-datasets}
+
+This course uses various data sets. Download the `data` folder [here](data.zip) by right-clicking on the link and <kbd>Save as...</kbd>. Next unzip the file and copy it into your working directory. Your data should then be accessible via `<working-directory-name>/data/`.

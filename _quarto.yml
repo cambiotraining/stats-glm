@@ -1,0 +1,41 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Generalised linear models"
+  description: "Supporting materials for the Generalised linear models course (University of Cambridge)"
+  site-url: https://cambiotraining.github.io/stats-glm/
+  repo-url: https://github.com/cambiotraining/stats-glm
+  repo-actions: [issue]
+  page-navigation: true
+  favicon: "images/favicon.ico"
+  page-footer:
+    left: |
+      [Bioinformatics Training Facility](https://bioinfotraining.bio.cam.ac.uk)
+    right:
+      - icon: github
+        href: https://github.com/cambiotraining/
+        aria-label: Bioinformatics Training Facility GitHub
+
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+
+  sidebar:
+    style: "floating"
+    search: true
+    contents:
+      - section: "Logistic models"
+        contents:
+          - glm-practical-logistic-binary.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+
