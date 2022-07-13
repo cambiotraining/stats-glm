@@ -117,8 +117,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
-<link href="site_libs/panelset-0.2.6/panelset.css" rel="stylesheet">
-<script src="site_libs/panelset-0.2.6/panelset.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
@@ -201,7 +199,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#split-the-data" id="toc-split-the-data" class="nav-link" data-scroll-target="#split-the-data">Split the data</a></li>
   </ul></li>
-  <li><a href="#exercise-diabetes-predictors" id="toc-exercise-diabetes-predictors" class="nav-link" data-scroll-target="#exercise-diabetes-predictors">Exercise: Diabetes predictors</a></li>
+  <li><a href="#exercise---diabetes-predictors" id="toc-exercise---diabetes-predictors" class="nav-link" data-scroll-target="#exercise---diabetes-predictors">Exercise - Diabetes predictors</a></li>
   <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points">Key points</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/cambiotraining/stats-glm/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -226,12 +224,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <div class="cell">
-<div class="cell-output-display">
 
-</div>
-<div class="cell-output-display">
-<p><style>.panelset{--panel-tab-font-family: inherit;}</style></p>
-</div>
 </div>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -244,19 +237,20 @@ Aims &amp; objectives
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><p>How do we analyse data with a binary outcome?</p></li>
-<li><p>Can we test if our model is any good?</p></li>
-<li><p>Be able to perform a logistic regression with a binary outcome</p></li>
-<li><p>Predict outcomes of new data, based on a defined model</p></li>
-<li><p>Evaluate model reliability by using training and test data sets</p></li>
+<li>How do we analyse data with a binary outcome?</li>
+<li>Can we test if our model is any good?</li>
+<li>Be able to perform a logistic regression with a binary outcome</li>
+<li>Predict outcomes of new data, based on a defined model</li>
+<li>Evaluate model reliability by using training and test data sets</li>
 </ul>
 </div>
 </div>
 <section id="libraries-and-functions" class="level2">
 <h2 class="anchored" data-anchor-id="libraries-and-functions">Libraries and functions</h2>
-<div class="panelset">
-<div class="panel">
-<p><span class="panel-name">tidyverse</span></p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">tidyverse</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <table class="table">
 <colgroup>
 <col style="width: 50%">
@@ -281,24 +275,29 @@ Aims &amp; objectives
 </table>
 </div>
 </div>
+</div>
 </section>
 <section id="datasets" class="level2">
 <h2 class="anchored" data-anchor-id="datasets">Datasets</h2>
-<div class="panelset">
-<div class="panel">
-<p><span class="panel-name">Diabetes</span></p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Diabetes</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>The example in this section uses the following data set:</p>
 <p><code>data/diabetes.csv</code></p>
 <p>This is a data set comprising 768 observations of three variables (one dependent and two predictor variables). This records the results of a diabetes test result as a binary variable (1 is a positive result, 0 is a negative result), along with the result of a glucose test and the diastolic blood pressure for each of 767 women. The variables are called <code>test_result</code>, <code>glucose</code> and <code>diastolic</code>.</p>
+</div>
 </div>
 </div>
 </section>
 <section id="visualise-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="visualise-the-data">Visualise the data</h2>
 <p>First we load the data, then we visualise it.</p>
-<div class="panelset">
-<div class="panel">
-<p><span class="panel-name">tidyverse</span> First, we load and inspect the data:</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">tidyverse</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>First, we load and inspect the data:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/diabetes.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -334,13 +333,15 @@ Aims &amp; objectives
 </div>
 </div>
 </div>
+</div>
 </section>
 <section id="model-building" class="level2">
 <h2 class="anchored" data-anchor-id="model-building">Model building</h2>
 <p>There are different ways to construct a logistic model.</p>
-<div class="panelset">
-<div class="panel">
-<p><span class="panel-name">tidyverse</span></p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">tidyverse</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <p>In <code>tidymodels</code> we have access to a very useful package: <code>parsnip</code>, which provides a common syntax for a whole range of modelling libraries. This means that the syntax will stay the same as you do different kind of model comparisons. So, the learning curve might be a bit steeper to start with, but this will pay dividend in the long-term (just like when you started using R!).</p>
 <p>First, we need to load <code>tidymodels</code> (install it first, if needed):</p>
 <div class="cell">
@@ -401,14 +402,16 @@ P(positive \ test \ result) = \frac{1}{1 + {e}^{-(-5.61 +  0.040 \cdot glucose)}
 <p>The values in <code>p.value</code> merely show whether that particular coefficient is significantly different from zero. This is similar to the p-values obtained in the summary output of a linear model, and as before, for continuous predictors these p-values can be used as a rough guide as to whether that predictor is important (so in this case glucose appears to be significant). However, these p-values aren’t great when we have multiple predictor variables, or when we have categorical predictors with multiple levels (since the output will give us a p-value for each level rather than for the predictor as a whole).</p>
 </div>
 </div>
+</div>
 </section>
 <section id="model-predictions" class="level2">
 <h2 class="anchored" data-anchor-id="model-predictions">Model predictions</h2>
 <p>What if we got some new glucose level data and we wanted to predict if people might have diabetes or not?</p>
 <p>We could use the existing model and feed it the some data:</p>
-<div class="panelset">
-<div class="panel">
-<p><span class="panel-name">tidyverse</span></p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">tidyverse</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a dummy data set using some hypothetical glucose measurements</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>diabetes_newdata <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">glucose =</span> <span class="fu">c</span>(<span class="dv">188</span>, <span class="dv">122</span>, <span class="dv">83</span>, <span class="dv">76</span>, <span class="dv">144</span>))</span>
@@ -429,6 +432,7 @@ P(positive \ test \ result) = \frac{1}{1 + {e}^{-(-5.61 +  0.040 \cdot glucose)}
 </div>
 <p>Although you are able to get the predicted outcomes (in <code>.pred_class</code>), I would like to stress that this is not the point of running the model. It is important to realise that the model (as with all statistical models) creates a predicted outcome based on certain <em>probabilities</em>. It is therefore much more informative to look at how probable these predicted outcomes are. They are encoded in <code>.pred_negative</code> and <code>.pred_positive</code>.</p>
 <p>For the first value this means that there is a 14% chance that the diabetes test will return a negative result and around 86% chance that it will return a positive result.</p>
+</div>
 </div>
 </div>
 </section>
@@ -520,9 +524,10 @@ P(positive \ test \ result) = \frac{1}{1 + {e}^{-(-5.61 +  0.040 \cdot glucose)}
 <li>a <strong>test data set</strong> to validate your model and measure model performance</li>
 </ol>
 <p>Before we split the data, let’s have a closer look at the data set. If we count how many diabetes test results are negative and positive, we see that these counts are not evenly split.</p>
-<div class="panelset">
-<div class="panel">
-<p><span class="panel-name">tidyverse</span></p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">tidyverse</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="sc">%&gt;%</span> </span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(test_result) <span class="sc">%&gt;%</span> </span>
@@ -723,20 +728,32 @@ Computational engine: glm </code></pre>
 </section>
 </div>
 </div>
+</div>
 </section>
 </section>
-<section id="exercise-diabetes-predictors" class="level2">
-<h2 class="anchored" data-anchor-id="exercise-diabetes-predictors">Exercise: Diabetes predictors</h2>
-<div class="exercise">
+<section id="exercise---diabetes-predictors" class="level2">
+<h2 class="anchored" data-anchor-id="exercise---diabetes-predictors">Exercise - Diabetes predictors</h2>
 <p>Using the training and test <code>diabetes</code> data sets, investigate the relationship between <code>test_result</code> and both <code>glucose</code> and <code>diastolic</code>. Try to answer the following:</p>
 <ul>
 <li>does adding <code>diastolic</code> to the model markedly improve the reliability of the predictions?</li>
 <li>what do the AICs for the two models tell you?</li>
 </ul>
-<details>
-<summary>
-<p>Answer</p>
-</summary>
+<div class="callout-caution callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">tidyverse</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Update the recipe</span></span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>dia_rec <span class="ot">&lt;-</span> </span>
@@ -841,32 +858,46 @@ Computational engine: glm </code></pre>
 </div>
 </div>
 <p>We get an AIC of 555, which is lower than the AIC of 558 that we got with just <code>glucose</code> as a predictor variable.</p>
-<section id="conclusions" class="level4">
-<h4 class="anchored" data-anchor-id="conclusions">Conclusions</h4>
+</div>
+</div>
+</div>
+<section id="conclusions" class="level3">
+<h3 class="anchored" data-anchor-id="conclusions">Conclusions</h3>
 <p>Adding the <code>diastolic</code> variable as a predictor to the model does not seem to have much of an effect on the model reliability, since the AUC is 0.761 with the extra parameter, versus 0.766 without.</p>
 <p>The AIC on the other hand suggests that the additive model we’ve analysed here has a better fit than the original model (AIC of 555 vs 558).</p>
 </section>
-<section id="food-for-thought" class="level4">
-<h4 class="anchored" data-anchor-id="food-for-thought">Food for thought</h4>
+<section id="food-for-thought" class="level3">
+<h3 class="anchored" data-anchor-id="food-for-thought">Food for thought</h3>
 <p>Perhaps there is an <em>interaction</em> between <code>glucose</code> and <code>diastolic</code>, which would be interesting to investigate.</p>
-</section></details>
-</div></section>
-</main></div>
-
+</section>
+</div>
+</div>
+</div>
+</section>
 <section id="key-points" class="level2">
-<h2 data-anchor-id="key-points">Key points</h2>
-<div class="keypoints">
+<h2 class="anchored" data-anchor-id="key-points">Key points</h2>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
 <li>We use a logistic regression to model a binary response</li>
 <li>Model suitability can be checked by splitting the data into a training and test data set. The logistic model is then created based on the training data, and the reliability can be checked against the (known) values in the test data set</li>
 <li>The ROC curve shows the performance of a classification model at all thresholds, whereas the area under the ROC curve provides an aggregate measure of performance of all possible classifications thresholds</li>
 </ul>
 </div>
+</div>
 
 
 </section>
 
- <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const icon = "";
@@ -946,7 +977,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
- <!-- /content -->
+</div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left"><a href="https://bioinfotraining.bio.cam.ac.uk">Bioinformatics Training Facility</a></div>   

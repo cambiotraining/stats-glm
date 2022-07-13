@@ -13,26 +13,28 @@ These sessions are intended to enable you to construct and use generalised linea
 
 As with all of our statistics courses, we use:
 
-- No mathematical derivations
-- No pen and paper calculations
+-   No mathematical derivations
+-   No pen and paper calculations
 
-At the same time this is **not** a “how to mindlessly use a stats program” course!
+At the same time this is **not** a "how to mindlessly use a stats program" course!
 
 ## Core aims
+
 To introduce sufficient understanding and coding experience for analysing data with non-continuous response variables.
 
-:::callout-note
+::: callout-note
 ## Course aims
+
 To know what to do when presented with an arbitrary data set e.g.
 
-1.	Construct
-    a.	a logistic model for binary response variables
-    b.	a logistic model for proportion response variables
-    c.	a Poisson model for count response variables
-    d.	a Negative Binomial model for count response variables
-2.	Plot the data and the fitted curve in each case for both continuous and categorical predictors
-3.	Assess the significance of fit
-4.	Assess assumption of the model
+1.  Construct
+    a.  a logistic model for binary response variables
+    b.  a logistic model for proportion response variables
+    c.  a Poisson model for count response variables
+    d.  a Negative Binomial model for count response variables
+2.  Plot the data and the fitted curve in each case for both continuous and categorical predictors
+3.  Assess the significance of fit
+4.  Assess assumption of the model
 :::
 
 ## Datasets {#index-datasets}
