@@ -30,6 +30,10 @@ website:
       - section: "Logistic models"
         contents:
           - glm-practical-logistic-binary.qmd
+          - glm-practical-logistic-proportion.qmd
+      - section: "Dealing with count data"
+        contents:
+          - glm-practical-poisson.qmd
 
 format:
   html:

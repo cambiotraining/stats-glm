@@ -183,7 +183,6 @@ For the first value this means that there is a 14% chance that the diabetes test
 
 ## Exercise: Penguins
 
-::: exercise
 To practice this a bit more, we'll be using a data set about penguins. The data are from the `palmerpenguins` package, which is included with `tidymodels`. The data set contains information on penguins at the Palmer Station on Antarctica. Chilly.
 
 Have a look at the plot below, where we are comparing the bill length (`bill_length_mm`) of three species of penguins (`species`) against flipper length (`flipper_length_mm`).
@@ -208,13 +207,11 @@ I would like you to do the following:
 2.  create a logistic model and fit the data to it, using `sex` as a classifier
 3.  is bill length an important indicator of sex?
 
-<details>
+:::{.callout-caution collapse="true"}
+## Answer
 
-<summary>
-
-Answer
-
-</summary>
+:::panel-tabset
+## tidyverse
 
 First, we load the data:
 
@@ -261,7 +258,7 @@ pgn_fit %>% tidy()
 
 The model parameters tell us that both the intercept and the coefficient for `bill_length_mm` are significantly different from zero. So it seems that bill length is an important predictor of the sex of these penguins. Who knew?!
 
-</details>
+:::
 :::
 
 ## Model evaluation
