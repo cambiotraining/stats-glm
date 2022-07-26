@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - "*.qmd"
+    - "!slides/"
 
 website:
   title: "Generalised linear models"
@@ -25,7 +28,7 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: "_slides/stats-GLM-slides.html"
+      - href: "slides/stats-GLM-slides.html"
         text: Slides
 
   sidebar:
