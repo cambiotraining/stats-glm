@@ -28,7 +28,7 @@ To know what to do when presented with an arbitrary data set e.g.
     a.  a logistic model for binary response variables
     b.  a logistic model for proportion response variables
     c.  a Poisson model for count response variables
-    d.  a Negative Binomial model for count response variables
+    d.  ~~a Negative Binomial model for count response variables~~ (to be added later)
 2.  Plot the data and the fitted curve in each case for both continuous and categorical predictors
 3.  Assess the significance of fit
 4.  Assess assumption of the model

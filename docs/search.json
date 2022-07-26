@@ -207,7 +207,7 @@
     "href": "index.html#core-aims",
     "title": "Generalised linear models",
     "section": "Core aims",
-    "text": "Core aims\nTo introduce sufficient understanding and coding experience for analysing data with non-continuous response variables.\n\n\n\n\n\n\nCourse aims\n\n\n\nTo know what to do when presented with an arbitrary data set e.g.\n\nConstruct\n\na logistic model for binary response variables\na logistic model for proportion response variables\na Poisson model for count response variables\na Negative Binomial model for count response variables\n\nPlot the data and the fitted curve in each case for both continuous and categorical predictors\nAssess the significance of fit\nAssess assumption of the model"
+    "text": "Core aims\nTo introduce sufficient understanding and coding experience for analysing data with non-continuous response variables.\n\n\n\n\n\n\nCourse aims\n\n\n\nTo know what to do when presented with an arbitrary data set e.g.\n\nConstruct\n\na logistic model for binary response variables\na logistic model for proportion response variables\na Poisson model for count response variables\na Negative Binomial model for count response variables (to be added later)\n\nPlot the data and the fitted curve in each case for both continuous and categorical predictors\nAssess the significance of fit\nAssess assumption of the model"
   },
   {
     "objectID": "index.html#index-datasets",
