@@ -25,7 +25,7 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: "../_slides/stats-GLM-slides.html"
+      - href: "_slides/stats-GLM-slides.html"
         text: Slides
 
   sidebar:
