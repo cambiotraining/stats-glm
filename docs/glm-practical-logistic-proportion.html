@@ -422,7 +422,7 @@ dbl (2): temp, damage
 </section>
 <section id="model-building" class="level2">
 <h2 class="anchored" data-anchor-id="model-building">Model building</h2>
-<p>There is little point in evaluating the model using a training/test data set, since there are only 23 data points in total. So we’re building a model and testing that on the available data.</p>
+<p>We only have 23 data points in total. So we’re building a model on not that much data - we should keep this in mind when we draw our conclusions!</p>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">tidyverse</a></li></ul>
 <div class="tab-content">
@@ -454,11 +454,9 @@ dbl (2): temp, damage
 </div>
 </div>
 <p>We can see that the p-values of the <code>intercept</code> and <code>temp</code> are significant. We can also use the intercept and <code>temp</code> coefficients to construct the logistic equation, which we can use to sketch the logistic curve.</p>
-<span class="math display">\[\begin{equation}
-P(o-ring \ failure) = \frac{1}{1 + {e}^{-(11.66 -  0.22 \cdot temp)}}
-\end{equation}\]</span>
+<p><span class="math display">\[E(prop \ failed\ orings) = \frac{\exp{(11.66 -  0.22 \times temp)}}{1 + \exp{(11.66 -  0.22 \times temp)}}\]</span></p>
 <p>Let’s see how well our model would have performed if we would have fed it the data from the ill-fated Challenger launch.</p>
-<p>First we generate a table with data for a range of temperatures, from 25 to 85 degrees Fahrenheit, in steps of 1. We can then use these data to generate the logistic curve, based on the fitted model.</p>
+<p>One way of doing this it to generate a table with data for a range of temperatures, from 25 to 85 degrees Fahrenheit, in steps of 1. We can then use these data to generate the logistic curve, based on the fitted model.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">temp =</span> <span class="fu">seq</span>(<span class="dv">25</span>, <span class="dv">85</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

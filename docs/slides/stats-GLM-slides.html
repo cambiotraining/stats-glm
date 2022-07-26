@@ -350,59 +350,37 @@ Bioinformatics Training Facility</li>
 Bioinformatics Training Facility</li>
 </ul>
 </section>
-<section id="what-will-we-cover" class="slide level2">
-<h2>What will we cover?</h2>
-<p>Everything we’ve looked at up until now has required that the response variable is continuous.</p>
-<div class="fragment">
-<p>How do we deal with non-continuous response variables?</p>
-</div>
-<div class="fragment">
-<p>We’ll be looking at three cases:</p>
-<p><br>
-</p>
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: left;">data</th>
-<th style="text-align: left;">test</th>
-<th style="text-align: left;"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">binary</td>
-<td style="text-align: left;">logistic regression</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">proportion</td>
-<td style="text-align: left;">logistic regression</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">count</td>
-<td style="text-align: left;">poisson regression</td>
-<td style="text-align: left;"></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="fragment">
-<p>We’ll also explore ways to see how good these models are.</p>
+<section id="aims-for-today" class="slide level2">
+<h2>Aims for today</h2>
+<div>
+<ol type="1">
+<li class="fragment">Expand our knowledge of linear models</li>
+<li class="fragment">Learn how to perform GLM in R</li>
+<li class="fragment">Evaluate how much you can trust your model</li>
+<li class="fragment">Be able to analyse discrete responses</li>
+<li class="fragment">Ask questions about your data / research</li>
+</ol>
 </div>
 </section>
 <section id="linear-modelling" class="slide level2">
 <h2>Linear modelling</h2>
 <p>We’re quite familiar with this by now…</p>
 
-<img data-src="stats-GLM-slides_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"><p>… where our data</p>
+<img data-src="stats-GLM-slides_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"><div class="fragment">
+<p>… where our data</p>
+<div>
 <ul>
-<li><p>has a continuous response (<code>weight</code>)</p></li>
-<li><p>and a continuous predictor (<code>height</code>)</p></li>
+<li class="fragment">are independent<br>
+<span style="font-size:smaller">if they’re correlated we need different types of models, such as linear mixed models (LMM) or generalised estimating equations (GEE)</span></li>
+<li class="fragment">are normally distributed (or at least, the residuals)</li>
+<li class="fragment"><span style="color:#b22222">have a continuous response</span></li>
 </ul>
+</div>
+</div>
 </section>
-<section id="linear-regression" class="slide level2">
-<h2>Linear regression</h2>
+<section id="fitting-a-model" class="slide level2">
+<h2>Fitting a model</h2>
+<p>We know how to do this visually, and how to get the coefficients of the linear model.</p>
 <div class="panel-tabset">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Plot</a></li><li><a href="#tabset-1-2">Output</a></li></ul>
 <div class="tab-content">
@@ -416,11 +394,6 @@ Bioinformatics Training Facility</li>
 </div>
 </div>
 <div id="tabset-1-2">
-<ul>
-<li>Pay attention to the <code>Estimate</code> and <code>Std.Error</code> values (these determine the linear model)</li>
-<li>The p-value of <code>&lt;2e-16</code> suggests that the slope of the model (<span class="math inline">\(\beta_1\)</span>) is significantly different from zero</li>
-<li>The adjusted R-squared is 0.48 (which is a slight positive correlation) and suggests that the model is able to explain some of the variance in the data</li>
-</ul>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -443,30 +416,25 @@ Multiple R-squared:  0.4772,    Adjusted R-squared:  0.4762
 F-statistic: 454.6 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
+<ul>
+<li>Pay attention to the <code>Estimate</code> and <code>Std.Error</code> values (these determine the linear model)</li>
+<li>The p-value of <code>&lt;2e-16</code> suggests that the slope of the model (<span class="math inline">\(\beta_1\)</span>) is significantly different from zero</li>
+<li>The adjusted R-squared is 0.48 (which is a slight positive correlation) and suggests that the model is able to explain some of the variance in the data</li>
+</ul>
 </div>
 </div>
 </div>
 </section>
 <section class="slide level2">
 
-<h3 id="terminology">Terminology</h3>
-<div class="callout callout-tip callout-captioned callout-style-default">
-<div class="callout-body">
-<div class="callout-caption">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>line of best fit, regression analysis, and correlation</strong></p>
-</div>
-<div class="callout-content">
+<h3 id="line-of-best-fit-regression-analysis-and-correlation">Line of best fit, regression analysis, and correlation</h3>
 <p>Three different things, but closely related:</p>
+<div>
 <ol type="1">
-<li><strong>Line of best fit (+ error)</strong> is the model of your data</li>
-<li><strong>Regression</strong> tells you about the predictive power of your model (is my line a better predictor than the overall mean?)</li>
-<li><strong>Correlation</strong> tells you something about the strength of the relationship between the two variables</li>
+<li class="fragment"><strong>Line of best fit + error</strong> is the model of your data</li>
+<li class="fragment"><strong>Regression</strong> tells you about the predictive power of your model (is my line a better predictor than the overall mean?)</li>
+<li class="fragment"><strong>Correlation</strong> tells you something about the strength of the relationship between the two variables, or the <em>effect size</em>.</li>
 </ol>
-</div>
-</div>
 </div>
 </section>
 <section class="slide level2">
@@ -491,18 +459,20 @@ F-statistic: 454.6 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Equal variance (Location-Scale Plot)</li>
 </ul>
 
-<img data-src="stats-GLM-slides_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
+<img data-src="stats-GLM-slides_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"><p>Checks for equality of variance (homoscedasticity). Is the variance of the residuals correlated with the predictor variables?</p>
+</section>
 <section class="slide level2">
 
 <ul>
-<li>No influential points (COOK’s D Plot)</li>
+<li>No clear influential points (COOK’s D Plot)</li>
 </ul>
 
-<img data-src="stats-GLM-slides_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
+<img data-src="stats-GLM-slides_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"><p>Note: the horizontal line represents a cut-off at 4/n.</p>
+</section>
 <section id="the-normal-distribution" class="slide level2">
 <h2>The normal distribution</h2>
 <p>Weight vs height:</p>
-<p>For the analysis to work (or be valid) we are assuming that the process that we’re studying is approximated by a normal distribution.</p>
+<p>For the analysis to work (or be valid) we are assuming that the process that we’re studying - for a given value of the predictors - is approximated by a normal distribution.</p>
 <div class="fragment">
 <p>We can visualise the residuals differently, as a <em>probability density function</em>:</p>
 <div class="columns">
@@ -567,12 +537,6 @@ F-statistic: 454.6 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 
 </div>
-<p>Again,</p>
-<ul>
-<li>Pay attention to the <code>Estimate</code> and <code>Std.Error</code> values (these determine the linear model)</li>
-<li>The p-value of <code>&lt;2e-16</code> for <code>x1</code> suggests that the slope of the model (<span class="math inline">\(\beta_1\)</span>) is significantly different from zero</li>
-<li>The adjusted R-squared is 0.64 (which is a relatively strong positive correlation) suggests that the model is able to explain quite a bit of the variance in the data</li>
-</ul>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -595,6 +559,12 @@ Multiple R-squared:  0.6395,    Adjusted R-squared:  0.6388
 F-statistic: 883.5 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
+<p>Again,</p>
+<ul>
+<li>Pay attention to the <code>Estimate</code> and <code>Std.Error</code> values (these determine the linear model)</li>
+<li>The p-value of <code>&lt;2e-16</code> for <code>x1</code> suggests that the slope of the model (<span class="math inline">\(\beta_1\)</span>) is significantly different from zero</li>
+<li>The adjusted R-squared is 0.64 (which is a relatively strong positive correlation) suggests that the model is able to explain quite a bit of the variance in the data</li>
+</ul>
 </div>
 </div>
 </div>
@@ -617,8 +587,9 @@ F-statistic: 883.5 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="modelling-binary-data" class="slide level2">
 <h2>Modelling binary data</h2>
 <p>We should make sure that our predictions are within an acceptable range: they can only be 0 (dead) or 1 (alive).</p>
+
+<img data-src="stats-GLM-slides_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch"><div class="fragment">
 <p>We can use <strong>generalised linear models</strong> to do this.</p>
-<div class="fragment">
 <p>So, let’s take a step back.</p>
 </div>
 </section>
@@ -626,49 +597,41 @@ F-statistic: 883.5 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h2>Generalising our linear models</h2>
 <p>Under the hood every <em>linear regression model</em> has three components:</p>
 <div>
-<ul>
-<li class="fragment">An <strong>assumed distribution</strong> (<em>normal</em>, binomial, poisson, negative binomial, gamma, beta, exponential, log-normal, etc.).</li>
-<li class="fragment">The <strong>relationship between the response and predictors</strong>, i.e.&nbsp;the functional form of the model.</li>
-<li class="fragment">A <strong>link function</strong>, which allows for the expected (mean) value of the response variable to range from [-Inf to +Inf].</li>
-</ul>
+<ol type="1">
+<li class="fragment">An <strong>assumed distribution for the residuals/errors</strong> (<em>normal</em>, binomial, poisson, negative binomial, gamma, beta, exponential, log-normal, etc.).</li>
+<li class="fragment">A <strong>link function</strong>, which linearises the relationship between the expected (mean) value of the response and the predictors.</li>
+<li class="fragment">The <strong>relationship between the expected value of the response and predictors</strong>, i.e.&nbsp;the functional form of the model.</li>
+</ol>
 </div>
+<div class="fragment">
 <p>We will see these components in practice below.</p>
+</div>
 </section>
 <section id="model-notation" class="slide level2">
 <h2>Model notation</h2>
 <p>To understand the model a bit better, we’ll look at the equations (not much more than what we’ve covered during Core statistics!)</p>
 <div class="fragment">
 <p>Starting with a simple linear regression model, this is often written in the form:</p>
-<p><span class="math display">\[ E(Y) = \beta_0 + \beta_1 x_1 + .. + \beta_p x_p + \epsilon \]</span> <span class="math display">\[ \epsilon \sim Normal(0, \sigma) \]</span></p>
+<p><span class="math display">\[ Y = \beta_0 + \beta_1 x_1 + .. + \beta_p x_p + \varepsilon \]</span> <span class="math display">\[ \varepsilon \sim Normal(0, \sigma) \]</span></p>
 </div>
 <div class="fragment">
-<p>We can read this model as:</p>
-<blockquote>
-<p>I assume the process I am studying is well approximated by a normal distribution, with a mean which depends on a linear combination of my predictors.</p>
-</blockquote>
-</div>
-<div class="fragment">
-<blockquote>
-<p>I further assume that the variance is constant across the range of the predictors.</p>
-</blockquote>
-</div>
-<div class="fragment">
-<blockquote>
-<p>The expected (or mean) value of our response variable <span class="math inline">\(Y\)</span> is a linear combination of our predictors, plus a random (“error”) component, which accounts for variation in the data.</p>
-</blockquote>
+<p>Since <span class="math inline">\(E(\varepsilon) = 0\)</span>, the <em>estimated</em> value of our response is equal to:</p>
+<p><span class="math display">\[E(Y) = \beta_0 + \beta_1 x_1 + .. + \beta_p x_p\]</span></p>
 </div>
 </section>
 <section class="slide level2">
 
-<p>As mentioned, we’ve seen this before in Core statistics, with:</p>
-<p><br>
-</p>
-<p><strong>Intercept</strong>: <span class="math inline">\(\beta_0\)</span></p>
-<p><strong>Slope</strong>: <span class="math inline">\(\beta_1\)</span> (and <span class="math inline">\(\beta_2 ... \beta_i\)</span> coefficients for multiple linear regression)</p>
-<p><strong>Predictor(s)</strong>: <span class="math inline">\(x_1, x_2 ... x_i\)</span></p>
+<p>We can read this model as:</p>
+<div>
+<ul>
+<li class="fragment">I assume the process I am studying is well approximated - for a given value of the predictors - by a normal distribution.</li>
+<li class="fragment">I further assume that the variance is constant across the range of the predictors.</li>
+<li class="fragment">The model includes a random (“error”) component, which accounts for variation in the data. The expected (or mean) value of our response variable Y is a linear combination of our predictors.</li>
+</ul>
+</div>
 </section>
 <section id="distribution-focused-model-notation" class="slide level2">
-<h2>Distribution focused model notation</h2>
+<h2>Distribution-focused model notation</h2>
 <p>We can write this same equation differently, where it is focused on the <em>distribution</em>.</p>
 <p>This notation generalises to other kinds of models more easily. This is exactly the same model as above:</p>
 <p><span class="math display">\[Y \sim Normal(\mu, \sigma) \]</span></p>
@@ -678,23 +641,30 @@ F-statistic: 883.5 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="binomial-model" class="slide level2">
 <h2>Binomial Model</h2>
 <p>Now let’s finally consider our mouse survival example - which has a binary (yes/no, 0/1) outcome.</p>
-<p>This kind of response is usually modeled using a <em>Binomial</em> distribution. This distribution has two parameters:</p>
+<p>This kind of response is usually modeled using a <em>binomial</em> distribution. This distribution has two parameters:</p>
 <ul>
 <li><span class="math inline">\(n\)</span> (the number of trials)</li>
-<li><span class="math inline">\(p\)</span> (the probability of a “success”).</li>
+<li><span class="math inline">\(p\)</span> (the number of successes)</li>
 </ul>
 <div class="fragment">
-<p><span class="math inline">\(n\)</span> is assumed to be known, and for binary response variables it is implicit that <span class="math inline">\(n = 1\)</span> (this special case of the binomial is also called a <em>Bernoulli</em>).</p>
+<p><span class="math inline">\(n\)</span> is assumed to be known, and for binary response variables it is implicit that <span class="math inline">\(n = 1\)</span> (this special case of the binomial distribution is also called a <em>bernoulli distribution</em>).</p>
+</div>
+<div class="fragment">
+<p><br><br></p>
+<p><span style="color:#b22222">With a binary response we can interpret the number of successes as the probability of a success.</span></p>
+</div>
+</section>
+<section class="slide level2">
+
 <p>Here is the model, using the same notation that we’re now getting used to:</p>
 <p><span class="math display">\[Y \sim Binomial(n, p)\]</span></p>
 <p><span class="math display">\[logit(p) = \beta_0 + \beta_1 x_1 + ... + \beta_p x_p\]</span></p>
-</div>
 <div class="fragment">
 <p>We have a new <strong>link function</strong>, which is the log-odds of the event:</p>
 <p><span class="math display">\[logit(p) = log(\frac{p}{1 - p})\]</span></p>
 </div>
 <div class="fragment">
-<p>Again, this puts the expected value (a probability in this case) between -Inf and +Inf, making things easier for the inference process.</p>
+<p>Again, this linearises the relationship between <span class="math inline">\(E(Y)\)</span> (our <span class="math inline">\(p\)</span> in this case) and the predictors.</p>
 </div>
 </section>
 <section id="behind-the-scenes-stuff" class="slide level2">
@@ -718,8 +688,8 @@ F-statistic: 883.5 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <table>
 <colgroup>
-<col style="width: 14%">
-<col style="width: 85%">
+<col style="width: 23%">
+<col style="width: 76%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -752,8 +722,8 @@ F-statistic: 883.5 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>We create a GLM using the binomial distribution and extract the coefficients (you’ll do this in the practical):</p>
 <table>
 <colgroup>
-<col style="width: 14%">
-<col style="width: 85%">
+<col style="width: 23%">
+<col style="width: 76%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -802,14 +772,21 @@ F-statistic: 883.5 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section class="slide level2">
 
 
-<img data-src="stats-GLM-slides_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"><div class="fragment">
-<p>So we can see that the binomial model is pretty helpful: it’s in a range of 0 and 1 and symmetric around the center.</p>
-<p>The linear model just shows how rubbish <em>that</em> approach is… <span class="emoji" data-emoji="open_mouth">😮</span></p>
+<img data-src="stats-GLM-slides_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch"><p>We can see that the binomial model is pretty helpful: it’s in a range of 0 and 1 and symmetric around the center.</p>
+</section>
+<section class="slide level2">
+
+
+<img data-src="stats-GLM-slides_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"><p>The linear model on the other hand just shows how rubbish <em>that</em> approach is… <span class="emoji" data-emoji="open_mouth">😮</span></p>
+<div class="fragment">
+<p>And, as Jeremy Clarkson would say, on that bombshell it’s time to say…</p>
 </div>
 </section>
-<section id="break" class="slide level2">
-<h2>BREAK</h2>
+<section id="coffee" class="slide level2">
+<h2>Coffee!</h2>
+<p><br><br></p>
 <p><span class="emoji" data-emoji="coffee">☕</span></p>
+<p>^ coffee cup not to scale.</p>
 <div class="columns">
 <div class="column" style="width:61.8%;">
 
@@ -818,8 +795,9 @@ F-statistic: 883.5 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 
-<div class="footer footer-default">
 
+<img src="../images/university_crest.png" class="slide-logo r-stretch"><div class="footer footer-default">
+<p><a href="https://bioinfotraining.bio.cam.ac.uk" class="uri">https://bioinfotraining.bio.cam.ac.uk</a></p>
 </div>
 </section>
     </div>

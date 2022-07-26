@@ -5,10 +5,12 @@ format:
   revealjs:
     theme: [default, custom.scss]
     margin: 0.15
+    logo: ../images/university_crest.png
     scrollable: true
     smaller: true
     slide-number: true
     show-slide-number: all
+    footer: <https://bioinfotraining.bio.cam.ac.uk>
 editor: visual
 from: markdown+emoji
 ---
@@ -48,29 +50,15 @@ theme_set(theme_grey(base_size = 24))
 -   Matt Castle (course materials)\
     Bioinformatics Training Facility
 
-## What will we cover?
+## Aims for today
 
-Everything we've looked at up until now has required that the response variable is continuous.
-
-. . .
-
-How do we deal with non-continuous response variables?
-
-. . .
-
-We'll be looking at three cases:
-
-\
-
-| data       | test                |     |
-|:-----------|:--------------------|:----|
-| binary     | logistic regression |     |
-| proportion | logistic regression |     |
-| count      | poisson regression  |     |
-
-. . .
-
-We'll also explore ways to see how good these models are.
+::: incremental
+1.  Expand our knowledge of linear models
+2.  Learn how to perform GLM in R
+3.  Evaluate how much you can trust your model
+4.  Be able to analyse discrete responses
+5.  Ask questions about your data / research
+:::
 
 ## Linear modelling
 
@@ -107,13 +95,20 @@ ggplot(sim, aes(x1, y)) +
        y = "weight (kg)")
 ```
 
+. . .
+
 ... where our data
 
--   has a continuous response (`weight`)
+::: incremental
+-   are independent\
+    [if they're correlated we need different types of models, such as linear mixed models (LMM) or generalised estimating equations (GEE)]{style="font-size:smaller"}
+-   are normally distributed (or at least, the residuals)
+-   [have a continuous response]{style="color:#b22222"}
+:::
 
--   and a continuous predictor (`height`)
+## Fitting a model
 
-## Linear regression
+We know how to do this visually, and how to get the coefficients of the linear model.
 
 ::: panel-tabset
 ## Plot
@@ -130,28 +125,26 @@ ggplot(sim, aes(x1, y)) +
 
 ## Output
 
--   Pay attention to the `Estimate` and `Std.Error` values (these determine the linear model)
--   The p-value of `<2e-16` suggests that the slope of the model ($\beta_1$) is significantly different from zero
--   The adjusted R-squared is `r round(lm(y ~ x1, data = sim) %>% summary() %>% glance() %>% pull(adj.r.squared), 2)` (which is a slight positive correlation) and suggests that the model is able to explain some of the variance in the data
-
 ```{r}
 lm(y ~ x1, data = sim) %>%
   summary()
 ```
+
+-   Pay attention to the `Estimate` and `Std.Error` values (these determine the linear model)
+-   The p-value of `<2e-16` suggests that the slope of the model ($\beta_1$) is significantly different from zero
+-   The adjusted R-squared is `r round(lm(y ~ x1, data = sim) %>% summary() %>% glance() %>% pull(adj.r.squared), 2)` (which is a slight positive correlation) and suggests that the model is able to explain some of the variance in the data
 :::
 
 ------------------------------------------------------------------------
 
-### Terminology
-
-::: callout-tip
-## line of best fit, regression analysis, and correlation
+### Line of best fit, regression analysis, and correlation
 
 Three different things, but closely related:
 
-1.  **Line of best fit (+ error)** is the model of your data
+::: incremental
+1.  **Line of best fit + error** is the model of your data
 2.  **Regression** tells you about the predictive power of your model (is my line a better predictor than the overall mean?)
-3.  **Correlation** tells you something about the strength of the relationship between the two variables
+3.  **Correlation** tells you something about the strength of the relationship between the two variables, or the *effect size*.
 :::
 
 ------------------------------------------------------------------------
@@ -188,9 +181,11 @@ lm(y ~ x1, data = sim) %>%
               smoother = TRUE)
 ```
 
+Checks for equality of variance (homoscedasticity). Is the variance of the residuals correlated with the predictor variables?
+
 ------------------------------------------------------------------------
 
--   No influential points (COOK's D Plot)
+-   No clear influential points (COOK's D Plot)
 
 ```{r}
 lm(y ~ x1, data = sim) %>% 
@@ -198,11 +193,13 @@ lm(y ~ x1, data = sim) %>%
               smoother = TRUE)
 ```
 
+Note: the horizontal line represents a cut-off at 4/n.
+
 ## The normal distribution
 
 Weight vs height:
 
-For the analysis to work (or be valid) we are assuming that the process that we're studying is approximated by a normal distribution.
+For the analysis to work (or be valid) we are assuming that the process that we're studying - for a given value of the predictors - is approximated by a normal distribution.
 
 . . .
 
@@ -332,15 +329,16 @@ sim |>
 mouse_model <- lm(y ~ x1, data = sim)
 ```
 
+```{r}
+summary(mouse_model)
+```
+
 Again,
 
 -   Pay attention to the `Estimate` and `Std.Error` values (these determine the linear model)
 -   The p-value of `<2e-16` for `x1` suggests that the slope of the model ($\beta_1$) is significantly different from zero
 -   The adjusted R-squared is `r round(mouse_model %>% summary() %>% glance() %>% pull(adj.r.squared), 2)` (which is a relatively strong positive correlation) suggests that the model is able to explain quite a bit of the variance in the data
 
-```{r}
-summary(mouse_model)
-```
 :::
 
 ------------------------------------------------------------------------
@@ -362,9 +360,19 @@ Hoorah! :grinning:
 
 We should make sure that our predictions are within an acceptable range: they can only be 0 (dead) or 1 (alive).
 
-We can use **generalised linear models** to do this.
+```{r}
+sim |> 
+  ggplot(aes(x1, y)) +
+  geom_point(colour = "darkcyan") +
+  geom_smooth(method = "lm", se = FALSE, colour = "firebrick", size = 1) +
+  labs(title = "Survival outcome in mice",
+       x = "drug dose (\U03BCM)",
+       y = "survival rate")
+```
 
 . . .
+
+We can use **generalised linear models** to do this.
 
 So, let's take a step back.
 
@@ -373,10 +381,12 @@ So, let's take a step back.
 Under the hood every *linear regression model* has three components:
 
 ::: incremental
--   An **assumed distribution** (*normal*, binomial, poisson, negative binomial, gamma, beta, exponential, log-normal, etc.).
--   The **relationship between the response and predictors**, i.e. the functional form of the model.
--   A **link function**, which allows for the expected (mean) value of the response variable to range from \[-Inf to +Inf\].
+1.  An **assumed distribution for the residuals/errors** (*normal*, binomial, poisson, negative binomial, gamma, beta, exponential, log-normal, etc.).
+2.  A **link function**, which linearises the relationship between the expected (mean) value of the response and the predictors.
+3.  The **relationship between the expected value of the response and predictors**, i.e. the functional form of the model.
 :::
+
+. . .
 
 We will see these components in practice below.
 
@@ -388,35 +398,25 @@ To understand the model a bit better, we'll look at the equations (not much more
 
 Starting with a simple linear regression model, this is often written in the form:
 
-$$ E(Y) = \beta_0 + \beta_1 x_1 + .. + \beta_p x_p + \epsilon $$ $$ \epsilon \sim Normal(0, \sigma) $$
+$$ Y = \beta_0 + \beta_1 x_1 + .. + \beta_p x_p + \varepsilon $$ $$ \varepsilon \sim Normal(0, \sigma) $$
 
 . . .
+
+Since $E(\varepsilon) = 0$, the *estimated* value of our response is equal to:
+
+$$E(Y) = \beta_0 + \beta_1 x_1 + .. + \beta_p x_p$$
+
+---
 
 We can read this model as:
 
-> I assume the process I am studying is well approximated by a normal distribution, with a mean which depends on a linear combination of my predictors.
+::: incremental
+-   I assume the process I am studying is well approximated - for a given value of the predictors - by a normal distribution.
+-   I further assume that the variance is constant across the range of the predictors.
+-   The model includes a random ("error") component, which accounts for variation in the data. The expected (or mean) value of our response variable Y is a linear combination of our predictors.
+:::
 
-. . .
-
-> I further assume that the variance is constant across the range of the predictors.
-
-. . .
-
-> The expected (or mean) value of our response variable $Y$ is a linear combination of our predictors, plus a random ("error") component, which accounts for variation in the data.
-
-------------------------------------------------------------------------
-
-As mentioned, we've seen this before in Core statistics, with:
-
-\
-
-**Intercept**: $\beta_0$
-
-**Slope**: $\beta_1$ (and $\beta_2 ... \beta_i$ coefficients for multiple linear regression)
-
-**Predictor(s)**: $x_1, x_2 ... x_i$
-
-## Distribution focused model notation
+## Distribution-focused model notation
 
 We can write this same equation differently, where it is focused on the *distribution*.
 
@@ -432,14 +432,22 @@ Where $x_i$ are the predictors and $\beta_i$ the coefficients that are to be est
 
 Now let's finally consider our mouse survival example - which has a binary (yes/no, 0/1) outcome.
 
-This kind of response is usually modeled using a *Binomial* distribution. This distribution has two parameters:
+This kind of response is usually modeled using a *binomial* distribution. This distribution has two parameters:
 
 -   $n$ (the number of trials)
--   $p$ (the probability of a "success").
+-   $p$ (the number of successes)
 
 . . .
 
-$n$ is assumed to be known, and for binary response variables it is implicit that $n = 1$ (this special case of the binomial is also called a *Bernoulli*).
+$n$ is assumed to be known, and for binary response variables it is implicit that $n = 1$ (this special case of the binomial distribution is also called a *bernoulli distribution*).
+
+. . . 
+
+<br /><br />
+
+[With a binary response we can interpret the number of successes as the probability of a success.]{style="color:#b22222"}
+
+---
 
 Here is the model, using the same notation that we're now getting used to:
 
@@ -455,7 +463,7 @@ $$logit(p) = log(\frac{p}{1 - p})$$
 
 . . .
 
-Again, this puts the expected value (a probability in this case) between -Inf and +Inf, making things easier for the inference process.
+Again, this linearises the relationship between $E(Y)$ (our $p$ in this case) and the predictors.
 
 ## Behind-the-scenes stuff
 
@@ -485,7 +493,7 @@ mse_fit <- mse_mod %>%
 ```
 
 | coefficient | value                                                                       |
-|:------------|:----------------------------------------------------------------------------|
+|:----------------|:------------------------------------------------------|
 | $\beta_0$   | `r mse_fit %>% tidy() %>% filter(term == "(Intercept)") %>% pull(estimate)` |
 | $\beta_1$   | `r mse_fit %>% tidy() %>% filter(term == "x1") %>% pull(estimate)`          |
 
@@ -506,7 +514,7 @@ We started with:
 We create a GLM using the binomial distribution and extract the coefficients (you'll do this in the practical):
 
 | coefficient | value                                                                       |
-|:------------|:----------------------------------------------------------------------------|
+|:----------------|:------------------------------------------------------|
 | $\beta_0$   | `r mse_fit %>% tidy() %>% filter(term == "(Intercept)") %>% pull(estimate)` |
 | $\beta_1$   | `r mse_fit %>% tidy() %>% filter(term == "x1") %>% pull(estimate)`          |
 
@@ -552,21 +560,42 @@ mse_pred <- augment(mse_fit,
 ggplot(mse_pred, aes(x1, .pred_1)) +
   geom_point(aes(colour = "binomial")) +
   geom_point(data = sim, aes(x1, y, colour = "data")) +
+    labs(title = "Survival outcome in mice",
+       x = "drug dose (\U03BCM)",
+       y = "probability of survival")
+```
+
+We can see that the binomial model is pretty helpful: it's in a range of 0 and 1 and symmetric around the center.
+
+---
+
+```{r}
+mse_pred <- augment(mse_fit,
+        new_data = sim %>% select(x1))
+
+ggplot(mse_pred, aes(x1, .pred_1)) +
+  geom_point(aes(colour = "binomial")) +
+  geom_point(data = sim, aes(x1, y, colour = "data")) +
   geom_smooth(method = "lm", aes(colour = "linear")) +
     labs(title = "Survival outcome in mice",
        x = "drug dose (\U03BCM)",
        y = "probability of survival")
 ```
 
+The linear model on the other hand just shows how rubbish *that* approach is... :open_mouth:
+
 . . .
 
-So we can see that the binomial model is pretty helpful: it's in a range of 0 and 1 and symmetric around the center.
+And, as Jeremy Clarkson would say, on that bombshell it's time to say...
 
-The linear model just shows how rubbish *that* approach is... :open_mouth:
+## Coffee!
 
-## BREAK
+<br /><br />
 
 :coffee:
+
+^ coffee cup not to scale.
+
 
 ::: columns
 ::: {.column width="61.8%"}

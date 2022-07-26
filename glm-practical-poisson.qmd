@@ -9,9 +9,7 @@ source(file = "setup.R")
 
 ::: callout-note
 ## Aims & objectives
-
 -   How do we analyse count data?
-
 -   Be able to perform a poisson regression on count data
 :::
 
@@ -129,7 +127,7 @@ isl_mod %>% translate()
 
 This shows that we have a poisson regression model, where the outcome is going to be a regression. The model fit template tells us that we'll be using the `glm()` function from the `stats` package, which can take a `formula`, `data`, `weights` and `family` argument. The `family` argument is already set to poisson.
 
-The model fit template tells us that we'll be using the `glm()` function from the `stats` package (`stats::glm`). This function several arguments:
+The model fit template tells us that we'll be using the `glm()` function from the `stats` package (`stats::glm`). This function has several arguments:
 
 1.  a `formula`, which we'll specify later
 2.  `data`, which we'll provide in a bit

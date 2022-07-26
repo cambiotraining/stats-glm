@@ -10,9 +10,14 @@ diabetes <- read_csv("data/diabetes.csv") %>%
   mutate(test_result = factor(test_result))
 ```
 
+::: callout-note
+## Aims & objectives
+-   Evaluate model reliability by using training and test data sets
+:::
+
 ## Model evaluation
 
-So far we've constructed the logistic model and fed it some new data to make predictions to the possible outcome of a diabetes test, depending on the glucose level of a given patient. This gave us some diabetes test predictions and, importantly, the probabilities of whether the test could come back negative or positive.
+Previously we've constructed a logistic model and fed it some new data to make predictions to the possible outcome of a diabetes test, depending on the glucose level of a given patient. Importantly, this also gave us the probabilities of whether the test could come back negative or positive.
 
 The question we'd like to ask ourselves at this point: how reliable is the model?
 
@@ -285,4 +290,11 @@ The AIC on the other hand suggests that the additive model we've analysed here h
 ### Food for thought
 
 Perhaps there is an *interaction* between `glucose` and `diastolic`, which would be interesting to investigate.
+:::
+
+## Key points
+
+::: callout-note
+-   Model suitability can be checked by splitting the data into a training and test data set. The logistic model is then created based on the training data, and the reliability can be checked against the (known) values in the test data set
+-   The ROC curve shows the performance of a classification model at all thresholds, whereas the area under the ROC curve provides an aggregate measure of performance of all possible classifications thresholds
 :::
