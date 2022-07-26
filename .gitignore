@@ -3,6 +3,6 @@
 .RData
 .Ruserdata
 
-/docs/.nojekyll
+docs/.nojekyll
 
-/.quarto/
+.quarto/
