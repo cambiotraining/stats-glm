@@ -82,7 +82,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -131,6 +130,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <a class="navbar-brand" href="./index.html">
+    <img src="./images/university_crest_reversed.png" alt="">
     <span class="navbar-title">Generalised linear models</span>
   </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -140,6 +140,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="./index.html">Home</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./../_slides/stats-GLM-slides.html">Slides</a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -201,6 +204,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
     </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Model evaluation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm-practical-training.html" class="sidebar-item-text sidebar-link">Training and test data</a>
+  </div>
+</li>
+    </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -216,11 +234,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#model-building" id="toc-model-building" class="nav-link" data-scroll-target="#model-building">Model building</a></li>
   <li><a href="#model-predictions" id="toc-model-predictions" class="nav-link" data-scroll-target="#model-predictions">Model predictions</a></li>
   <li><a href="#exercise-penguins" id="toc-exercise-penguins" class="nav-link" data-scroll-target="#exercise-penguins">Exercise: Penguins</a></li>
-  <li><a href="#model-evaluation" id="toc-model-evaluation" class="nav-link" data-scroll-target="#model-evaluation">Model evaluation</a>
-  <ul class="collapse">
-  <li><a href="#split-the-data" id="toc-split-the-data" class="nav-link" data-scroll-target="#split-the-data">Split the data</a></li>
-  </ul></li>
-  <li><a href="#exercise---diabetes-predictors" id="toc-exercise---diabetes-predictors" class="nav-link" data-scroll-target="#exercise---diabetes-predictors">Exercise - Diabetes predictors</a></li>
   <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points">Key points</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/cambiotraining/stats-glm/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -292,6 +305,10 @@ Aims &amp; objectives
 <td style="text-align: left;"><code>tidymodels</code></td>
 <td style="text-align: left;">A collection of packages for modelling and machine learning using tidyverse principles</td>
 </tr>
+<tr class="odd">
+<td style="text-align: left;"><code>palmerpenguins</code></td>
+<td style="text-align: left;">Package that contains data on penguins</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -323,15 +340,10 @@ Aims &amp; objectives
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/diabetes.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Looking at the data, we can see that the <code>test_result</code> column contains zeros and ones. These are test result outcomes and not actually numeric representations.</p>
-<p>This will cause problems later, so we need to tell R to see these values as factors. For good measure we’ll also improve the information in <code>test_result</code> by classifying it as ‘negative’ (0) or ‘positive’ (1).</p>
+<p>This will cause problems later, so we need to tell R to see these values as factors.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="ot">&lt;-</span> </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>diabetes <span class="sc">%&gt;%</span> </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># replace 0 with 'negative' and 1 with 'positive'</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">test_result =</span> <span class="fu">case_when</span>(test_result <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"negative"</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"positive"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert character columns to factor</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.character, factor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="ot">&lt;-</span> diabetes <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">test_result =</span> <span class="fu">factor</span>(test_result))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can plot the data:</p>
 <div class="cell">
@@ -352,12 +364,85 @@ Aims &amp; objectives
 <p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>This presents us with a bit of an issue. We could fit a linear regression model to these data. We’d have to see the test result as a numeric outcome, <em>because linear regression models only deal with numerical response variables</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">test_result =</span> <span class="fu">as.numeric</span>(test_result)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> glucose, <span class="at">y =</span> test_result)) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Of course this is rubbish - we can’t have test results outside the range of [0, 1].</p>
+<p>But for the sake of exploration, let’s look at the assumptions:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">test_result =</span> <span class="fu">as.numeric</span>(test_result)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(test_result <span class="sc">~</span> glucose, <span class="at">data =</span> .) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resid_panel</span>(<span class="at">plots =</span> <span class="fu">c</span>(<span class="st">"resid"</span>, <span class="st">"qq"</span>, <span class="st">"ls"</span>, <span class="st">"cookd"</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">smoother =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula 'y ~ x'
+`geom_smooth()` using formula 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>They’re <del>pretty</del> extremely bad.</p>
+<ul>
+<li>The response is not linear (Residual Plot, binary response plot, common sense).</li>
+<li>The residuals are not distributed normally (Q-Q Plot)</li>
+<li>The variance is not homogeneous across the predicted values (Location-Scale Plot)</li>
+<li>But - there is always a silver lining - we don’t have influential data points.</li>
+</ul>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Viewing residuals
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Another way of viewing the residuals (apart from the Q-Q plot) is as a dot-plot. The <code>ggdist</code> and <code>distributional</code> packages are extremely useful for this kind of stuff.</p>
+<p>What I’m doing here is:</p>
+<ul>
+<li>define the model</li>
+<li>create a normal distribution with <span class="math inline">\(\mu = 0\)</span> and <span class="math inline">\(\sigma = 0.415\)</span> (I’ve calculated these from the residuals with <code>rstatix::get_summary_stats</code>)</li>
+<li>plot the residuals</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">test_result =</span> <span class="fu">as.numeric</span>(test_result)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(test_result <span class="sc">~</span> glucose, <span class="at">data =</span> .) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resid</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># rstatix::get_summary_stats()</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_dist_halfeye</span>(<span class="fu">aes</span>(<span class="at">dist =</span> <span class="fu">dist_normal</span>(<span class="dv">0</span>,<span class="fl">0.415</span>)),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">orientation =</span> <span class="st">"horizontal"</span>) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_dotsinterval</span>(<span class="fu">aes</span>(<span class="at">x =</span> value),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">orientation =</span> <span class="st">"horizontal"</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">fill =</span> <span class="st">"firebrick"</span>, <span class="at">scale =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Linear model (diabetes)"</span>, <span class="at">y =</span> <span class="st">"probability"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This again tells us that the residuals are really not normally distributed.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 </section>
 <section id="model-building" class="level2">
 <h2 class="anchored" data-anchor-id="model-building">Model building</h2>
+<p>So we’ve established that we shouldn’t be using a standard linear regression model. From the introduction we’ve learned that we can use a binomial model instead. We are specifically using a <em>logistic model</em>, which is a binomial model with a logistic link function.</p>
 <p>There are different ways to construct a logistic model.</p>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">tidyverse</a></li></ul>
@@ -366,26 +451,41 @@ Aims &amp; objectives
 <p>In <code>tidymodels</code> we have access to a very useful package: <code>parsnip</code>, which provides a common syntax for a whole range of modelling libraries. This means that the syntax will stay the same as you do different kind of model comparisons. So, the learning curve might be a bit steeper to start with, but this will pay dividend in the long-term (just like when you started using R!).</p>
 <p>First, we need to load <code>tidymodels</code> (install it first, if needed):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tidymodels")</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tidymodels")</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The workflow in <code>parsnip</code> is a bit different to what we’re used to so far. Up until now, we’ve directly used the relevant model functions to analyse our data, for example using the <code>lm()</code> function to create linear models.</p>
 <p>Using <code>parsnip</code> we approach things in a more systematic manner. At first this might seem unnecessarily verbose, but there are clear advantages to approaching your analysis in a systematic way. For example, it will be straightforward to implement other types of models using the same workflow, which you’ll definitely find useful when moving on to more difficult modelling tasks.</p>
 <p>Using <code>tidymodels</code> we specify a model in three steps:</p>
 <ol type="1">
-<li><strong>Specify the type of model based on its mathematical structure</strong> (e.g., linear regression, random forest, K-nearest neighbors, etc).</li>
-<li><strong>When required, declare the mode of the model.</strong> The mode reflects the type of prediction outcome. For numeric outcomes, the mode is regression; for qualitative outcomes, it is classification. If a model can only create one type of model, such as logistic regression, the mode is already set.</li>
-<li><strong>Specify the engine for fitting the model.</strong> This usually is the software package or library that should be used.</li>
+<li><strong>Specify the type of model based on its mathematical structure</strong> (e.g., linear regression, logistic regression, poisson regression etc).</li>
 </ol>
+<p>For example:</p>
+<ul>
+<li><code>linear_reg()</code> for linear regression</li>
+<li><code>logistic_reg()</code> for logistic regression</li>
+<li><code>poisson_reg()</code> for poisson regression (more on this later)</li>
+</ul>
+<ol start="2" type="1">
+<li><p><strong>When required, declare the mode of the model.</strong> The mode reflects the type of prediction outcome. For numeric outcomes, the mode is <em>regression</em>; for qualitative outcomes, it is <em>classification.</em> If a model can only create one type of model, such as logistic regression, the mode is already set to, in this case, <code>mode = "classification"</code>.</p></li>
+<li><p><strong>Specify the engine for fitting the model.</strong> This usually is the software package or library that should be used.</p></li>
+</ol>
+<p>For example,</p>
+<ul>
+<li><code>"lm"</code> for linear models</li>
+<li><code>"glm"</code> for generalised linear models</li>
+<li><code>"stan"</code> for Bayesian inference</li>
+</ul>
+<p>You can find out which engines can be used with the <code>show_engines()</code> function. The command <code>show_engines("logistic_reg")</code> will give you the available engines for the <code>logistic_reg()</code> function.</p>
 <p>So, we can create the model as follows:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dia_mod <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dia_mod <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Note that we are not actually specifying any of the variables just yet! All we’ve done is tell R what kind of model we’re planning to use. If we want to see how <code>parsnip</code> converts this code to the package syntax, we can check this with <code>translate()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dia_mod <span class="sc">%&gt;%</span> <span class="fu">translate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dia_mod <span class="sc">%&gt;%</span> <span class="fu">translate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Logistic Regression Model Specification (classification)
 
@@ -396,16 +496,39 @@ stats::glm(formula = missing_arg(), data = missing_arg(), weights = missing_arg(
     family = stats::binomial)</code></pre>
 </div>
 </div>
-<p>This shows that we have a logistic regression model, where the outcome is going to be a classification (in our case, that’s a positive or negative test result). The model fit template tells us that we’ll be using the <code>glm()</code> function from the <code>stats</code> package, which can take a <code>formula</code>, <code>data</code>, <code>weights</code> and <code>family</code> argument. The <code>family</code> argument is already set to binomial.</p>
+<p>This shows that we have a logistic regression model, where the outcome is going to be a <strong>classification</strong> (in our case, that’s a positive (1) or negative test (0) result).</p>
+<p>The model fit template tells us that we’ll be using the <code>glm()</code> function from the <code>stats</code> package (<code>stats::glm</code>). This function several arguments:</p>
+<ol type="1">
+<li>a <code>formula</code>, which we’ll specify later</li>
+<li><code>data</code>, which we’ll provide in a bit</li>
+<li><code>weights</code>, if we want to add prior weights to our variable - we don’t have to concern ourselves with this - and</li>
+<li>a <code>family</code> argument, which is already set to <code>binomial</code></li>
+</ol>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+The <code>family</code> argument
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>family</code> argument gives us a description of the error distribution and link function that will be used in the model. For the <code>diabetes</code> data set we are looking at a binary (0 | 1) outcome - which we can model using a <em>binomial</em> model.</p>
+<p>If we’d want to specify it manually, then we’d use</p>
+<p><code>set_engine("glm", family = stats::binomial(link = "logit"))</code></p>
+<p>which sets the family to binomial, using a logit link function.</p>
+</div>
+</div>
 <p>Now we’ve specified what kind of model we’re planning to use, we can fit our data to it, using the <code>fit()</code> function:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dia_fit <span class="ot">&lt;-</span> dia_mod <span class="sc">%&gt;%</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(test_result <span class="sc">~</span> glucose,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> diabetes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dia_fit <span class="ot">&lt;-</span> dia_mod <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(test_result <span class="sc">~</span> glucose,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> diabetes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can look at the output directly, but I prefer to tidy the data up using the <code>tidy()</code> function from <code>broom</code> package:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dia_fit <span class="sc">%&gt;%</span> <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dia_fit <span class="sc">%&gt;%</span> <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 5
   term        estimate std.error statistic  p.value
@@ -415,43 +538,93 @@ stats::glm(formula = missing_arg(), data = missing_arg(), weights = missing_arg(
 </div>
 </div>
 <p>The <code>estimate</code> column gives you the coefficients of the logistic model equation. We could use these to calculate the probability of having a positive diabetes test, for any given glucose level, using the following equation:</p>
-<span class="math display">\[\begin{equation}
-P(positive \ test \ result) = \frac{1}{1 + {e}^{-(-5.61 +  0.040 \cdot glucose)}}
-\end{equation}\]</span>
+<p><span class="math display">\[ P(positive \ test\ result) = \frac{\exp(-5.61 + 0.04 \times glucose)}{1 + \exp(-5.61 + 0.04 \times glucose)} \]</span></p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Expanded explanation
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We started with:</p>
+<ul>
+<li><p>Our linear predictor equation <span class="math display">\[logit(p) = \beta_0 + \beta_1 x_1 + ... + \beta_p x_p\]</span></p></li>
+<li><p>and link function <span class="math display">\[logit(p) = log(\frac{p}{1 - p})\]</span></p></li>
+</ul>
+<p>Our coefficients are as follows:</p>
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">coefficient</th>
+<th style="text-align: left;">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\beta_0\)</span></td>
+<td style="text-align: left;">-5.6117317</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\beta_1\)</span></td>
+<td style="text-align: left;">0.0395101</td>
+</tr>
+</tbody>
+</table>
+<p>Which means that we can write the linear predictor equation as follows:</p>
+<p><span class="math display">\[logit(p) = -5.61 + 0.04 \times glucose\]</span> We still have to take into account our link function. Combining the two equations gives us:</p>
+<p><span class="math display">\[log(\frac{p}{1 - p}) = -5.61 + 0.04 \times glucose\]</span></p>
+<p>To get our <span class="math inline">\(p\)</span> (the probability of a mouse surviving our treatment), we need to exponentiate our equation:</p>
+<p><span class="math display">\[\frac{p}{1 - p} = \exp{(-5.61 + 0.04 \times glucose)}\]</span></p>
+<p>leading to…</p>
+<div style="background-color: #e0e0e0; padding: 5px">
+<p><span class="math display">\[p = \frac{\exp{(-5.61 + 0.04 \times glucose)}}{1 + \exp{(-5.61 + 0.04 \times glucose)}}\]</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <p>But of course we’re not going to do it that way. We’ll let R deal with that in the next section.</p>
-<p>The <code>std.error</code> column gives you the error associated with the coefficients and the <code>statistic</code> column tells you the statistic value.</p>
+<p>The <code>std.error</code> column gives you the error associated with the coefficients and the <code>statistic</code> column tells you the Z-statistic value.</p>
 <p>The values in <code>p.value</code> merely show whether that particular coefficient is significantly different from zero. This is similar to the p-values obtained in the summary output of a linear model, and as before, for continuous predictors these p-values can be used as a rough guide as to whether that predictor is important (so in this case glucose appears to be significant). However, these p-values aren’t great when we have multiple predictor variables, or when we have categorical predictors with multiple levels (since the output will give us a p-value for each level rather than for the predictor as a whole).</p>
-</div>
-</div>
-</div>
 </section>
 <section id="model-predictions" class="level2">
 <h2 class="anchored" data-anchor-id="model-predictions">Model predictions</h2>
 <p>What if we got some new glucose level data and we wanted to predict if people might have diabetes or not?</p>
-<p>We could use the existing model and feed it the some data:</p>
+<p>We could use the existing model and feed it some data:</p>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">tidyverse</a></li></ul>
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a dummy data set using some hypothetical glucose measurements</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>diabetes_newdata <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">glucose =</span> <span class="fu">c</span>(<span class="dv">188</span>, <span class="dv">122</span>, <span class="dv">83</span>, <span class="dv">76</span>, <span class="dv">144</span>))</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># predict if the patients have diabetes or not</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(dia_fit,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">new_data =</span> diabetes_newdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a dummy data set using some hypothetical glucose measurements</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>diabetes_newdata <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">glucose =</span> <span class="fu">c</span>(<span class="dv">188</span>, <span class="dv">122</span>, <span class="dv">83</span>, <span class="dv">76</span>, <span class="dv">144</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># predict if the patients have diabetes or not</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(dia_fit,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">new_data =</span> diabetes_newdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 4
-  glucose .pred_class .pred_negative .pred_positive
-    &lt;dbl&gt; &lt;fct&gt;                &lt;dbl&gt;          &lt;dbl&gt;
-1     188 positive             0.140         0.860 
-2     122 negative             0.688         0.312 
-3      83 negative             0.912         0.0885
-4      76 negative             0.931         0.0686
-5     144 positive             0.481         0.519 </code></pre>
+  glucose .pred_class .pred_0 .pred_1
+    &lt;dbl&gt; &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt;
+1     188 1             0.140  0.860 
+2     122 0             0.688  0.312 
+3      83 0             0.912  0.0885
+4      76 0             0.931  0.0686
+5     144 1             0.481  0.519 </code></pre>
 </div>
 </div>
-<p>Although you are able to get the predicted outcomes (in <code>.pred_class</code>), I would like to stress that this is not the point of running the model. It is important to realise that the model (as with all statistical models) creates a predicted outcome based on certain <em>probabilities</em>. It is therefore much more informative to look at how probable these predicted outcomes are. They are encoded in <code>.pred_negative</code> and <code>.pred_positive</code>.</p>
+<p>Although you are able to get the predicted outcomes (in <code>.pred_class</code>), I would like to stress that this is not the point of running the model. It is important to realise that the model (as with all statistical models) creates a predicted outcome based on certain <em>probabilities</em>. It is therefore much more informative to look at how probable these predicted outcomes are. They are encoded in <code>.pred_0</code> and <code>.pred_1</code>.</p>
 <p>For the first value this means that there is a 14% chance that the diabetes test will return a negative result and around 86% chance that it will return a positive result.</p>
 </div>
 </div>
@@ -459,23 +632,39 @@ P(positive \ test \ result) = \frac{1}{1 + {e}^{-(-5.61 +  0.040 \cdot glucose)}
 </section>
 <section id="exercise-penguins" class="level2">
 <h2 class="anchored" data-anchor-id="exercise-penguins">Exercise: Penguins</h2>
-<p>To practice this a bit more, we’ll be using a data set about penguins. The data are from the <code>palmerpenguins</code> package, which is included with <code>tidymodels</code>. The data set contains information on penguins at the Palmer Station on Antarctica. Chilly.</p>
+<p>To practice this a bit more, we’ll be using a data set about penguins. The data are from the <code>palmerpenguins</code> package, so load that if needed. The data set contains information on penguins at the Palmer Station on Antarctica. Chilly.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There is also a built-in package called <code>penguins</code> in R. Which can cause some issues sometimes. If you’re having problems creating some of the graphs, then run the following command to ensure that the correct <code>penguins</code> data set is loaded:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"penguins"</span>, <span class="at">package =</span> <span class="st">"palmerpenguins"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
 <p>Have a look at the plot below, where we are comparing the bill length (<code>bill_length_mm</code>) of three species of penguins (<code>species</code>) against flipper length (<code>flipper_length_mm</code>).</p>
 <p>We are also colouring the data based on sex (<code>sex</code>) and for good measure we’re also including information on the body size (<code>body_mass_g</code>).</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>It looks like female penguins are smaller with different sized bills and it would be interesting (yes, it would!) to investigate this further.</p>
 <p>I would like you to do the following:</p>
 <ol type="1">
-<li>load the data into an object called <code>penguins</code> using <code>data("penguins")</code></li>
+<li>load the data into an object called <code>penguins</code></li>
 <li>create a logistic model and fit the data to it, using <code>sex</code> as a classifier</li>
 <li>is bill length an important indicator of sex?</li>
 </ol>
 <div class="callout-caution callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -484,7 +673,7 @@ Answer
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">tidyverse</a></li></ul>
@@ -492,11 +681,11 @@ Answer
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <p>First, we load the data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"penguins"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"penguins"</span>, <span class="at">package =</span> <span class="st">"palmerpenguins"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We already have a reasonably good idea of what we’re looking at, but it can never hurt to understand your data better, so:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 8
   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
@@ -513,24 +702,24 @@ Answer
 <p>This shows that there are a few other columns in our data set, namely <code>island</code>, indicating the island where the penguins are residing and <code>bill_depth_mm</code> which records the bill depth.</p>
 <p>We also notice that there are some missing values. It would be good to get rid of these, at least for the rows where there sex isn’t scored:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="ot">&lt;-</span> penguins <span class="sc">%&gt;%</span> </span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sex))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="ot">&lt;-</span> penguins <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sex))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we specify the type of model. Notice that it can be useful to use a prefix in the naming of these objects to indicate which data set your model belongs to. Here we’re using <em>pgn</em> to denote penguins.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pgn_mod <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pgn_mod <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Remember, that setting the model <em>specification</em> does not yet define the model itself. We do that as follows:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pgn_fit <span class="ot">&lt;-</span> pgn_mod <span class="sc">%&gt;%</span> </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sex <span class="sc">~</span> bill_length_mm,</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pgn_fit <span class="ot">&lt;-</span> pgn_mod <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sex <span class="sc">~</span> bill_length_mm,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Once we’ve fitted the data to the model, we can have a look at the model parameters:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pgn_fit <span class="sc">%&gt;%</span> <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pgn_fit <span class="sc">%&gt;%</span> <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 5
   term           estimate std.error statistic       p.value
@@ -543,369 +732,6 @@ Answer
 </div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</section>
-<section id="model-evaluation" class="level2">
-<h2 class="anchored" data-anchor-id="model-evaluation">Model evaluation</h2>
-<p>So far we’ve constructed the logistic model and fed it some new data to make predictions to the possible outcome of a diabetes test, depending on the glucose level of a given patient. This gave us some diabetes test predictions and, importantly, the probabilities of whether the test could come back negative or positive.</p>
-<p>The question we’d like to ask ourselves at this point: how reliable is the model?</p>
-<p>To explore this, we need to take a step back.</p>
-<section id="split-the-data" class="level3">
-<h3 class="anchored" data-anchor-id="split-the-data">Split the data</h3>
-<p>When we created the model, we used <em>all</em> of the data. However, a good way of assessing a model fit is to actually split the data into two:</p>
-<ol type="1">
-<li>a <strong>training data set</strong> that you use to fit your model</li>
-<li>a <strong>test data set</strong> to validate your model and measure model performance</li>
-</ol>
-<p>Before we split the data, let’s have a closer look at the data set. If we count how many diabetes test results are negative and positive, we see that these counts are not evenly split.</p>
-<div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">tidyverse</a></li></ul>
-<div class="tab-content">
-<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="sc">%&gt;%</span> </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(test_result) <span class="sc">%&gt;%</span> </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
-  test_result     n  prop
-  &lt;fct&gt;       &lt;int&gt; &lt;dbl&gt;
-1 negative      478 0.657
-2 positive      250 0.343</code></pre>
-</div>
-</div>
-<p>This can have some consequences if we start splitting our data into a training and test set. By splitting the data into two parts - where most of the data goes into your training set - you have data left afterwards that you can use to test how good the predictions of your model are. However, we need to make sure that the <em>proportion</em> of negative and positive diabetes test outcomes remains roughly the same.</p>
-<p>The <code>rsample</code> package has a couple of useful functions that allow us to do just that and we can use the <code>strata</code> argument to keep these proportions more or less constant.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ensures random data split is reproducible</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># split the data, basing the proportions on the diabetes test results</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>data_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(diabetes, <span class="at">strata =</span> test_result)</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co"># create data frames for the two sets:</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> <span class="fu">training</span>(data_split)</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>test_data  <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>We can check what the <code>initial_split()</code> function has done:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># proportion of data allocated to the training set</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(train_data) <span class="sc">/</span> <span class="fu">nrow</span>(diabetes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.7486264</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># proportion of diabetes test results for the training data set</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>train_data <span class="sc">%&gt;%</span> </span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(test_result) <span class="sc">%&gt;%</span> </span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
-  test_result     n  prop
-  &lt;fct&gt;       &lt;int&gt; &lt;dbl&gt;
-1 negative      358 0.657
-2 positive      187 0.343</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># proportion of diabetes test results for the test data set</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>test_data <span class="sc">%&gt;%</span> </span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(test_result) <span class="sc">%&gt;%</span> </span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n<span class="sc">/</span><span class="fu">sum</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
-  test_result     n  prop
-  &lt;fct&gt;       &lt;int&gt; &lt;dbl&gt;
-1 negative      120 0.656
-2 positive       63 0.344</code></pre>
-</div>
-</div>
-<p>From the output we can see that around 75% of the data set has been used to create a training data set, with the remaining 25% kept as a test set.</p>
-<p>Furthermore, the proportions of negative:positive are kept more or less constant.</p>
-<section id="create-a-recipe" class="level3">
-<h3 class="anchored" data-anchor-id="create-a-recipe">Create a recipe</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a recipe</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>dia_rec <span class="ot">&lt;-</span> </span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(test_result <span class="sc">~</span> glucose, <span class="at">data =</span> train_data)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the recipe summary</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dia_rec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 4
-  variable    type    role      source  
-  &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
-1 glucose     numeric predictor original
-2 test_result nominal outcome   original</code></pre>
-</div>
-</div>
-</section>
-<section id="build-a-model-specification" class="level3">
-<h3 class="anchored" data-anchor-id="build-a-model-specification">Build a model specification</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>dia_mod <span class="ot">&lt;-</span> </span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="use-recipe-as-we-train-and-test-our-model" class="level3">
-<h3 class="anchored" data-anchor-id="use-recipe-as-we-train-and-test-our-model">Use recipe as we train and test our model</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dia_wflow <span class="ot">&lt;-</span> </span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(dia_mod) <span class="sc">%&gt;%</span> </span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(dia_rec)</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>dia_wflow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
-Preprocessor: Recipe
-Model: logistic_reg()
-
-── Preprocessor ────────────────────────────────────────────────────────────────
-0 Recipe Steps
-
-── Model ───────────────────────────────────────────────────────────────────────
-Logistic Regression Model Specification (classification)
-
-Computational engine: glm </code></pre>
-</div>
-</div>
-<p>Although it seems a bit of overkill, we now have a single function that can we can use to prepare the recipe and train the model from the resulting predictors:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dia_fit <span class="ot">&lt;-</span> </span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  dia_wflow <span class="sc">%&gt;%</span> </span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> train_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>This creates an object called <code>dia_fit</code>, which contains the final recipe and fitted model objects. We can extract the model and recipe objects with several helper functions:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>dia_fit <span class="sc">%&gt;%</span> </span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 5
-  term        estimate std.error statistic  p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)  -5.72     0.513       -11.2 6.84e-29
-2 glucose       0.0406   0.00397      10.2 1.46e-24</code></pre>
-</div>
-</div>
-</section>
-<section id="use-trained-workflow-for-predictions" class="level3">
-<h3 class="anchored" data-anchor-id="use-trained-workflow-for-predictions">Use trained workflow for predictions</h3>
-<p>So far, we have done the following:</p>
-<ol type="1">
-<li>Built the model (<code>dia_mod</code>),</li>
-<li>Created a pre-processing recipe (<code>dia_rec</code>),</li>
-<li>Combined the model and recipe into a workflow (<code>dia_wflow</code>)</li>
-<li>Trained our workflow using the <code>fit()</code> function (<code>dia_fit</code>)</li>
-</ol>
-<p>The results we generated above do not differ much from the values we obtained with the entire data set. However, these are based on 3/4 of the data (our training data set). Because of this, we still have our test data set available to apply this workflow to data the model has not yet seen.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dia_aug <span class="ot">&lt;-</span> </span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(dia_fit, test_data)</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>dia_aug</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 183 × 6
-   glucose diastolic test_result .pred_class .pred_negative .pred_positive
-     &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;       &lt;fct&gt;                &lt;dbl&gt;          &lt;dbl&gt;
- 1      85        66 negative    negative            0.906          0.0938
- 2     183        64 positive    positive            0.152          0.848 
- 3     168        74 positive    positive            0.249          0.751 
- 4     166        72 positive    positive            0.264          0.736 
- 5     115        70 positive    negative            0.740          0.260 
- 6      99        84 negative    negative            0.845          0.155 
- 7     196        90 positive    positive            0.0959         0.904 
- 8     119        80 positive    negative            0.708          0.292 
- 9     143        94 positive    positive            0.478          0.522 
-10      97        66 negative    negative            0.856          0.144 
-# … with 173 more rows</code></pre>
-</div>
-</div>
-</section>
-<section id="evaluate-the-model" class="level3">
-<h3 class="anchored" data-anchor-id="evaluate-the-model">Evaluate the model</h3>
-<p>We can now evaluate the model. One way of doing this is by using the area under the ROC curve as a metric.</p>
-<p>An <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic">ROC curve</a> (<em>receiver operating characteristic curve</em> - the name being a strange relic of WWII where developed for operators of military radar receivers) plots the true-positive rate (TPR) against the false-positive rate (FPR) at varying thresholds.</p>
-<p>The true-positive rate is also known as <em>sensitivity</em>, whereas the false-positive rate is <em>1 - sensitivity</em> (which, if you recall from the session of Power Analysis is also known as the <em>power</em>.)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>dia_aug <span class="sc">%&gt;%</span> </span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(<span class="at">truth =</span> test_result, .pred_negative) <span class="sc">%&gt;%</span> </span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>The area under the ROC curve, which is known as the AUC provides an aggregate measure of performance across all possible classification thresholds.</p>
-<p>It ranges in value from 0 to 1. A model whose predictions are 100% wrong has an AUC of 0. A model whose predictions are 100% correct has an AUC of 1.0.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>dia_aug <span class="sc">%&gt;%</span> </span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(<span class="at">truth =</span> test_result, .pred_negative)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 3
-  .metric .estimator .estimate
-  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-1 roc_auc binary         0.766</code></pre>
-</div>
-</div>
-<p>In addition to the ROC curve and AUC we also have a whole range of model parameters associated with the fitted model. We’re not going through all of them at this point, but one in particular should be familiar.</p>
-<p>We extract these parameters as follows:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>dia_fit <span class="sc">%&gt;%</span> <span class="fu">glance</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 8
-  null.deviance df.null logLik   AIC   BIC deviance df.residual  nobs
-          &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt; &lt;int&gt;
-1          701.     544  -277.  558.  567.     554.         543   545</code></pre>
-</div>
-</div>
-<p>Here we see the Akaike Information Criterion (AIC) as an output. Remember, the value of the AIC in itself is meaningless, but it’s useful to compare relative to AICs of other models. We covered how to do this in the Power analysis session of the Core statistics course.</p>
-<p>Here we see that the AIC for this model that uses the glucose level as a single predictor for the diabetes test result is 558.</p>
-</section>
-</div>
-</div>
-</div>
-</section>
-</section>
-<section id="exercise---diabetes-predictors" class="level2">
-<h2 class="anchored" data-anchor-id="exercise---diabetes-predictors">Exercise - Diabetes predictors</h2>
-<p>Using the training and test <code>diabetes</code> data sets, investigate the relationship between <code>test_result</code> and both <code>glucose</code> and <code>diastolic</code>. Try to answer the following:</p>
-<ul>
-<li>does adding <code>diastolic</code> to the model markedly improve the reliability of the predictions?</li>
-<li>what do the AICs for the two models tell you?</li>
-</ul>
-<div class="callout-caution callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Answer
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true">tidyverse</a></li></ul>
-<div class="tab-content">
-<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Update the recipe</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>dia_rec <span class="ot">&lt;-</span> </span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(test_result <span class="sc">~</span> glucose <span class="sc">+</span> diastolic,</span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> train_data)</span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the recipe summary</span></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dia_rec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 4
-  variable    type    role      source  
-  &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
-1 glucose     numeric predictor original
-2 diastolic   numeric predictor original
-3 test_result nominal outcome   original</code></pre>
-</div>
-</div>
-<p>Build the model, if needed (we have done this already and it stays the same):</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>dia_mod <span class="ot">&lt;-</span> </span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Create a workflow…</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>dia_wflow <span class="ot">&lt;-</span> </span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(dia_mod) <span class="sc">%&gt;%</span> </span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(dia_rec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>… and fit the data:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>dia_fit <span class="ot">&lt;-</span> </span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  dia_wflow <span class="sc">%&gt;%</span> </span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> train_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Extract the model parameters to have a look:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>dia_fit <span class="sc">%&gt;%</span> </span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 5
-  term        estimate std.error statistic  p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)  -6.99     0.790       -8.85 8.60e-19
-2 glucose       0.0394   0.00398      9.88 5.19e-23
-3 diastolic     0.0195   0.00877      2.22 2.61e- 2</code></pre>
-</div>
-</div>
-<p>Apply the fitted model to the test data set:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>dia_aug <span class="ot">&lt;-</span> </span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(dia_fit, test_data)</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>dia_aug</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 183 × 6
-   glucose diastolic test_result .pred_class .pred_negative .pred_positive
-     &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;       &lt;fct&gt;                &lt;dbl&gt;          &lt;dbl&gt;
- 1      85        66 negative    negative            0.914          0.0862
- 2     183        64 positive    positive            0.189          0.811 
- 3     168        74 positive    positive            0.257          0.743 
- 4     166        72 positive    positive            0.280          0.720 
- 5     115        70 positive    negative            0.751          0.249 
- 6      99        84 negative    negative            0.811          0.189 
- 7     196        90 positive    positive            0.0776         0.922 
- 8     119        80 positive    negative            0.679          0.321 
- 9     143        94 positive    positive            0.385          0.615 
-10      97        66 negative    negative            0.869          0.131 
-# … with 173 more rows</code></pre>
-</div>
-</div>
-<p>Plot the ROC curve:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>dia_aug <span class="sc">%&gt;%</span> </span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(<span class="at">truth =</span> test_result, .pred_negative) <span class="sc">%&gt;%</span> </span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>And get the area under the ROC curve:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>dia_aug <span class="sc">%&gt;%</span> </span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(<span class="at">truth =</span> test_result, .pred_negative)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 3
-  .metric .estimator .estimate
-  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-1 roc_auc binary         0.761</code></pre>
-</div>
-</div>
-<p>Another way to assess the model fit is to look at the Akaike Information Criterion (AIC).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>dia_fit <span class="sc">%&gt;%</span> <span class="fu">glance</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 8
-  null.deviance df.null logLik   AIC   BIC deviance df.residual  nobs
-          &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt; &lt;int&gt;
-1          701.     544  -275.  555.  568.     549.         542   545</code></pre>
-</div>
-</div>
-<p>We get an AIC of 555, which is lower than the AIC of 558 that we got with just <code>glucose</code> as a predictor variable.</p>
-</div>
-</div>
-</div>
-<section id="conclusions" class="level3">
-<h3 class="anchored" data-anchor-id="conclusions">Conclusions</h3>
-<p>Adding the <code>diastolic</code> variable as a predictor to the model does not seem to have much of an effect on the model reliability, since the AUC is 0.761 with the extra parameter, versus 0.766 without.</p>
-<p>The AIC on the other hand suggests that the additive model we’ve analysed here has a better fit than the original model (AIC of 555 vs 558).</p>
-</section>
-<section id="food-for-thought" class="level3">
-<h3 class="anchored" data-anchor-id="food-for-thought">Food for thought</h3>
-<p>Perhaps there is an <em>interaction</em> between <code>glucose</code> and <code>diastolic</code>, which would be interesting to investigate.</p>
-</section>
 </div>
 </div>
 </div>

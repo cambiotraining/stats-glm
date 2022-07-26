@@ -82,12 +82,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./glm-practical-training.html" rel="next">
 <link href="./glm-practical-logistic-proportion.html" rel="prev">
 <link href="./images/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js"></script>
@@ -131,6 +131,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <a class="navbar-brand" href="./index.html">
+    <img src="./images/university_crest_reversed.png" alt="">
     <span class="navbar-title">Generalised linear models</span>
   </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -140,6 +141,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="./index.html">Home</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./../_slides/stats-GLM-slides.html">Slides</a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -197,6 +201,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glm-practical-poisson.html" class="sidebar-item-text sidebar-link active">Poisson regression</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Model evaluation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glm-practical-training.html" class="sidebar-item-text sidebar-link">Training and test data</a>
   </div>
 </li>
     </ul>
@@ -304,7 +323,7 @@ Aims &amp; objectives
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>The example in this section uses the following data set:</p>
 <p><code>data/islands.csv</code></p>
-<p>This is a data set comprising 35 observations of two variables (one dependent and one predictor). This records the number of species recorded on different small islands along with the area (km<sup>2</sup>)of the islands. The variables are <code>species</code> and <code>area</code>.</p>
+<p>This is a data set comprising 35 observations of two variables (one dependent and one predictor). This records the number of species recorded on different small islands along with the area (km<sup>2</sup>) of the islands. The variables are <code>species</code> and <code>area</code>.</p>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <p>The <code>seatbelts</code> data set is a multiple time-series data set that was commissioned by the Department of Transport in 1984 to measure differences in deaths before and after front seatbelt legislation was introduced on 31st January 1983. It provides monthly total numerical data on a number of incidents including those related to death and injury in Road Traffic Accidents (RTA’s). The data set starts in January 1969 and observations run until December 1984.</p>
@@ -374,17 +393,32 @@ Aims &amp; objectives
 </div>
 <p>Remember that the workflow in <code>parsnip</code> is a bit different to what we’re used to so far. Using <code>parsnip</code> we approach things in a more systematic manner. We specify a model in three steps:</p>
 <ol type="1">
-<li><strong>Specify the type of model based on its mathematical structure</strong> (e.g., linear regression, random forest, K-nearest neighbors, etc).</li>
-<li><strong>When required, declare the mode of the model.</strong> The mode reflects the type of prediction outcome. For numeric outcomes, the mode is regression; for qualitative outcomes, it is classification. If a model can only create one type of model, such as logistic regression, the mode is already set.</li>
-<li><strong>Specify the engine for fitting the model.</strong> This usually is the software package or library that should be used.</li>
+<li><strong>Specify the type of model based on its mathematical structure</strong> (e.g., linear regression, logistic regression, poisson regression etc).</li>
 </ol>
+<p>For example:</p>
+<ul>
+<li><code>linear_reg()</code> for linear regression</li>
+<li><code>logistic_reg()</code> for logistic regression</li>
+<li><code>poisson_reg()</code> for poisson regression (we’ll be using that here)</li>
+</ul>
+<ol start="2" type="1">
+<li><p><strong>When required, declare the mode of the model.</strong> The mode reflects the type of prediction outcome. For numeric outcomes, the mode is <em>regression</em>; for qualitative outcomes, it is <em>classification.</em> If a model can only create one type of model, such as poisson regression, the mode is already set to, in this case, <code>mode = "regression"</code>.</p></li>
+<li><p><strong>Specify the engine for fitting the model.</strong> This usually is the software package or library that should be used.</p></li>
+</ol>
+<p>For example,</p>
+<ul>
+<li><code>"lm"</code> for linear models</li>
+<li><code>"glm"</code> for generalised linear models</li>
+<li><code>"stan"</code> for Bayesian inference</li>
+</ul>
+<p>You can find out which engines can be used with the <code>show_engines()</code> function. The command <code>show_engines("poisson_reg")</code> will give you the available engines for the <code>poisson_reg()</code> function.</p>
 <p>So, we can create the model as follows:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>isl_mod <span class="ot">&lt;-</span> <span class="fu">poisson_reg</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Again, note that we are not actually specifying any of the variables yet. All we’ve done is tell R what kind of model we’re planning to use. If we want to see how <code>parsnip</code> converts this code to the package syntax, we can check this with <code>translate()</code>:</p>
+<p>Note that we are not actually specifying any of the variables just yet! All we’ve done is tell R what kind of model we’re planning to use. If we want to see how <code>parsnip</code> converts this code to the package syntax, we can check this with <code>translate()</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>isl_mod <span class="sc">%&gt;%</span> <span class="fu">translate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -398,6 +432,29 @@ stats::glm(formula = missing_arg(), data = missing_arg(), weights = missing_arg(
 </div>
 </div>
 <p>This shows that we have a poisson regression model, where the outcome is going to be a regression. The model fit template tells us that we’ll be using the <code>glm()</code> function from the <code>stats</code> package, which can take a <code>formula</code>, <code>data</code>, <code>weights</code> and <code>family</code> argument. The <code>family</code> argument is already set to poisson.</p>
+<p>The model fit template tells us that we’ll be using the <code>glm()</code> function from the <code>stats</code> package (<code>stats::glm</code>). This function several arguments:</p>
+<ol type="1">
+<li>a <code>formula</code>, which we’ll specify later</li>
+<li><code>data</code>, which we’ll provide in a bit</li>
+<li><code>weights</code>, if we want to add prior weights to our variable - we don’t have to concern ourselves with this - and</li>
+<li>a <code>family</code> argument, which is already set to <code>poisson</code></li>
+</ol>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+The <code>family</code> argument
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>family</code> argument gives us a description of the error distribution and link function that will be used in the model. For the <code>islands</code> data set we are looking at count outcome - which we can model using a <em>poisson</em> regression model.</p>
+<p>If we’d want to specify it manually, then we’d use</p>
+<p><code>set_engine("glm", family = stats::poisson(link = "log"))</code></p>
+<p>which sets the family to poisson, using a log link function.</p>
+</div>
+</div>
 <p>Now we’ve specified what kind of model we’re planning to use, we can fit our data to it, using the <code>fit()</code> function:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>isl_fit <span class="ot">&lt;-</span> isl_mod <span class="sc">%&gt;%</span> </span>
@@ -415,18 +472,16 @@ stats::glm(formula = missing_arg(), data = missing_arg(), weights = missing_arg(
 2 area          0.0356   0.00125      28.6 2.73e-179</code></pre>
 </div>
 </div>
-<p>The output is strikingly similar to the logistic regression models (who’d have guessed, eh?) and the main numbers to extract from the output are the two numbers in the <code>estimate</code> column.</p>
+<p>The output is strikingly similar to the binomial models (who’d have guessed, eh?) and the main numbers to extract from the output are the two numbers in the <code>estimate</code> column.</p>
 </div>
 </div>
 </div>
 <p>These are the coefficients of the Poisson model equation and need to be placed in the following formula in order to estimate the expected number of species as a function of island size:</p>
-<span class="math display">\[\begin{equation}
-E(species) = {e}^{(4.24 + 0.036 \times area)}
-\end{equation}\]</span>
+<p><span class="math display">\[ E(species) = \exp(4.24 + 0.036 \times area) \]</span></p>
 <p>Interpreting this requires a bit of thought (not much, but a bit).</p>
-<p>The intercept coefficient (<span class="math inline">\(\beta_0\)</span>), 4.24, is related to the number of species we would expect on an island of zero area (this is statistics, not real life. You’d do well to remember that before you worry too much about what that even means). But in order to turn this number into something meaningful we have to exponentiate it. Since <span class="math inline">\({e}^{(4.24)} \approx 70\)</span>, we can say that the baseline number of species the model expects on any island is 70. This isn’t actually the interesting bit though.</p>
+<p>The intercept coefficient (<span class="math inline">\(\beta_0\)</span>), 4.24, is related to the number of species we would expect on an island of zero area (this is statistics, not real life. You’d do well to remember that before you worry too much about what that even means). But in order to turn this number into something meaningful we have to exponentiate it. Since <span class="math inline">\(\exp(4.24) \approx 70\)</span>, we can say that the baseline number of species the model expects on any island is 70. This isn’t actually the interesting bit though.</p>
 <p>The coefficient of <code>area</code> (<span class="math inline">\(\beta_1\)</span>) is the fun bit. For starters we can see that it is a positive number which does mean that increasing area leads to increasing numbers of species. Good so far - since this matches what we saw when we plotted our data. But what does the value 0.036 actually mean?</p>
-<p>Well, if we exponentiate it too we get <span class="math inline">\({e}^{(0.036)} \approx 1.04\)</span>. This means that for every increase in area of 1 km<sup>2</sup> (the original units of the <code>area</code> variable) the number of species on the island is multiplied by 1.04. So, an island of area 1 km<sup>2</sup> is predicted to have <span class="math inline">\(1.04 \times 70 \approx 72\)</span> species.</p>
+<p>Well, if we exponentiate it too we get <span class="math inline">\(\exp(0.036) \approx 1.04\)</span>. This means that for every increase in area of 1 km<sup>2</sup> (the original units of the <code>area</code> variable) the number of species on the island is multiplied by 1.04. So, an island of area 1 km<sup>2</sup> is predicted to have <span class="math inline">\(1.04 \times 70 \approx 72\)</span> species.</p>
 <p>So, in order to interpret Poisson coefficients, you have to exponentiate them.</p>
 </section>
 <section id="model-predictions" class="level2">
@@ -571,7 +626,7 @@ Important
 </div>
 </div>
 <p>These values are a bit familiar, since we’ve previously determined based on the <code>area</code> coefficient that for each increase in square kilometer, the number of species increases by approximately 1.04.</p>
-<p>What these values tell us is that we can be 95% certain that for every increase in square kilometer of island area size, the number of species increases somewhere between 1.034 and 1.039.</p>
+<p>What these values tell us is that we can be 95% certain that for every increase in square kilometer of island area size, the number of species increases by a factor of somewhere between 1.034 and 1.039.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -583,7 +638,7 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p>If there was no association between <code>area</code> and <code>species</code>, then the <span class="math inline">\(\beta_1\)</span> coefficient would be zero. That would mean that the exponent would be <span class="math inline">\({e}^{\beta_1}=1\)</span>. The interval that we calculated for <span class="math inline">\({e}^{\beta_1}\)</span> lies between 1.034 and 1.039 and therefore does not include 1, so the model with <code>area</code> is preferred over the model without <code>area</code>.</p>
-<p>Similarly, the interval for <span class="math inline">\(\beta_1\)</span> (0.033 - 0.038) does not include 0, again showing the significance of <code>area</code> as a predictor of <code>species</code>.</p>
+<p>Equivalently, the interval for <span class="math inline">\(\beta_1\)</span> (0.033 - 0.038) does not include 0, again showing the significance of <code>area</code> as a predictor of <code>species</code>.</p>
 </div>
 </div>
 </div>
@@ -600,7 +655,7 @@ Note
 <li>Assess if the model is a decent predictor for the number of fatalities</li>
 </ol>
 <div class="callout-caution callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -609,7 +664,7 @@ Answer
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <section id="load-the-data" class="level3">
 <h3 class="anchored" data-anchor-id="load-the-data">Load the data</h3>
@@ -648,7 +703,7 @@ dbl (9): drivers_killed, drivers, front, rear, kms, petrol_price, van_killed...
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>seatbelts <span class="sc">%&gt;%</span> </span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">as_factor</span>(law), drivers_killed)) <span class="sc">+</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="glm-practical-poisson_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -918,6 +973,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./glm-practical-training.html" class="pagination-link">
+        <span class="nav-page-text">Training and test data</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

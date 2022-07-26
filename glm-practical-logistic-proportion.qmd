@@ -39,11 +39,11 @@ The example in this section uses the following data set:
 
 `data/challenger.csv`
 
-These data, obtained from the [faraway package](https://www.rdocumentation.org/packages/faraway/versions/1.0.7), contain information related to the explosion of the USA Space Shuttle Challenger on 28 January, 1986. An investigation after the disaster traced back to certain joints on one of the two solid booster rockets, each containing two O-rings (primary and secondary) that ensured no exhaust gases could escape from the booster.
+These data, obtained from the [faraway package](https://www.rdocumentation.org/packages/faraway/versions/1.0.7), contain information related to the explosion of the USA Space Shuttle Challenger on 28 January, 1986. An investigation after the disaster traced back to certain joints on one of the two solid booster rockets, each containing O-rings that ensured no exhaust gases could escape from the booster.
 
 The night before the launch was unusually cold, with temperatures below freezing. The final report suggested that the cold snap during the night made the o-rings stiff, and unable to adjust to changes in pressure. As a result, exhaust gases leaked away from the solid booster rockets, causing one of them to break loose and rupture the main fuel tank, leading to the final explosion.
 
-The question we're trying to answer in this session is: based on the data from the previous flights, would it have been possible to predict the failure of most both o-rings on the Challenger flight?
+The question we're trying to answer in this session is: based on the data from the previous flights, would it have been possible to predict the failure of most o-rings on the Challenger flight?
 :::
 
 ## Visualise the data
@@ -166,10 +166,10 @@ It seems that there was a high probability of both o-rings failing at that launc
 
 The data point at 53 degrees Fahrenheit is quite influential for the analysis. Remove this data point and repeat the analysis. Is there still a predicted link between launch temperature and o-ring failure?
 
-:::{.callout-caution collapse="true"}
+::: {.callout-caution collapse="true"}
 ## Answer
 
-:::panel-tabset
+::: panel-tabset
 ## tidyverse
 
 First, we need to remove the influential data point:

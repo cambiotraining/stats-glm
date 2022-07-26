@@ -19,9 +19,14 @@ website:
         aria-label: Bioinformatics Training Facility GitHub
 
   navbar:
+    background: primary
+    pinned: true
+    logo: "images/university_crest_reversed.png"
     left:
       - href: index.qmd
         text: Home
+      - href: "../_slides/stats-GLM-slides.html"
+        text: Slides
 
   sidebar:
     style: "floating"
@@ -34,7 +39,9 @@ website:
       - section: "Dealing with count data"
         contents:
           - glm-practical-poisson.qmd
-
+      - section: "Model evaluation"
+        contents:
+          - glm-practical-training.qmd
 format:
   html:
     theme: cosmo

@@ -13,7 +13,7 @@ These sessions are intended to enable you to construct and use generalised linea
 
 As with all of our statistics courses our focus is not on mathematical derivations, but on developing an intuitive understanding of the underlying statistical concepts.
 
-At the same time this is also _not_ a "how to mindlessly use a stats program" course! We hope that at the end of this course you feel like you have a better grasp on what it is we're trying to do, and gained sufficient confidence in your coding skills to implement these statistical concepts in your own research!
+At the same time this is also *not* a "how to mindlessly use a stats program" course! We hope that at the end of this course you feel like you have a better grasp on what it is we're trying to do, and gained sufficient confidence in your coding skills to implement these statistical concepts in your own research!
 
 ## Core aims
 

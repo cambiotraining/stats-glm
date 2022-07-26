@@ -36,9 +36,10 @@ The example in this section uses the following data set:
 
 `data/islands.csv`
 
-This is a data set comprising 35 observations of two variables (one dependent and one predictor). This records the number of species recorded on different small islands along with the area (km<sup>2</sup>)of the islands. The variables are `species` and `area`.
+This is a data set comprising 35 observations of two variables (one dependent and one predictor). This records the number of species recorded on different small islands along with the area (km<sup>2</sup>) of the islands. The variables are `species` and `area`.
 
 ## Seatbelts
+
 The `seatbelts` data set is a multiple time-series data set that was commissioned by the Department of Transport in 1984 to measure differences in deaths before and after front seatbelt legislation was introduced on 31st January 1983. It provides monthly total numerical data on a number of incidents including those related to death and injury in Road Traffic Accidents (RTA's). The data set starts in January 1969 and observations run until December 1984.
 
 You can find the file in `data/seatbelts.csv`
@@ -92,9 +93,25 @@ library(poissonreg)
 
 Remember that the workflow in `parsnip` is a bit different to what we're used to so far. Using `parsnip` we approach things in a more systematic manner. We specify a model in three steps:
 
-1.  **Specify the type of model based on its mathematical structure** (e.g., linear regression, random forest, K-nearest neighbors, etc).
-2.  **When required, declare the mode of the model.** The mode reflects the type of prediction outcome. For numeric outcomes, the mode is regression; for qualitative outcomes, it is classification. If a model can only create one type of model, such as logistic regression, the mode is already set.
+1.  **Specify the type of model based on its mathematical structure** (e.g., linear regression, logistic regression, poisson regression etc).
+
+For example:
+
+-   `linear_reg()` for linear regression
+-   `logistic_reg()` for logistic regression
+-   `poisson_reg()` for poisson regression (we'll be using that here)
+
+2.  **When required, declare the mode of the model.** The mode reflects the type of prediction outcome. For numeric outcomes, the mode is *regression*; for qualitative outcomes, it is *classification.* If a model can only create one type of model, such as poisson regression, the mode is already set to, in this case, `mode = "regression"`.
+
 3.  **Specify the engine for fitting the model.** This usually is the software package or library that should be used.
+
+For example,
+
+-   `"lm"` for linear models
+-   `"glm"` for generalised linear models
+-   `"stan"` for Bayesian inference
+
+You can find out which engines can be used with the `show_engines()` function. The command `show_engines("poisson_reg")` will give you the available engines for the `poisson_reg()` function.
 
 So, we can create the model as follows:
 
@@ -104,13 +121,32 @@ isl_mod <- poisson_reg() %>%
   set_engine("glm")
 ```
 
-Again, note that we are not actually specifying any of the variables yet. All we've done is tell R what kind of model we're planning to use. If we want to see how `parsnip` converts this code to the package syntax, we can check this with `translate()`:
+Note that we are not actually specifying any of the variables just yet! All we've done is tell R what kind of model we're planning to use. If we want to see how `parsnip` converts this code to the package syntax, we can check this with `translate()`:
 
 ```{r}
 isl_mod %>% translate()
 ```
 
 This shows that we have a poisson regression model, where the outcome is going to be a regression. The model fit template tells us that we'll be using the `glm()` function from the `stats` package, which can take a `formula`, `data`, `weights` and `family` argument. The `family` argument is already set to poisson.
+
+The model fit template tells us that we'll be using the `glm()` function from the `stats` package (`stats::glm`). This function several arguments:
+
+1.  a `formula`, which we'll specify later
+2.  `data`, which we'll provide in a bit
+3.  `weights`, if we want to add prior weights to our variable - we don't have to concern ourselves with this - and
+4.  a `family` argument, which is already set to `poisson`
+
+::: callout-important
+## The `family` argument
+
+The `family` argument gives us a description of the error distribution and link function that will be used in the model. For the `islands` data set we are looking at count outcome - which we can model using a *poisson* regression model.
+
+If we'd want to specify it manually, then we'd use
+
+`set_engine("glm", family = stats::poisson(link = "log"))`
+
+which sets the family to poisson, using a log link function.
+:::
 
 Now we've specified what kind of model we're planning to use, we can fit our data to it, using the `fit()` function:
 
@@ -126,23 +162,20 @@ We can look at the output directly, but I prefer to tidy the data up using the `
 isl_fit %>% tidy()
 ```
 
-The output is strikingly similar to the logistic regression models (who'd have guessed, eh?) and the main numbers to extract from the output are the two numbers in the `estimate` column.
+The output is strikingly similar to the binomial models (who'd have guessed, eh?) and the main numbers to extract from the output are the two numbers in the `estimate` column.
 :::
 
 These are the coefficients of the Poisson model equation and need to be placed in the following formula in order to estimate the expected number of species as a function of island size:
 
-```{=tex}
-\begin{equation}
-E(species) = {e}^{(4.24 + 0.036 \times area)}
-\end{equation}
-```
+$$ E(species) = \exp(4.24 + 0.036 \times area) $$
+
 Interpreting this requires a bit of thought (not much, but a bit).
 
-The intercept coefficient ($\beta_0$), 4.24, is related to the number of species we would expect on an island of zero area (this is statistics, not real life. You'd do well to remember that before you worry too much about what that even means). But in order to turn this number into something meaningful we have to exponentiate it. Since ${e}^{(4.24)} \approx 70$, we can say that the baseline number of species the model expects on any island is 70. This isn't actually the interesting bit though.
+The intercept coefficient ($\beta_0$), 4.24, is related to the number of species we would expect on an island of zero area (this is statistics, not real life. You'd do well to remember that before you worry too much about what that even means). But in order to turn this number into something meaningful we have to exponentiate it. Since $\exp(4.24) \approx 70$, we can say that the baseline number of species the model expects on any island is 70. This isn't actually the interesting bit though.
 
 The coefficient of `area` ($\beta_1$) is the fun bit. For starters we can see that it is a positive number which does mean that increasing area leads to increasing numbers of species. Good so far - since this matches what we saw when we plotted our data. But what does the value 0.036 actually mean?
 
-Well, if we exponentiate it too we get ${e}^{(0.036)} \approx 1.04$. This means that for every increase in area of 1 km<sup>2</sup> (the original units of the `area` variable) the number of species on the island is multiplied by 1.04. So, an island of area 1 km<sup>2</sup> is predicted to have $1.04 \times 70 \approx 72$ species.
+Well, if we exponentiate it too we get $\exp(0.036) \approx 1.04$. This means that for every increase in area of 1 km<sup>2</sup> (the original units of the `area` variable) the number of species on the island is multiplied by 1.04. So, an island of area 1 km<sup>2</sup> is predicted to have $1.04 \times 70 \approx 72$ species.
 
 So, in order to interpret Poisson coefficients, you have to exponentiate them.
 
@@ -152,7 +185,7 @@ Now that we can interpret the Poisson coefficients, it would be good to see if u
 
 Visualisation is always useful, so in order to get an idea of how our data fits a Poisson regression, we'll plot the Poisson regression curve. Next, we overlay our original data.
 
-:::panel-tabset
+::: panel-tabset
 ## tidyverse
 
 First, we create a table that contains data for the curve, starting for an `area` with value 1 to 50, in steps of 1.
@@ -188,7 +221,7 @@ That looks like a pretty decent fit, really. But of course we want to have a (sl
 
 We can use the model's residual deviance to assess how much the predicted values differ from the observed. This gives us an idea of how well-specified the model is. When a model is "true", *i.e.* the model makes pretty accurate predictions, then we expect the residual deviance to be distributed as a $\chi^2$ random variable with degrees of freedom equal to the model's residual degrees of freedom.
 
-:::panel-tabset
+::: panel-tabset
 ## tidyverse
 
 We can get these parameters as follows and we'll store them in a new object, so we can extract them in a bit.
@@ -211,7 +244,7 @@ pchisq(isl_parameters$deviance,
 
 This gives us a value of around 0.60. This suggests that this model is actually a pretty good one (if it wasn't then the value would be close to zero) and that the data are pretty well supported by the model.
 
-:::callout-important
+::: callout-important
 The `pchisq()` function gives the lower tail probability that $\chi^2 \le x$ by default. We're actually interested in the probability that $\chi^2 \ge x$. These two probabilities must sum to one, so we get the upper tail probability by setting the argument `lower.tail = FALSE`. An alternative way would be to use the default, but do `1 - pchisq()`.
 :::
 
@@ -224,8 +257,9 @@ The easy way to check this is to look at the ratio of the residual deviance to t
 
 We can also assess how reliable our model is by looking at the confidence intervals of the estimated parameters.
 
-:::panel-tabset
+::: panel-tabset
 ## tidyverse
+
 We extracted the parameters of the model by using
 
 ```{r}
@@ -256,12 +290,12 @@ isl_fit %>% tidy(conf.int = TRUE,        # default is FALSE
 
 These values are a bit familiar, since we've previously determined based on the `area` coefficient that for each increase in square kilometer, the number of species increases by approximately 1.04.
 
-What these values tell us is that we can be 95% certain that for every increase in square kilometer of island area size, the number of species increases somewhere between 1.034 and 1.039.
+What these values tell us is that we can be 95% certain that for every increase in square kilometer of island area size, the number of species increases by a factor of somewhere between 1.034 and 1.039.
 
-:::callout-note
+::: callout-note
 If there was no association between `area` and `species`, then the $\beta_1$ coefficient would be zero. That would mean that the exponent would be ${e}^{\beta_1}=1$. The interval that we calculated for ${e}^{\beta_1}$ lies between 1.034 and 1.039 and therefore does not include 1, so the model with `area` is preferred over the model without `area`.
 
-Similarly, the interval for $\beta_1$ (0.033 - 0.038) does not include 0, again showing the significance of `area` as a predictor of `species`.
+Equivalently, the interval for $\beta_1$ (0.033 - 0.038) does not include 0, again showing the significance of `area` as a predictor of `species`.
 :::
 :::
 
@@ -274,13 +308,14 @@ I'd like you to do the following:
 3.  Plot the regression model on top of the data
 4.  Assess if the model is a decent predictor for the number of fatalities
 
-:::{.callout-caution collapse="true"}
+::: {.callout-caution collapse="true"}
 ## Answer
 
 ### Load the data
+
 First, we load the data.
 
-:::panel-tabset
+::: panel-tabset
 ## tidyverse
 
 ```{r}
@@ -296,14 +331,15 @@ There are many more observations when the law was *not* in place, so we need to 
 
 First we have a look at the data comparing no law vs law:
 
-:::panel-tabset
+::: panel-tabset
 ## tidyverse
 
 We have to convert the `law` column to a factor, otherwise R will see it as numerical.
+
 ```{r}
 seatbelts %>% 
   ggplot(aes(as_factor(law), drivers_killed)) +
-  geom_boxplot()
+   geom_boxplot()
 ```
 
 The data are recorded by month and year, so we can also display the number of drivers killed by year:
@@ -323,7 +359,7 @@ So my initial thought is that these data are going to be a bit tricky to interpr
 
 We're dealing with count data, so we're going to use a poisson regression.
 
-:::panel-tabset
+::: panel-tabset
 ## tidyverse
 
 As before, we first define the model type.
@@ -359,7 +395,7 @@ stb_fit %>% tidy()
 
 To see if the model is actually a decent prediction for our data, we can plot it.
 
-:::panel-tabset
+::: panel-tabset
 ## tidyverse
 
 To do this, we create modelled values for our predictor variable `year`. Because we have monthly data, we create a sequence of "years" in 1/12th intervals - one for each month.
@@ -391,7 +427,7 @@ That does not look like a very good fit, but then again the data look rather mes
 
 Let's check the goodness-of-fit.
 
-:::panel-tabset
+::: panel-tabset
 ## tidyverse
 
 First we store the parameter estimates in an object. Then we use the `pchisq()` function to calculate the probability that the residual deviance is actually distributed as a $\chi^2$ random variable with degrees of freedom equal to the model's residual degrees of freedom.
@@ -415,7 +451,7 @@ Well, that's a bit of a blow. The probability value is extremely low, suggesting
 
 Similar to the `islands` example, we can also calculate the confidence intervals associated with our estimated parameters.
 
-:::panel-tabset
+::: panel-tabset
 ## tidyverse
 
 ```{r}
@@ -434,6 +470,6 @@ In our case the interval we calculated for $e^{\beta_1}$ lies between 0.981 and 
 
 ## Key points
 
-:::callout-note
-- Poisson regression is useful when dealing with count data
+::: callout-note
+-   Poisson regression is useful when dealing with count data
 :::
