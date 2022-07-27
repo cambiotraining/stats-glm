@@ -596,6 +596,35 @@ And, as Jeremy Clarkson would say, on that bombshell it's time to say...
 
 ^ coffee cup not to scale.
 
+## Model building in tidymodels
+
+\
+
+::: columns
+::: {.column width="50%"}
+
+### Advantages
+::: {.incremental}
+* Modular
+* Easy to change models
+* Easy to make predictions
+* Enables in-depth model evaluation
+* Plays well with tidyverse
+:::
+:::
+::: {.column width="50%"}
+
+### Disadvantages
+::: {.incremental}
+* Steep learning curve
+* Unnecessarily complicated for easy use cases
+* The "verbs" get a bit annoying (do we really need to `bake()` and `juice()`?!)
+:::
+:::
+:::
+. . .
+
+Base R and Python code will be added (hopefully over the summer!)
 
 ::: columns
 ::: {.column width="61.8%"}

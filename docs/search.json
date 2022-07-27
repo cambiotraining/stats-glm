@@ -319,6 +319,13 @@
     "href": "slides/stats-GLM-slides.html#coffee",
     "title": "Generalised linear models",
     "section": "Coffee!",
-    "text": "Coffee!\n\n☕\n^ coffee cup not to scale.\n\n\n\n\n\n\n\n\n\n\nhttps://bioinfotraining.bio.cam.ac.uk"
+    "text": "Coffee!\n\n☕\n^ coffee cup not to scale."
+  },
+  {
+    "objectID": "slides/stats-GLM-slides.html#model-building-in-tidymodels",
+    "href": "slides/stats-GLM-slides.html#model-building-in-tidymodels",
+    "title": "Generalised linear models",
+    "section": "Model building in tidymodels",
+    "text": "Model building in tidymodels\n\n\n\n\nAdvantages\n\n\nModular\nEasy to change models\nEasy to make predictions\nEnables in-depth model evaluation\nPlays well with tidyverse\n\n\n\nDisadvantages\n\n\nSteep learning curve\nUnnecessarily complicated for easy use cases\nThe “verbs” get a bit annoying (do we really need to bake() and juice()?!)\n\n\n\n\n\nBase R and Python code will be added (hopefully over the summer!)\n\n\n\n\n\n\n\n\n\n\nhttps://bioinfotraining.bio.cam.ac.uk"
   }
 ]
