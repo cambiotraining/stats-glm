@@ -1,0 +1,636 @@
+---
+title: "Generalised linear models"
+subtitle: "Bioinformatics Training Facility, 27 July 2022"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    margin: 0.15
+    logo: ../images/university_crest.png
+    scrollable: true
+    smaller: true
+    slide-number: true
+    show-slide-number: all
+    footer: <https://bioinfotraining.bio.cam.ac.uk>
+editor: visual
+from: markdown+emoji
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+set.seed(123)
+library(tidyverse)
+library(tidymodels)
+library(broom)
+library(ggdist)
+library(distributional)
+library(gganimate)
+library(rstatix)
+library(ggResidpanel)
+
+theme_set(theme_grey(base_size = 24))
+```
+
+## Welcome to a wonderful non-normal world!
+
+(Well, a bit normal since we're in-person...)
+
+\
+
+### Instructors
+
+-   Martin van Rongen (mv372\@cam.ac.uk)\
+    Bioinformatics Training Facility
+
+-   Rob Nicholls (support, course materials)\
+    MRC Laboratory of Molecular Biology
+
+### Contributors
+
+-   Hugo Tavares (course materials)\
+    Bioinformatics Training Facility
+-   Matt Castle (course materials)\
+    Bioinformatics Training Facility
+
+## Aims for today
+
+::: incremental
+1.  Expand our knowledge of linear models
+2.  Learn how to perform GLM in R
+3.  Evaluate how much you can trust your model
+4.  Be able to analyse discrete responses
+5.  Ask questions about your data / research
+:::
+
+## Linear modelling
+
+We're quite familiar with this by now...
+
+```{r}
+set.seed(123)
+# starting parameters
+N <- 500  # number of samples
+true_coef <- c(
+  beta0 = 0,  # intercept
+  beta1 = 0.5   # slope
+)
+true_sigma <- 9    # assumed SD in the data
+
+# start a data.frame with a uniform predictor
+sim <- data.frame(
+  x1 = runif(N, min = 150, max = 210)
+)
+
+# simulate response variable
+sim <- sim |> 
+  mutate(
+    y = rnorm(n = n(), 
+              mean = true_coef[1] + true_coef[2] * x1,
+              sd = true_sigma)
+  )
+
+# visualise
+ggplot(sim, aes(x1, y)) +
+  geom_point(colour = "darkcyan") +
+  labs(title = "Weight vs height",
+       x = "height (cm)",
+       y = "weight (kg)")
+```
+
+. . .
+
+... where our data
+
+::: incremental
+-   are independent\
+    [if they're correlated we need different types of models, such as linear mixed models (LMM) or generalised estimating equations (GEE)]{style="font-size:smaller"}
+-   are normally distributed (or at least, the residuals)
+-   [have a continuous response]{style="color:#b22222"}
+:::
+
+## Fitting a model
+
+We know how to do this visually, and how to get the coefficients of the linear model.
+
+::: panel-tabset
+## Plot
+
+```{r}
+#| layout: [[100]]
+ggplot(sim, aes(x1, y)) +
+  geom_point(colour = "darkcyan") +
+  geom_smooth(method = "lm", colour = "firebrick", size = 1) +
+  labs(title = "Weight vs height",
+       x = "height (cm)",
+       y = "weight (kg)")
+```
+
+## Output
+
+```{r}
+lm(y ~ x1, data = sim) %>%
+  summary()
+```
+
+-   Pay attention to the `Estimate` and `Std.Error` values (these determine the linear model)
+-   The p-value of `<2e-16` suggests that the slope of the model ($\beta_1$) is significantly different from zero
+-   The adjusted R-squared is `r round(lm(y ~ x1, data = sim) %>% summary() %>% glance() %>% pull(adj.r.squared), 2)` (which is a slight positive correlation) and suggests that the model is able to explain some of the variance in the data
+:::
+
+------------------------------------------------------------------------
+
+### Line of best fit, regression analysis, and correlation
+
+Three different things, but closely related:
+
+::: incremental
+1.  **Line of best fit + error** is the model of your data
+2.  **Regression** tells you about the predictive power of your model (is my line a better predictor than the overall mean?)
+3.  **Correlation** tells you something about the strength of the relationship between the two variables, or the *effect size*.
+:::
+
+------------------------------------------------------------------------
+
+### Assumptions (linear regression)
+
+Weight vs height:
+
+-   Data can be described by a linear model (Residual Plot)
+
+```{r}
+lm(y ~ x1, data = sim) %>% 
+  resid_panel(plots = c("resid"),
+              smoother = TRUE)
+```
+
+------------------------------------------------------------------------
+
+-   Residuals normally distributed (Q-Q Plot)
+
+```{r}
+lm(y ~ x1, data = sim) %>% 
+  resid_panel(plots = c("qq"),
+              smoother = TRUE)
+```
+
+------------------------------------------------------------------------
+
+-   Equal variance (Location-Scale Plot)
+
+```{r}
+lm(y ~ x1, data = sim) %>% 
+  resid_panel(plots = c("ls"),
+              smoother = TRUE)
+```
+
+Checks for equality of variance (homoscedasticity). Is the variance of the residuals correlated with the predictor variables?
+
+------------------------------------------------------------------------
+
+-   No clear influential points (COOK's D Plot)
+
+```{r}
+lm(y ~ x1, data = sim) %>% 
+  resid_panel(plots = c("cookd"),
+              smoother = TRUE)
+```
+
+Note: the horizontal line represents a cut-off at 4/n.
+
+## The normal distribution
+
+Weight vs height:
+
+For the analysis to work (or be valid) we are assuming that the process that we're studying - for a given value of the predictors - is approximated by a normal distribution.
+
+. . .
+
+We can visualise the residuals differently, as a *probability density function*:
+
+::: columns
+::: {.column width="50%"}
+```{r}
+lm(y ~ x1, data = sim) %>% 
+  resid() %>%
+  as_tibble() %>% 
+  ggplot(aes(x = value)) +
+  stat_dist_halfeye(aes(dist = normal(0,9)),
+                    orientation = "horizontal") +
+  labs(title = "Normal distribution (\U03BC = 0, \U03C3 = 9), n = 500", y = "probability", x = NULL)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+lm(y ~ x1, data = sim) %>% 
+  resid() %>% as_tibble() %>% 
+  ggplot(aes(x = value)) +
+  stat_dotsinterval(aes(x = value),
+                    orientation = "horizontal",
+                    fill = "firebrick", scale = 1) +
+  labs(title = "Residuals weight vs height model", y = "probability", x = NULL)
+```
+:::
+:::
+
+Which is a pretty close approximation of a normal distribution with comparable parameters!
+
+. . .
+
+> But what if our response variable is, for example, binary? Does this still hold true?
+
+## Survival in mice
+
+Here we have data from a fictional experiment (I don't like hurting mice):
+
+```{r}
+set.seed(123)
+# parameters
+N <- 500
+true_coef <- c(
+  beta0 = 0,
+  beta1 = 0.6
+)
+
+# start with some made-up predictor
+sim <- data.frame(
+  x1 = runif(N, -10, 10)
+)
+
+# simulate Y - notice the plogis function
+sim <- sim |> 
+  mutate(
+    y = rbinom(n = n(),
+               size = 1,
+               prob = plogis(model.matrix(~ x1) %*% true_coef))) 
+
+sim <- sim %>% 
+  mutate(x1 = x1 + 10)
+
+sim |> 
+  ggplot(aes(x1, y)) +
+  geom_point(colour = "darkcyan") +
+  labs(title = "Survival outcome in mice",
+       x = "drug dose (\U03BCM)",
+       y = "survival rate")
+```
+
+. . .
+
+We could look at the assumptions:
+
+------------------------------------------------------------------------
+
+The residuals do not look too bad and might be normally distributed (with some imagination):
+
+```{r}
+sim %>% 
+  lm(y ~ x1, data = .) %>% 
+  resid() %>% 
+  as_tibble() %>% 
+  ggplot(aes(x = value)) +
+  stat_dotsinterval(aes(x = value),
+                    orientation = "horizontal",
+                    fill = "firebrick", scale = 1) +
+  labs(title = "Residuals model (survival in mice)", y = "probability", x = NULL)
+```
+
+------------------------------------------------------------------------
+
+But oh dear.
+
+-   the data *shouldn't* be described by a linear model (Residual Plot)
+-   and variance shouldn't play ping-pong (Location-Scale Plot)
+
+```{r, message=FALSE, warning=FALSE}
+lm(y ~ x1, data = sim) %>% 
+  resid_panel(plots = c("resid", "qq", "ls", "cookd"),
+              smoother = TRUE)
+```
+
+## Linear models on binary data
+
+The computer happily lets us fit a linear model to these data:
+
+::: panel-tabset
+## Plot
+
+```{r}
+sim |> 
+  ggplot(aes(x1, y)) +
+  geom_point(colour = "darkcyan") +
+  geom_smooth(method = "lm", se = FALSE, colour = "firebrick", size = 1) +
+  labs(title = "Survival outcome in mice",
+       x = "drug dose (\U03BCM)",
+       y = "survival rate")
+```
+
+## Output
+
+```{r}
+mouse_model <- lm(y ~ x1, data = sim)
+```
+
+```{r}
+summary(mouse_model)
+```
+
+Again,
+
+-   Pay attention to the `Estimate` and `Std.Error` values (these determine the linear model)
+-   The p-value of `<2e-16` for `x1` suggests that the slope of the model ($\beta_1$) is significantly different from zero
+-   The adjusted R-squared is `r round(mouse_model %>% summary() %>% glance() %>% pull(adj.r.squared), 2)` (which is a relatively strong positive correlation) suggests that the model is able to explain quite a bit of the variance in the data
+:::
+
+------------------------------------------------------------------------
+
+So, we have a statistically significant result *and* our model explains a lot more of the data than the global mean would do.
+
+\
+\
+
+Hoorah! :grinning:
+
+\
+
+. . .
+
+> Why is this an issue?
+
+## Modelling binary data
+
+We should make sure that our predictions are within an acceptable range: they can only be 0 (dead) or 1 (alive).
+
+```{r}
+sim |> 
+  ggplot(aes(x1, y)) +
+  geom_point(colour = "darkcyan") +
+  geom_smooth(method = "lm", se = FALSE, colour = "firebrick", size = 1) +
+  labs(title = "Survival outcome in mice",
+       x = "drug dose (\U03BCM)",
+       y = "survival rate")
+```
+
+. . .
+
+We can use **generalised linear models** to do this.
+
+So, let's take a step back.
+
+## Generalising our linear models
+
+Under the hood every *linear regression model* has three components:
+
+::: incremental
+1.  An **assumed distribution for the residuals/errors** (*normal*, binomial, poisson, negative binomial, gamma, beta, exponential, log-normal, etc.).
+2.  A **link function**, which linearises the relationship between the expected (mean) value of the response and the predictors.
+3.  The **relationship between the expected value of the response and predictors**, i.e. the functional form of the model.
+:::
+
+. . .
+
+We will see these components in practice below.
+
+## Model notation
+
+To understand the model a bit better, we'll look at the equations (not much more than what we've covered during Core statistics!)
+
+. . .
+
+Starting with a simple linear regression model, this is often written in the form:
+
+$$ Y = \beta_0 + \beta_1 x_1 + .. + \beta_p x_p + \varepsilon $$ $$ \varepsilon \sim Normal(0, \sigma) $$
+
+. . .
+
+Since $E(\varepsilon) = 0$, the *estimated* value of our response is equal to:
+
+$$E(Y) = \beta_0 + \beta_1 x_1 + .. + \beta_p x_p$$
+
+------------------------------------------------------------------------
+
+We can read this model as:
+
+::: incremental
+-   I assume the process I am studying is well approximated - for a given value of the predictors - by a normal distribution.
+-   I further assume that the variance is constant across the range of the predictors.
+-   The model includes a random ("error") component, which accounts for variation in the data. The expected (or mean) value of our response variable Y is a linear combination of our predictors.
+:::
+
+## Distribution-focused model notation
+
+We can write this same equation differently, where it is focused on the *distribution*.
+
+This notation generalises to other kinds of models more easily. This is exactly the same model as above:
+
+$$Y \sim Normal(\mu, \sigma) $$
+
+$$\mu = \beta_0 + \beta_1 x_1 + ... + \beta_p x_p $$
+
+Where $x_i$ are the predictors and $\beta_i$ the coefficients that are to be estimated from the data ($\sigma$ is also estimated from the data).
+
+## Binomial Model
+
+Now let's finally consider our mouse survival example - which has a binary (yes/no, 0/1) outcome.
+
+This kind of response is usually modeled using a *binomial* distribution. This distribution has two parameters:
+
+-   $n$ (the number of trials)
+-   $p$ (the number of successes)
+
+. . .
+
+$n$ is assumed to be known, and for binary response variables it is implicit that $n = 1$ (this special case of the binomial distribution is also called a *bernoulli distribution*).
+
+. . .
+
+<br /><br />
+
+[With a binary response we can interpret the number of successes as the probability of a success.]{style="color:#b22222"}
+
+------------------------------------------------------------------------
+
+Here is the model, using the same notation that we're now getting used to:
+
+$$Y \sim Binomial(n, p)$$
+
+$$logit(p) = \beta_0 + \beta_1 x_1 + ... + \beta_p x_p$$
+
+. . .
+
+We have a new **link function**, which is the log-odds of the event:
+
+$$logit(p) = log(\frac{p}{1 - p})$$
+
+. . .
+
+Again, this linearises the relationship between $E(Y)$ (our $p$ in this case) and the predictors.
+
+## Behind-the-scenes stuff
+
+This is generally where we let *R* do its job. However, it may be useful to know what R (or any other programming language) is doing for you. So I'll show you the output of how we determine $p$ and will share how we arrived at that conclusion via the slides.
+
+------------------------------------------------------------------------
+
+::: panel-tabset
+## Short
+
+We started with:
+
+-   Our linear predictor equation $$logit(p) = \beta_0 + \beta_1 x_1 + ... + \beta_p x_p$$
+
+-   and link function $$logit(p) = log(\frac{p}{1 - p})$$
+
+We create a GLM using the binomial distribution and extract the coefficients (you'll do this in the practical):
+
+```{r}
+mse_mod <- logistic_reg() %>% 
+  set_mode("classification") %>% 
+  set_engine("glm")
+
+mse_fit <- mse_mod %>% 
+  fit(factor(y) ~ x1,
+      data = sim)
+```
+
+| coefficient | value                                                                       |
+|:-----------------|:-----------------------------------------------------|
+| $\beta_0$   | `r mse_fit %>% tidy() %>% filter(term == "(Intercept)") %>% pull(estimate)` |
+| $\beta_1$   | `r mse_fit %>% tidy() %>% filter(term == "x1") %>% pull(estimate)`          |
+
+Which we can plug in, do some maths and end up with:
+
+::: {style="background-color: #e0e0e0; padding: 5px"}
+$$p = \frac{\exp{(-6.58 + 0.65 x_1)}}{1 + \exp{(-6.58 + 0.65 x_1)}}$$
+:::
+
+## Long
+
+We started with:
+
+-   Our linear predictor equation $$logit(p) = \beta_0 + \beta_1 x_1 + ... + \beta_p x_p$$
+
+-   and link function $$logit(p) = log(\frac{p}{1 - p})$$
+
+We create a GLM using the binomial distribution and extract the coefficients (you'll do this in the practical):
+
+| coefficient | value                                                                       |
+|:-----------------|:-----------------------------------------------------|
+| $\beta_0$   | `r mse_fit %>% tidy() %>% filter(term == "(Intercept)") %>% pull(estimate)` |
+| $\beta_1$   | `r mse_fit %>% tidy() %>% filter(term == "x1") %>% pull(estimate)`          |
+
+Which means that we can write the linear predictor equation as follows:
+
+$$logit(p) = -6.58 + 0.65 x_1$$
+
+Not too bad, eh? :grinning:
+
+\
+
+But we still have to deal with our link function. Combining the two equations gives us:
+
+$$log(\frac{p}{1 - p}) = -6.58 + 0.65 x_1$$
+
+To get our $p$ (the probability of a mouse surviving our treatment), we need to exponentiate our equation:
+
+$$\frac{p}{1 - p} = \exp{(-6.58 + 0.65 x_1)}$$
+
+leading to...
+
+::: {style="background-color: #e0e0e0; padding: 5px"}
+$$p = \frac{\exp{(-6.58 + 0.65 x_1)}}{1 + \exp{(-6.58 + 0.65 x_1)}}$$
+:::
+:::
+
+## Visualising the predictions
+
+Having an equation for $p$ is helpful, but we prefer to let *R* do the work. So we just give it the data to add to the model and plot the response. You'll learn how to do this in the practical.
+
+Here we plot three things:
+
+-   the original data (`data`)
+-   the linear model (`linear`)
+-   the predicted probabilities based on the binomial model (`binomial`)
+
+------------------------------------------------------------------------
+
+```{r}
+mse_pred <- augment(mse_fit,
+        new_data = sim %>% select(x1))
+
+ggplot(mse_pred, aes(x1, .pred_1)) +
+  geom_point(aes(colour = "binomial")) +
+  geom_point(data = sim, aes(x1, y, colour = "data")) +
+    labs(title = "Survival outcome in mice",
+       x = "drug dose (\U03BCM)",
+       y = "probability of survival")
+```
+
+We can see that the binomial model is pretty helpful: it's in a range of 0 and 1 and symmetric around the center.
+
+------------------------------------------------------------------------
+
+```{r}
+mse_pred <- augment(mse_fit,
+        new_data = sim %>% select(x1))
+
+ggplot(mse_pred, aes(x1, .pred_1)) +
+  geom_point(aes(colour = "binomial")) +
+  geom_point(data = sim, aes(x1, y, colour = "data")) +
+  geom_smooth(method = "lm", aes(colour = "linear")) +
+    labs(title = "Survival outcome in mice",
+       x = "drug dose (\U03BCM)",
+       y = "probability of survival")
+```
+
+The linear model on the other hand just shows how rubbish *that* approach is... :open_mouth:
+
+. . .
+
+And, as Jeremy Clarkson would say, on that bombshell it's time to say...
+
+## Coffee!
+
+<br /><br />
+
+:coffee:
+
+\^ coffee cup not to scale.
+
+## Model building in tidymodels
+
+\
+
+::: columns
+::: {.column width="50%"}
+### Advantages
+
+::: incremental
+-   Modular
+-   Easy to change models
+-   Easy to make predictions
+-   Enables in-depth model evaluation
+-   Plays well with tidyverse
+:::
+:::
+
+::: {.column width="50%"}
+### Disadvantages
+
+::: incremental
+-   Steep learning curve
+-   Unnecessarily complicated for easy use cases
+-   The "verbs" get a bit annoying (do we really need to `bake()` and `juice()`?!)
+:::
+:::
+:::
+
+. . .
+
+Base R and Python code will be added (hopefully over the summer!)
+
+::: columns
+::: {.column width="61.8%"}
+:::
+
+::: {.column width="38.2%"}
+:::
+:::

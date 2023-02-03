@@ -1,0 +1,110 @@
+---
+title: "Continuous response"
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| results: hide
+source(file = "setup_files/setup.R")
+```
+
+```{python}
+#| echo: false
+#| message: false
+import shutup;shutup.please()
+exec(open('setup_files/setup.py').read())
+```
+
+::: {.callout-tip}
+## Learning outcomes
+
+**Questions**
+
+-   How do we analyse data with a non-normal continuous outcome?
+
+**Objectives**
+
+- Be able to analyse non-normal continuous outcome data
+:::
+
+## Libraries and functions
+
+::: {.callout-note collapse="true"}
+## Click to expand
+
+::: {.panel-tabset group="language"}
+## R
+
+### Libraries
+### Functions
+
+## Python
+
+### Libraries
+### Functions
+:::
+:::
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+# https://data.mendeley.com/datasets/49k3rnrwkk
+exams <- read_csv("data/exams.csv")
+library(janitor)
+
+exams <- exams %>% clean_names()
+```
+
+```{r}
+exam_A <- exams %>% filter(exam_type == "A")
+
+ggplot(exam_A, aes(x = score, fill = exam)) +
+  geom_density(binwidth = 1, alpha = 0.5)
+```
+
+```{r}
+exam_A2015 <- exam_A %>% 
+  filter(str_detect(course_id, "F15-ECON210")) %>% 
+  select(id, score, exam) %>% 
+  pivot_wider(names_from = exam,
+              values_from = score)
+
+ggplot(exam_A2015, aes(x = MT, y = Final)) +
+  geom_point()
+
+lm_A2015 <- lm(Final ~ MT, data = exam_A2015)
+
+```
+
+
+```{r}
+lm_A2015 %>% 
+    resid_panel(plots = c("resid", "qq", "ls", "cookd"),
+                smoother = TRUE)
+```
+
+```{r}
+glm(score ~ id, family = gaussian, data = exam_A)
+```
+
+
+## Python
+:::
+
+## Exercise
+
+::: {.callout-tip collapse="true"}
+## Answer
+::: {.panel-tabset group="language"}
+## R
+## Python
+:::
+:::
+
+## Key points
+
+::: {.callout-note}
+-  
+:::

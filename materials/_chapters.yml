@@ -1,0 +1,9 @@
+book:
+  chapters:
+    - part: "Binary and proportional data"
+      chapters:
+        - materials/glm-practical-logistic-binary.qmd
+        - materials/glm-practical-logistic-proportion.qmd
+    - part: "Count data"
+      chapters:
+        - materials/glm-practical-poisson.qmd

@@ -1,0 +1,294 @@
+---
+title: "Binary response"
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| results: hide
+source(file = "setup_files/setup.R")
+```
+
+```{python}
+#| echo: false
+#| message: false
+import shutup;shutup.please()
+exec(open('setup_files/setup.py').read())
+```
+
+::: {.callout-tip}
+## Learning outcomes
+
+**Questions**
+
+-   How do we analyse data with a binary outcome?
+-   Can we test if our model is any good?
+-   Be able to perform a logistic regression with a binary outcome
+-   Predict outcomes of new data, based on a defined model
+
+**Objectives**
+
+- Be able to analyse binary outcome data
+- Understand different methods of testing model fit
+- Be able to make model predictions
+:::
+
+## Libraries and functions
+
+::: {.callout-note collapse="true"}
+## Click to expand
+
+::: {.panel-tabset group="language"}
+## R
+
+### Libraries
+### Functions
+
+## Python
+
+### Libraries
+### Functions
+:::
+:::
+
+The example in this section uses the following data set:
+
+`data/diabetes.csv`
+
+This is a data set comprising 768 observations of three variables (one dependent and two predictor variables). This records the results of a diabetes test result as a binary variable (1 is a positive result, 0 is a negative result), along with the result of a glucose test and the diastolic blood pressure for each of 767 women. The variables are called `test_result`, `glucose` and `diastolic`.
+
+## Load and visualise the data
+
+First we load the data, then we visualise it.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+#| message: false
+#| warning: false
+diabetes <- read_csv("data/diabetes.csv")
+```
+
+## Python
+:::
+
+Looking at the data, we can see that the `test_result` column contains zeros and ones. These are yes/no test result outcomes and not actually numeric representations.
+
+We'll deal with that issue later.
+
+We can plot the data, by outcome:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+diabetes %>% 
+  ggplot(aes(x = factor(test_result), y = glucose)) +
+  geom_boxplot()
+```
+
+## Python
+:::
+
+It looks as though the patients with a positive diabetes test have slightly higher glucose levels than those with a negative diabetes test.
+
+We can visualise that differently by plotting all the data points as a classic binary response plot:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+diabetes %>% 
+  ggplot(aes(x = glucose, y = test_result)) +
+  geom_point()
+```
+
+## Python
+:::
+
+This presents us with a bit of an issue. We could fit a linear regression model to these data, although we already know that this is a bad idea...
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+#| message: false
+diabetes %>% 
+  ggplot(aes(x = glucose, y = test_result)) +
+  geom_smooth(method = "lm") +
+  geom_point()
+```
+
+## Python
+:::
+
+Of course this is rubbish - we can't have test results outside the range of \[0, 1\].
+
+But for the sake of exploration, let's look at the assumptions:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+diabetes %>% 
+  lm(test_result ~ glucose, data = .) %>% 
+  resid_panel(plots = c("resid", "qq", "ls", "cookd"),
+              smoother = TRUE)
+```
+
+## Python
+:::
+
+They're ~~pretty~~ extremely bad.
+
+-   The response is not linear (Residual Plot, binary response plot, common sense).
+-   The residuals are not distributed normally (Q-Q Plot)
+-   The variance is not homogeneous across the predicted values (Location-Scale Plot)
+-   But - there is always a silver lining - we don't have influential data points.
+
+::: {.callout-note}
+## Viewing residuals
+
+Another way of viewing the residuals (apart from the Q-Q plot) is as a dot-plot. In R, the `ggdist` and `distributional` packages are extremely useful for this kind of stuff.
+
+What I'm doing here is:
+
+-   define the model
+-   create a normal distribution with $\mu = 0$ and $\sigma = 0.415$ (I've extracted the $\sigma$ value from the residuals with `rstatix::get_summary_stats()`)
+-   plot the residuals
+
+```{r}
+diabetes %>% 
+  lm(test_result ~ glucose, data = .) %>%
+  resid() %>%
+  as_tibble() %>%
+  # rstatix::get_summary_stats()
+  ggplot(aes(x = value)) +
+  stat_dist_halfeye(aes(dist = dist_normal(0, 0.415)),
+                    orientation = "horizontal") +
+  stat_dotsinterval(aes(x = value),
+                    orientation = "horizontal",
+                    fill = "firebrick", scale = 1) +
+  labs(title = "Linear model (diabetes)", y = "probability", x = NULL)
+```
+
+This again shows us that the residuals are really not normally distributed. If they were, then they would overlap much more closely with the distribution (in grey).
+:::
+
+## Creating a suitable model
+
+So far we've established that using a simple linear model describe a potential relationship between `glucose` levels and the probability of getting a positive test result is not a good idea. So, what _can_ we do?
+
+One of the ways we can deal with binary outcome data is by performing a logistic regression. Instead of fitting a straight line to our data, and performing a regression on that, we fit a line that has an S shape. This avoids the model making predictions outside the $[0, 1]$ range.
+
+There are many mathematical functions that produce S-shaped graphs. The **logistic function** is one of them and well-suited to these kind of data.
+
+In the most simple form a logistic function is written like this:
+
+$Y = \frac{1}{1 + \exp(-X)}$
+
+:::{.callout-important}
+## Euler's number
+
+In mathematics, $\rm e$ represents a constant of around 2.718. Another notation is $\exp$, which is often used when notations become a bit cumbersome. Here, I exclusively use the $\exp$ notation for consistency.
+:::
+
+We can _generalise_ this, by writing it as follows:
+
+$Y = \frac{1}{1 + \exp-(\beta_0 + \beta_1X)}$
+
+Note that the $\beta_0 + \beta_1X$ part is identical to the formula of a straight line. We've come across this before when we were doing simple linear regression!
+
+The rest of the function is what makes the straight line curve into its characteristic S shape. The middle of the S (where $Y = 0.5$) occurs when $X = \frac{-b}{a}$.
+
+::: {.callout-important}
+## The logistic function
+
+The shape of the logistic function is hugely influenced by the different parameter, in particular $\beta_1$. The plots below show different situations, where $\beta_0 = 0$ in all cases, but $\beta_1$ varies.
+
+The first plot shows the logistic function in its simplest form, with the others showing the effect of varying $\beta_1$.
+
+```{r}
+#| echo: false
+#| warning: false
+X <- seq(-10, 10 ,0.1)
+
+b0 <- c(0, 0, 0, 0)
+b1 <- c(1, 0, -1.5, 10)
+
+cdf = function(b0, b1){
+  return(tibble(X = X,
+                Y = 1/(1 + exp(-(b0 + b1 * X)))))
+  }
+
+df <- map2(b0, b1, cdf)
+
+df %>%
+  bind_rows(.id = "keys") %>%
+  mutate(keys = str_replace(keys, "1", "logistic function")) %>% 
+  mutate(keys = str_replace(keys, "2", "when \u03b21 = 0")) %>% 
+  mutate(keys = str_replace(keys, "3", "when \u03b21 is negative")) %>% 
+  mutate(keys = str_replace(keys, "4", "when \u03b21 is large")) %>% 
+  ggplot(aes(x = X, y = Y)) +
+  geom_line() +
+  facet_wrap(vars(keys))
+```
+
+* when $\beta_1 = 1$, this gives the simplest logistic function
+* when $\beta_1 = 0$ gives a horizontal line, with $Y = 1/(1+exp(-\beta_0X)$
+* when $\beta_1$ is negative flips the curve around, so it slopes down
+* when $\beta_1$ is very large then the curve becomes extremely steep
+:::
+
+We can fit such an S-shaped curve to our `diabetes` data set, by creating a generalised linear model.
+
+::: {.panel-tabset group="language"}
+## R
+
+In R we have a few options to do this, and by far the most familiar function would be `glm()`. Here we save the model in an object called `dia_glm`:
+
+```{r}
+dia_glm <- glm(test_result ~ glucose,
+               family = binomial,
+               data = diabetes)
+```
+
+The format of this function is similar to that used by the `lm()` function for linear models. The important difference is that we must specify the _family_ of error distribution to use. For logistic regression we must set the family to **binomial**.
+
+If you forget to set the `family` argument, then the `glm()` function will perform a standard linear model fit, identical to what the `lm()` function would do.
+
+## Python
+:::
+
+## Model output
+
+That's the easy part done! The trickier part is interpreting the output. First of all, we'll get some summary information.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+summary(dia_glm)
+```
+
+
+## Python
+:::
+
+## Exercise
+
+::: {.callout-tip collapse="true"}
+## Answer
+::: {.panel-tabset group="language"}
+## R
+## Python
+:::
+:::
+
+## Key points
+
+::: {.callout-note}
+-   We use a logistic regression to model a binary response
+-   We can feed new observations into the model and get probabilities for the outcome
+:::
