@@ -1,10 +1,8 @@
 # Quarto files
 /.quarto/
 _site
-
 # python notebooks
 *.ipynb
-
 # R files
 .Rhistory
 .Rapp.history
@@ -17,9 +15,7 @@ _site
 *.utf8.md
 *.knit.md
 .Renviron
-
 # Jupyter cache
 .jupyter_cache
-
 # Local files
 .DS_Store
