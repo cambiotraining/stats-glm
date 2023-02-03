@@ -212,7 +212,7 @@ lm(y ~ x1, data = sim) %>%
   resid() %>%
   as_tibble() %>% 
   ggplot(aes(x = value)) +
-  stat_dist_halfeye(aes(dist = dist_normal(0,9)),
+  stat_dist_halfeye(aes(dist = normal(0,9)),
                     orientation = "horizontal") +
   labs(title = "Normal distribution (\U03BC = 0, \U03C3 = 9), n = 500", y = "probability", x = NULL)
 ```
@@ -338,7 +338,6 @@ Again,
 -   Pay attention to the `Estimate` and `Std.Error` values (these determine the linear model)
 -   The p-value of `<2e-16` for `x1` suggests that the slope of the model ($\beta_1$) is significantly different from zero
 -   The adjusted R-squared is `r round(mouse_model %>% summary() %>% glance() %>% pull(adj.r.squared), 2)` (which is a relatively strong positive correlation) suggests that the model is able to explain quite a bit of the variance in the data
-
 :::
 
 ------------------------------------------------------------------------
@@ -406,7 +405,7 @@ Since $E(\varepsilon) = 0$, the *estimated* value of our response is equal to:
 
 $$E(Y) = \beta_0 + \beta_1 x_1 + .. + \beta_p x_p$$
 
----
+------------------------------------------------------------------------
 
 We can read this model as:
 
@@ -441,13 +440,13 @@ This kind of response is usually modeled using a *binomial* distribution. This d
 
 $n$ is assumed to be known, and for binary response variables it is implicit that $n = 1$ (this special case of the binomial distribution is also called a *bernoulli distribution*).
 
-. . . 
+. . .
 
 <br /><br />
 
 [With a binary response we can interpret the number of successes as the probability of a success.]{style="color:#b22222"}
 
----
+------------------------------------------------------------------------
 
 Here is the model, using the same notation that we're now getting used to:
 
@@ -493,7 +492,7 @@ mse_fit <- mse_mod %>%
 ```
 
 | coefficient | value                                                                       |
-|:----------------|:------------------------------------------------------|
+|:-----------------|:-----------------------------------------------------|
 | $\beta_0$   | `r mse_fit %>% tidy() %>% filter(term == "(Intercept)") %>% pull(estimate)` |
 | $\beta_1$   | `r mse_fit %>% tidy() %>% filter(term == "x1") %>% pull(estimate)`          |
 
@@ -514,7 +513,7 @@ We started with:
 We create a GLM using the binomial distribution and extract the coefficients (you'll do this in the practical):
 
 | coefficient | value                                                                       |
-|:----------------|:------------------------------------------------------|
+|:-----------------|:-----------------------------------------------------|
 | $\beta_0$   | `r mse_fit %>% tidy() %>% filter(term == "(Intercept)") %>% pull(estimate)` |
 | $\beta_1$   | `r mse_fit %>% tidy() %>% filter(term == "x1") %>% pull(estimate)`          |
 
@@ -567,7 +566,7 @@ ggplot(mse_pred, aes(x1, .pred_1)) +
 
 We can see that the binomial model is pretty helpful: it's in a range of 0 and 1 and symmetric around the center.
 
----
+------------------------------------------------------------------------
 
 ```{r}
 mse_pred <- augment(mse_fit,
@@ -594,7 +593,7 @@ And, as Jeremy Clarkson would say, on that bombshell it's time to say...
 
 :coffee:
 
-^ coffee cup not to scale.
+\^ coffee cup not to scale.
 
 ## Model building in tidymodels
 
@@ -602,26 +601,28 @@ And, as Jeremy Clarkson would say, on that bombshell it's time to say...
 
 ::: columns
 ::: {.column width="50%"}
-
 ### Advantages
-::: {.incremental}
-* Modular
-* Easy to change models
-* Easy to make predictions
-* Enables in-depth model evaluation
-* Plays well with tidyverse
-:::
-:::
-::: {.column width="50%"}
 
+::: incremental
+-   Modular
+-   Easy to change models
+-   Easy to make predictions
+-   Enables in-depth model evaluation
+-   Plays well with tidyverse
+:::
+:::
+
+::: {.column width="50%"}
 ### Disadvantages
-::: {.incremental}
-* Steep learning curve
-* Unnecessarily complicated for easy use cases
-* The "verbs" get a bit annoying (do we really need to `bake()` and `juice()`?!)
+
+::: incremental
+-   Steep learning curve
+-   Unnecessarily complicated for easy use cases
+-   The "verbs" get a bit annoying (do we really need to `bake()` and `juice()`?!)
 :::
 :::
 :::
+
 . . .
 
 Base R and Python code will be added (hopefully over the summer!)

@@ -1,10 +1,6 @@
 ---
 title: "Generalised linear models"
-format:
-  html:
-    toc: true
-    include-after-body:
-      - sync-tabs.html
+number-sections: false
 ---
 
 Welcome to the wonderful world of generalised linear models!
@@ -33,7 +29,3 @@ To know what to do when presented with an arbitrary data set e.g.
 3.  Assess the significance of fit
 4.  Assess assumption of the model
 :::
-
-## Datasets {#index-datasets}
-
-This course uses various data sets. Download the `data` folder [here](data.zip) by right-clicking on the link and <kbd>Save as...</kbd>. Next unzip the file and copy it into your working directory. Your data should then be accessible via `<working-directory-name>/data/`.
