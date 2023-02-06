@@ -230,8 +230,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#load-and-visualise-the-data" id="toc-load-and-visualise-the-data" class="nav-link" data-scroll-target="#load-and-visualise-the-data"><span class="toc-section-number">3.2</span>  Load and visualise the data</a></li>
   <li><a href="#creating-a-suitable-model" id="toc-creating-a-suitable-model" class="nav-link" data-scroll-target="#creating-a-suitable-model"><span class="toc-section-number">3.3</span>  Creating a suitable model</a></li>
   <li><a href="#model-output" id="toc-model-output" class="nav-link" data-scroll-target="#model-output"><span class="toc-section-number">3.4</span>  Model output</a></li>
-  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise"><span class="toc-section-number">3.5</span>  Exercise</a></li>
-  <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points"><span class="toc-section-number">3.6</span>  Key points</a></li>
+  <li><a href="#assessing-significance" id="toc-assessing-significance" class="nav-link" data-scroll-target="#assessing-significance"><span class="toc-section-number">3.5</span>  Assessing significance</a></li>
+  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise"><span class="toc-section-number">3.6</span>  Exercise</a></li>
+  <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points"><span class="toc-section-number">3.7</span>  Key points</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -498,7 +499,7 @@ Click to expand
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/dgplots/2023_02_06-11:08:41_am_dgplots.png" class="img-fluid" width="794"></p>
+<p><img src="images/dgplots/2023_02_06-12:43:26_pm_dgplots.png" class="img-fluid" width="794"></p>
 </div>
 </div>
 </div>
@@ -677,7 +678,7 @@ Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
 Date:                Mon, 06 Feb 2023   Deviance:                       752.20
-Time:                        11:08:50   Pearson chi2:                     713.
+Time:                        12:43:35   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -781,7 +782,10 @@ Expanded explanation
 </div>
 </div>
 <div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true">R</a></li></ul>
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false">Python</a></li>
+</ul>
 <div class="tab-content" data-group="language">
 <div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
 <ul>
@@ -796,22 +800,13 @@ Expanded explanation
 <p>It’s important to realise that these two things can be independent of each other; we can have a model that is significantly better than a null model whilst still being rubbish overall (the null model will have been even more rubbish in comparison), and we can have a model that is brilliant yet still not be better than the null model (in this case the null model was already brilliant).</p>
 <p>As we found in the <a href="https://cambiotraining.github.io/corestats/materials/cs5_practical_model-comparisons.html">model comparisons practical</a>, the AIC value is meaningless by itself, but it will allow us to compare this model to another model with different terms (with the model with the smaller AIC value being the better fitting model).</p>
 </div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<p>There are some additional parameters in the right-hand column, but we’ll first focus on how we can assess significance.</p>
 </div>
 </div>
-</section><section id="exercise" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="exercise">
-<span class="header-section-number">3.5</span> Exercise</h2>
-<div class="callout-tip callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
-Answer
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
+</section><section id="assessing-significance" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="assessing-significance">
+<span class="header-section-number">3.5</span> Assessing significance</h2>
 <div class="panel-tabset" data-group="language">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true">R</a></li>
@@ -826,11 +821,39 @@ Answer
 </div>
 </div>
 </div>
+</section><section id="exercise" class="level2" data-number="3.6"><h2 data-number="3.6" class="anchored" data-anchor-id="exercise">
+<span class="header-section-number">3.6</span> Exercise</h2>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
+
+</div>
+<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
+
 </div>
 </div>
 </div>
-</section><section id="key-points" class="level2" data-number="3.6"><h2 data-number="3.6" class="anchored" data-anchor-id="key-points">
-<span class="header-section-number">3.6</span> Key points</h2>
+</div>
+</div>
+</div>
+</section><section id="key-points" class="level2" data-number="3.7"><h2 data-number="3.7" class="anchored" data-anchor-id="key-points">
+<span class="header-section-number">3.7</span> Key points</h2>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

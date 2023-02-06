@@ -476,6 +476,17 @@ As we said just above, the deviance values are the equivalent of Sums of Squares
 It’s important to realise that these two things can be independent of each other; we can have a model that is significantly better than a null model whilst still being rubbish overall (the null model will have been even more rubbish in comparison), and we can have a model that is brilliant yet still not be better than the null model (in this case the null model was already brilliant).
 
 As we found in the [model comparisons practical](https://cambiotraining.github.io/corestats/materials/cs5_practical_model-comparisons.html), the AIC value is meaningless by itself, but it will allow us to compare this model to another model with different terms (with the model with the smaller AIC value being the better fitting model).
+
+## Python
+
+There are some additional parameters in the right-hand column, but we'll first focus on how we can assess significance.
+:::
+
+## Assessing significance
+
+::: {.panel-tabset group="language"}
+## R
+## Python
 :::
 
 
