@@ -265,7 +265,7 @@ This again shows us that the residuals are really not normally distributed. If t
 
 ## Creating a suitable model
 
-So far we've established that using a simple linear model describe a potential relationship between `glucose` levels and the probability of getting a positive test result is not a good idea. So, what _can_ we do?
+So far we've established that using a simple linear model to describe a potential relationship between `glucose` levels and the probability of getting a positive test result is not a good idea. So, what _can_ we do?
 
 One of the ways we can deal with binary outcome data is by performing a logistic regression. Instead of fitting a straight line to our data, and performing a regression on that, we fit a line that has an S shape. This avoids the model making predictions outside the $[0, 1]$ range.
 
@@ -273,7 +273,7 @@ There are many mathematical functions that produce S-shaped graphs. The **logist
 
 In the most simple form a logistic function is written like this:
 
-$Y = \frac{1}{1 + \exp(-X)}$
+$Y = \frac{\exp(X)}{1 + \exp(X)}$
 
 :::{.callout-important}
 ## Euler's number
@@ -283,16 +283,16 @@ In mathematics, $\rm e$ represents a constant of around 2.718. Another notation 
 
 We can _generalise_ this, by writing it as follows:
 
-$Y = \frac{1}{1 + \exp-(\beta_0 + \beta_1X)}$
+$Y = \frac{\exp(X)}{1 + \exp(\beta_0 + \beta_1X)}$
 
 Note that the $\beta_0 + \beta_1X$ part is identical to the formula of a straight line. We've come across this before when we were doing simple linear regression!
 
-The rest of the function is what makes the straight line curve into its characteristic S shape. The middle of the S (where $Y = 0.5$) occurs when $X = \frac{-b}{a}$.
+The rest of the function is what makes the straight line curve into its characteristic S shape. The middle of the S (where $Y = 0.5$) occurs when $X = \frac{-a}{b}$.
 
 ::: {.callout-important}
 ## The logistic function
 
-The shape of the logistic function is hugely influenced by the different parameter, in particular $\beta_1$. The plots below show different situations, where $\beta_0 = 0$ in all cases, but $\beta_1$ varies.
+The shape of the logistic function is hugely influenced by the different parameters, in particular $\beta_1$. The plots below show different situations, where $\beta_0 = 0$ in all cases, but $\beta_1$ varies.
 
 The first plot shows the logistic function in its simplest form, with the others showing the effect of varying $\beta_1$.
 
@@ -306,7 +306,7 @@ b1 <- c(1, 0, -1.5, 10)
 
 cdf = function(b0, b1){
   return(tibble(X = X,
-                Y = 1/(1 + exp(-(b0 + b1 * X)))))
+                Y = exp(b0 + b1 * X)/(1 + exp(b0 + b1 * X))))
   }
 
 df <- map2(b0, b1, cdf)
@@ -323,7 +323,7 @@ df %>%
 ```
 
 * when $\beta_1 = 1$, this gives the simplest logistic function
-* when $\beta_1 = 0$ gives a horizontal line, with $Y = 1/(1+\exp(-\beta_0X)$
+* when $\beta_1 = 0$ gives a horizontal line, with $Y = \frac{\exp(\beta_0)}{1+\exp(\beta_0)}$
 * when $\beta_1$ is negative flips the curve around, so it slopes down
 * when $\beta_1$ is very large then the curve becomes extremely steep
 :::

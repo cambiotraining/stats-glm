@@ -1,0 +1,121 @@
+---
+title: "Introduction"
+---
+```{r}
+#| echo: false
+#| message: false
+#| results: hide
+source(file = "setup_files/setup.R")
+```
+
+```{python}
+#| echo: false
+#| message: false
+import shutup;shutup.please()
+exec(open('setup_files/setup.py').read())
+```
+
+## Linear models
+
+```{r}
+finches <- read_csv("data/finch_beaks.csv")
+
+finches <- finches %>% 
+  rename(beak_length = beak_length_mm,
+         beak_depth = beak_depth_mm)
+```
+
+```{r}
+ggplot(data = finches,
+       mapping = aes(x = beak_length,
+                     y = beak_depth,
+                     colour = species)) +
+  geom_point() +
+  facet_wrap(facets = vars(year))
+```
+
+```{r}
+fortis_1975 <- finches %>% 
+  filter(species == "fortis",
+         year == 1975)
+```
+
+```{r}
+ggplot(fortis_1975, aes(beak_length, beak_depth)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+lm_fortis_1975 <- lm(beak_depth ~ beak_length,
+                     data = fortis_1975)
+
+anova(lm_fortis_1975)
+
+lm_fortis_1975 %>% 
+  resid_panel(plots = "qq")
+
+```
+
+```{r}
+fortis_1975_example <- fortis_1975 %>% 
+  mutate(min_depth = min(beak_depth),
+         max_depth = max(beak_depth),
+         min_length = min(beak_length),
+         max_length = max(beak_length)) 
+
+fortis_1975_example <- lm_fortis_1975 %>% 
+  augment() %>% 
+  full_join(fortis_1975_example)
+
+finch473 <- fortis_1975_example %>%
+  filter(band == 473)
+
+fortis_1975_example %>%
+  ggplot(aes(beak_length, beak_depth)) +
+  geom_point(colour = "#999999") +
+  theme_bw() +
+  labs(title = "Finch 473 (1975)",
+       x = "Beak length (mm)",
+       y = "Beak depth (mm)") +
+  geom_point(data = . %>% filter(band == 473),
+             mapping = aes(beak_length, beak_depth),
+             colour = "#D55E00",
+             size = 3) +
+  annotate(geom = "text", x = 9, y = 9.6, hjust = 0,
+           label = "observed beak depth") +
+  geom_segment(data = . %>% filter(band == 473),
+               aes(x = beak_length, xend = beak_length,
+                   y = min_depth, yend = beak_depth),
+               linetype = "dashed",
+               colour = "#D55E00") +
+  annotate(geom = "text", x = 10.55, y = 8, hjust = 0,
+           label = "observed beak length") +
+  geom_segment(data = . %>% filter(band == 473),
+               aes(x = min_length, xend = beak_length,
+                   y = beak_depth, yend = beak_depth),
+               linetype = "dashed",
+               colour = "#D55E00") +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point(data = finch473, aes(x = beak_length,
+                                  y = .fitted),
+             colour = "blue", size = 3) +
+  geom_segment(data = finch473,
+               aes(x = beak_length, xend = (beak_length + 0.5),
+                   y = .fitted, yend = .fitted),
+               arrow = arrow(ends = "first", length = unit(2, "mm"))) +
+  annotate(geom = "text", x = 11.05, y = finch473$.fitted, hjust = 0,
+           label = "fitted value") +
+  geom_segment(data = finch473,
+               aes(x = beak_length, xend =  beak_length,
+                   y = beak_depth, yend = .fitted),
+               arrow = arrow(ends = "both", length = unit(2, "mm"))) +
+  annotate(geom = "text", x = 10.45, y = 9.3, label = "\u03b5")
+```
+
+```{r}
+library(plotly)
+ggplotly(p1, hoverinfo = "text")
+```
+
+## Generalised features
