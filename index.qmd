@@ -1,5 +1,5 @@
 ---
-title: "Generalised linear models"
+title: "Course overview"
 number-sections: false
 ---
 

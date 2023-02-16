@@ -1,5 +1,9 @@
 book:
   chapters:
+    - part: "Background"
+      chapters:
+        - materials/glm-intro-lm.qmd
+        - materials/glm-intro-glm.qmd
     - part: "Binary and proportional data"
       chapters:
         - materials/glm-practical-logistic-binary.qmd

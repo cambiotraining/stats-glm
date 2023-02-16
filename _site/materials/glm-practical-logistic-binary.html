@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.2.134">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>3&nbsp; Binary response</title>
+<title>5&nbsp; Binary response</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -89,7 +89,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../materials/glm-practical-logistic-proportion.html" rel="next">
-<link href="../setup.html" rel="prev">
+<link href="../materials/glm-intro-glm.html" rel="prev">
 <link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -127,7 +127,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
     <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo"></a>
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Course Development Guidelines</span>
+    <span class="navbar-title">Generalised linear models</span>
     </a>
   </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -150,7 +150,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       </div> <!-- /container-fluid -->
     </nav><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Binary response</span>
+<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Binary response</span>
 </h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
@@ -175,7 +175,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Generalised linear models</span></a>
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Course overview</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -187,7 +187,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Binary and proportional data</a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Background</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -195,19 +195,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../materials/glm-practical-logistic-binary.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Binary response</span></a>
+  <a href="../materials/glm-intro-lm.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear models</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../materials/glm-practical-logistic-proportion.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Proportional response</span></a>
+  <a href="../materials/glm-intro-glm.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Generalising your model</span></a>
   </div>
 </li>
       </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Count data</a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Binary and proportional data</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -215,7 +215,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../materials/glm-practical-poisson.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Poisson regression</span></a>
+  <a href="../materials/glm-practical-logistic-binary.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Binary response</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-practical-logistic-proportion.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Proportional response</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Count data</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-practical-poisson.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Poisson regression</span></a>
   </div>
 </li>
       </ul>
@@ -226,19 +246,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#libraries-and-functions" id="toc-libraries-and-functions" class="nav-link active" data-scroll-target="#libraries-and-functions"><span class="toc-section-number">3.1</span>  Libraries and functions</a></li>
-  <li><a href="#load-and-visualise-the-data" id="toc-load-and-visualise-the-data" class="nav-link" data-scroll-target="#load-and-visualise-the-data"><span class="toc-section-number">3.2</span>  Load and visualise the data</a></li>
-  <li><a href="#creating-a-suitable-model" id="toc-creating-a-suitable-model" class="nav-link" data-scroll-target="#creating-a-suitable-model"><span class="toc-section-number">3.3</span>  Creating a suitable model</a></li>
-  <li><a href="#model-output" id="toc-model-output" class="nav-link" data-scroll-target="#model-output"><span class="toc-section-number">3.4</span>  Model output</a></li>
-  <li><a href="#assessing-significance" id="toc-assessing-significance" class="nav-link" data-scroll-target="#assessing-significance"><span class="toc-section-number">3.5</span>  Assessing significance</a></li>
-  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise"><span class="toc-section-number">3.6</span>  Exercise</a></li>
-  <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points"><span class="toc-section-number">3.7</span>  Key points</a></li>
+<li><a href="#libraries-and-functions" id="toc-libraries-and-functions" class="nav-link active" data-scroll-target="#libraries-and-functions"><span class="toc-section-number">5.1</span>  Libraries and functions</a></li>
+  <li><a href="#load-and-visualise-the-data" id="toc-load-and-visualise-the-data" class="nav-link" data-scroll-target="#load-and-visualise-the-data"><span class="toc-section-number">5.2</span>  Load and visualise the data</a></li>
+  <li><a href="#creating-a-suitable-model" id="toc-creating-a-suitable-model" class="nav-link" data-scroll-target="#creating-a-suitable-model"><span class="toc-section-number">5.3</span>  Creating a suitable model</a></li>
+  <li><a href="#model-output" id="toc-model-output" class="nav-link" data-scroll-target="#model-output"><span class="toc-section-number">5.4</span>  Model output</a></li>
+  <li><a href="#assessing-significance" id="toc-assessing-significance" class="nav-link" data-scroll-target="#assessing-significance"><span class="toc-section-number">5.5</span>  Assessing significance</a></li>
+  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise"><span class="toc-section-number">5.6</span>  Exercise</a></li>
+  <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points"><span class="toc-section-number">5.7</span>  Key points</a></li>
   </ul></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title d-none d-lg-block">
-<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Binary response</span>
+<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Binary response</span>
 </h1>
 </div>
 
@@ -282,8 +302,8 @@ Learning outcomes
 </ul>
 </div>
 </div>
-<section id="libraries-and-functions" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="libraries-and-functions">
-<span class="header-section-number">3.1</span> Libraries and functions</h2>
+<section id="libraries-and-functions" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="libraries-and-functions">
+<span class="header-section-number">5.1</span> Libraries and functions</h2>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -303,15 +323,15 @@ Click to expand
 </ul>
 <div class="tab-content" data-group="language">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<section id="libraries" class="level3" data-number="3.1.1"><h3 data-number="3.1.1" class="anchored" data-anchor-id="libraries">
-<span class="header-section-number">3.1.1</span> Libraries</h3>
-</section><section id="functions" class="level3" data-number="3.1.2"><h3 data-number="3.1.2" class="anchored" data-anchor-id="functions">
-<span class="header-section-number">3.1.2</span> Functions</h3>
+<section id="libraries" class="level3" data-number="5.1.1"><h3 data-number="5.1.1" class="anchored" data-anchor-id="libraries">
+<span class="header-section-number">5.1.1</span> Libraries</h3>
+</section><section id="functions" class="level3" data-number="5.1.2"><h3 data-number="5.1.2" class="anchored" data-anchor-id="functions">
+<span class="header-section-number">5.1.2</span> Functions</h3>
 </section>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<section id="libraries-1" class="level3" data-number="3.1.3"><h3 data-number="3.1.3" class="anchored" data-anchor-id="libraries-1">
-<span class="header-section-number">3.1.3</span> Libraries</h3>
+<section id="libraries-1" class="level3" data-number="5.1.3"><h3 data-number="5.1.3" class="anchored" data-anchor-id="libraries-1">
+<span class="header-section-number">5.1.3</span> Libraries</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A Python data analysis and manipulation tool</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -325,8 +345,8 @@ Click to expand
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Convenience interface for specifying models using formula strings and DataFrames</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="functions-1" class="level3" data-number="3.1.4"><h3 data-number="3.1.4" class="anchored" data-anchor-id="functions-1">
-<span class="header-section-number">3.1.4</span> Functions</h3>
+</section><section id="functions-1" class="level3" data-number="5.1.4"><h3 data-number="5.1.4" class="anchored" data-anchor-id="functions-1">
+<span class="header-section-number">5.1.4</span> Functions</h3>
 </section>
 </div>
 </div>
@@ -337,8 +357,8 @@ Click to expand
 <p>The example in this section uses the following data set:</p>
 <p><code>data/diabetes.csv</code></p>
 <p>This is a data set comprising 768 observations of three variables (one dependent and two predictor variables). This records the results of a diabetes test result as a binary variable (1 is a positive result, 0 is a negative result), along with the result of a glucose test and the diastolic blood pressure for each of 767 women. The variables are called <code>test_result</code>, <code>glucose</code> and <code>diastolic</code>.</p>
-</section><section id="load-and-visualise-the-data" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="load-and-visualise-the-data">
-<span class="header-section-number">3.2</span> Load and visualise the data</h2>
+</section><section id="load-and-visualise-the-data" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="load-and-visualise-the-data">
+<span class="header-section-number">5.2</span> Load and visualise the data</h2>
 <p>First we load the data, then we visualise it.</p>
 <div class="panel-tabset" data-group="language">
 <ul class="nav nav-tabs" role="tablist">
@@ -499,7 +519,7 @@ Click to expand
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/dgplots/2023_02_06-12:43:26_pm_dgplots.png" class="img-fluid" width="794"></p>
+<p><img src="images/dgplots/2023_02_16-09:32:53_am_dgplots.png" class="img-fluid" width="794"></p>
 </div>
 </div>
 </div>
@@ -549,13 +569,13 @@ Viewing residuals
 <p>This again shows us that the residuals are really not normally distributed. If they were, then they would overlap much more closely with the distribution (in grey).</p>
 </div>
 </div>
-</section><section id="creating-a-suitable-model" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="creating-a-suitable-model">
-<span class="header-section-number">3.3</span> Creating a suitable model</h2>
-<p>So far we’ve established that using a simple linear model describe a potential relationship between <code>glucose</code> levels and the probability of getting a positive test result is not a good idea. So, what <em>can</em> we do?</p>
+</section><section id="creating-a-suitable-model" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="creating-a-suitable-model">
+<span class="header-section-number">5.3</span> Creating a suitable model</h2>
+<p>So far we’ve established that using a simple linear model to describe a potential relationship between <code>glucose</code> levels and the probability of getting a positive test result is not a good idea. So, what <em>can</em> we do?</p>
 <p>One of the ways we can deal with binary outcome data is by performing a logistic regression. Instead of fitting a straight line to our data, and performing a regression on that, we fit a line that has an S shape. This avoids the model making predictions outside the <span class="math inline">\([0, 1]\)</span> range.</p>
 <p>There are many mathematical functions that produce S-shaped graphs. The <strong>logistic function</strong> is one of them and well-suited to these kind of data.</p>
 <p>In the most simple form a logistic function is written like this:</p>
-<p><span class="math inline">\(Y = \frac{1}{1 + \exp(-X)}\)</span></p>
+<p><span class="math inline">\(Y = \frac{\exp(X)}{1 + \exp(X)}\)</span></p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -570,9 +590,9 @@ Euler’s number
 </div>
 </div>
 <p>We can <em>generalise</em> this, by writing it as follows:</p>
-<p><span class="math inline">\(Y = \frac{1}{1 + \exp-(\beta_0 + \beta_1X)}\)</span></p>
+<p><span class="math inline">\(Y = \frac{\exp(X)}{1 + \exp(\beta_0 + \beta_1X)}\)</span></p>
 <p>Note that the <span class="math inline">\(\beta_0 + \beta_1X\)</span> part is identical to the formula of a straight line. We’ve come across this before when we were doing simple linear regression!</p>
-<p>The rest of the function is what makes the straight line curve into its characteristic S shape. The middle of the S (where <span class="math inline">\(Y = 0.5\)</span>) occurs when <span class="math inline">\(X = \frac{-b}{a}\)</span>.</p>
+<p>The rest of the function is what makes the straight line curve into its characteristic S shape. The middle of the S (where <span class="math inline">\(Y = 0.5\)</span>) occurs when <span class="math inline">\(X = \frac{-a}{b}\)</span>.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -583,7 +603,7 @@ The logistic function
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The shape of the logistic function is hugely influenced by the different parameter, in particular <span class="math inline">\(\beta_1\)</span>. The plots below show different situations, where <span class="math inline">\(\beta_0 = 0\)</span> in all cases, but <span class="math inline">\(\beta_1\)</span> varies.</p>
+<p>The shape of the logistic function is hugely influenced by the different parameters, in particular <span class="math inline">\(\beta_1\)</span>. The plots below show different situations, where <span class="math inline">\(\beta_0 = 0\)</span> in all cases, but <span class="math inline">\(\beta_1\)</span> varies.</p>
 <p>The first plot shows the logistic function in its simplest form, with the others showing the effect of varying <span class="math inline">\(\beta_1\)</span>.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -592,7 +612,7 @@ The logistic function
 </div>
 <ul>
 <li>when <span class="math inline">\(\beta_1 = 1\)</span>, this gives the simplest logistic function</li>
-<li>when <span class="math inline">\(\beta_1 = 0\)</span> gives a horizontal line, with <span class="math inline">\(Y = 1/(1+\exp(-\beta_0X)\)</span>
+<li>when <span class="math inline">\(\beta_1 = 0\)</span> gives a horizontal line, with <span class="math inline">\(Y = \frac{\exp(\beta_0)}{1+\exp(\beta_0)}\)</span>
 </li>
 <li>when <span class="math inline">\(\beta_1\)</span> is negative flips the curve around, so it slopes down</li>
 <li>when <span class="math inline">\(\beta_1\)</span> is very large then the curve becomes extremely steep</li>
@@ -628,8 +648,8 @@ The logistic function
 </div>
 </div>
 </div>
-</section><section id="model-output" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="model-output">
-<span class="header-section-number">3.4</span> Model output</h2>
+</section><section id="model-output" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="model-output">
+<span class="header-section-number">5.4</span> Model output</h2>
 <p>That’s the easy part done! The trickier part is interpreting the output. First of all, we’ll get some summary information.</p>
 <div class="panel-tabset" data-group="language">
 <ul class="nav nav-tabs" role="tablist">
@@ -677,8 +697,8 @@ Model:                            GLM   Df Residuals:                      726
 Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
-Date:                Mon, 06 Feb 2023   Deviance:                       752.20
-Time:                        12:43:35   Pearson chi2:                     713.
+Date:                Thu, 16 Feb 2023   Deviance:                       752.20
+Time:                        09:33:02   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -805,8 +825,8 @@ Expanded explanation
 </div>
 </div>
 </div>
-</section><section id="assessing-significance" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="assessing-significance">
-<span class="header-section-number">3.5</span> Assessing significance</h2>
+</section><section id="assessing-significance" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="assessing-significance">
+<span class="header-section-number">5.5</span> Assessing significance</h2>
 <div class="panel-tabset" data-group="language">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true">R</a></li>
@@ -821,8 +841,8 @@ Expanded explanation
 </div>
 </div>
 </div>
-</section><section id="exercise" class="level2" data-number="3.6"><h2 data-number="3.6" class="anchored" data-anchor-id="exercise">
-<span class="header-section-number">3.6</span> Exercise</h2>
+</section><section id="exercise" class="level2" data-number="5.6"><h2 data-number="5.6" class="anchored" data-anchor-id="exercise">
+<span class="header-section-number">5.6</span> Exercise</h2>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -852,8 +872,8 @@ Answer
 </div>
 </div>
 </div>
-</section><section id="key-points" class="level2" data-number="3.7"><h2 data-number="3.7" class="anchored" data-anchor-id="key-points">
-<span class="header-section-number">3.7</span> Key points</h2>
+</section><section id="key-points" class="level2" data-number="5.7"><h2 data-number="5.7" class="anchored" data-anchor-id="key-points">
+<span class="header-section-number">5.7</span> Key points</h2>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -970,13 +990,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="../setup.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data &amp; Setup</span></span>
+      <a href="../materials/glm-intro-glm.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Generalising your model</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../materials/glm-practical-logistic-proportion.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Proportional response</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Proportional response</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

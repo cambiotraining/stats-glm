@@ -1,0 +1,184 @@
+---
+title: "Linear models"
+---
+```{r}
+#| echo: false
+#| message: false
+#| results: hide
+source(file = "setup_files/setup.R")
+```
+
+```{python}
+#| echo: false
+#| message: false
+import shutup;shutup.please()
+exec(open('setup_files/setup.py').read())
+```
+
+## Data
+
+```{r}
+finches <- read_csv("data/finch_beaks.csv")
+
+finches <- finches %>% 
+  rename(blength = beak_length_mm,
+         bdepth = beak_depth_mm)
+```
+
+## Linear models
+
+```{r}
+ggplot(data = finches,
+       mapping = aes(x = blength,
+                     y = bdepth,
+                     colour = species)) +
+  geom_point() +
+  facet_wrap(facets = vars(year))
+```
+
+```{r}
+fortis_1975 <- finches %>% 
+  filter(species == "fortis",
+         year == 1975)
+```
+
+```{r}
+ggplot(fortis_1975, aes(blength, bdepth)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+### Least-squares regression
+
+Finding the line of best fit gives you the model. Each data point consists of the fitted value (the predicted beak depth at a given beak length), combined with the error. The error is the difference between the fitted value and the data point.
+
+```{r}
+fortis_1975_example <- fortis_1975 %>% 
+  mutate(min_depth = min(bdepth),
+         max_depth = max(bdepth),
+         min_length = min(blength),
+         max_length = max(blength)) 
+
+lm_fortis_1975 <- lm(bdepth ~ blength,
+                     data = fortis_1975)
+
+fortis_1975_example <- lm_fortis_1975 %>% 
+  augment() %>% 
+  full_join(fortis_1975_example)
+
+finch473 <- fortis_1975_example %>%
+  filter(band == 473)
+
+fortis_1975_example %>%
+  ggplot(aes(blength, bdepth)) +
+  geom_point(colour = "#999999") +
+  theme_bw() +
+  labs(title = "Finch 473 (1975)",
+       x = "Beak length (mm)",
+       y = "Beak depth (mm)") +
+  geom_point(data = . %>% filter(band == 473),
+             mapping = aes(blength, bdepth),
+             colour = "#D55E00",
+             size = 3) +
+  annotate(geom = "text", x = 9, y = 9.6, hjust = 0,
+           label = "observed beak depth") +
+  geom_segment(data = . %>% filter(band == 473),
+               aes(x = blength, xend = blength,
+                   y = min_depth, yend = bdepth),
+               linetype = "dashed",
+               colour = "#D55E00") +
+  annotate(geom = "text", x = 10.55, y = 8, hjust = 0,
+           label = "observed beak length") +
+  geom_segment(data = . %>% filter(band == 473),
+               aes(x = min_length, xend = blength,
+                   y = bdepth, yend = bdepth),
+               linetype = "dashed",
+               colour = "#D55E00") +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point(data = finch473, aes(x = blength,
+                                  y = .fitted),
+             colour = "blue", size = 3) +
+  geom_segment(data = finch473,
+               aes(x = blength, xend = (blength + 0.5),
+                   y = .fitted, yend = .fitted),
+               arrow = arrow(ends = "first", length = unit(2, "mm"))) +
+  annotate(geom = "text", x = 11.05, y = finch473$.fitted, hjust = 0,
+           label = "fitted value") +
+  geom_segment(data = finch473,
+               aes(x = blength, xend =  blength,
+                   y = bdepth, yend = .fitted),
+               arrow = arrow(ends = "both", length = unit(2, "mm"))) +
+  annotate(geom = "text", x = 10.45, y = 9.3, label = "\u03b5")
+```
+
+We can then perform a linear regression. The question we're asking:
+
+> Is the line of best fit a better predictor of our data than a horizontal line across the average value?
+
+```{r}
+fortis_1975_example %>%
+  ggplot(aes(blength, bdepth)) +
+  geom_point(colour = "#999999") +
+  theme_bw() +
+  labs(title = "Finch beak observations (1975)",
+       x = "Beak length (mm)",
+       y = "Beak depth (mm)") +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_hline(yintercept = fortis_1975_example %>%
+               summarise(mean_bd = mean(bdepth)) %>%
+               pull(),
+             linetype = "dashed", colour = "#D55E00") +
+  annotate(geom = "text", x = 8.5, y = 9.3, hjust = 0,
+           label = "average beak depth")
+
+fortis_1975_example %>% summarise(mean_bl = mean(blength)) %>% pull()
+```
+What we're actually testing is whether the slope of the line of best fit is any different from zero.
+
+To find the answer, we perform an ANOVA.
+
+### ANOVA on the linear model
+
+We define the linear model, then perform an ANOVA.
+
+```{r}
+lm_fortis_1975 <- lm(bdepth ~ blength,
+                     data = fortis_1975)
+
+anova(lm_fortis_1975)
+```
+
+The result suggests that `blength` is a statistically significant predictor of `bdepth`.
+
+We can write the linear equation, if we know the model coefficients:
+
+```{r}
+lm_fortis_1975
+```
+
+The equation is in the form of:
+
+$Y = \beta_0 + \beta_1X$
+
+which in our case is
+
+$beak\_depth = \beta_0 + \beta_1 \times beak\_length$
+
+and gives us
+
+$beak\_depth = -0.34 + 0.90 \times beak\_length$
+
+### Assumptions
+
+1. Data should be linear
+2. Residuals are normally distributed
+3. Equality of variance
+4. Data are independent
+5. (no influential points)
+
+```{r}
+lm_fortis_1975 %>% 
+  resid_panel(plots = c("resid", "qq", "ls", "cookd"),
+              smoother = TRUE)
+```
+
