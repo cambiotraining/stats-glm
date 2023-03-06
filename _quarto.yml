@@ -48,8 +48,9 @@ book:
         aria-label: Bioinformatics Training Facility Twitter
     title: "Generalised linear models"
   chapters:
-    - part: "Overview"
+    - part: "Welcome"
       chapters:
         - index.qmd
         - setup.md
+        - materials.md
     

@@ -1,4 +1,4 @@
-band,species,beak_length_mm,beak_depth_mm,year
+band,species,blength,bdepth,year
 2,fortis,9.4,8,1975
 9,fortis,9.2,8.3,1975
 12,fortis,9.5,7.5,1975

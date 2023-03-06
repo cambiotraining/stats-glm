@@ -1,5 +1,5 @@
 ---
-title: "Data & Setup"
+title: "Setup"
 number-sections: false
 ---
 
@@ -110,7 +110,3 @@ rm singularity.deb
 
 :::
  -->
-
-## Data
-
-<a href="https://github.com/cambiotraining/stats-glm/raw/main/data.zip"><button class="btn"><i class="fa fa-download"></i> Download</button></a>

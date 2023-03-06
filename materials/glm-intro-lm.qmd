@@ -17,17 +17,23 @@ exec(open('setup_files/setup.py').read())
 
 ## Data
 
-```{r}
-finches <- read_csv("data/finch_beaks.csv")
+For this example, we'll be using the `finches` data set.
 
-finches <- finches %>% 
-  rename(blength = beak_length_mm,
-         bdepth = beak_depth_mm)
+```{r}
+#| echo: false
+#| message: false
+finches <- read_csv("data/finch_beaks.csv")
 ```
 
-## Linear models
+## Exploring data
+
+It's always a good idea to explore your data visually. Here we are focussing on the (potential) relationship between beak length (`blength`) and beak depth (`bdepth`).
+
+Our data contains measurements from two years (`year`) and two species (`species`). If we plot beak depth against beak length, colour our data by species and look across the two time points (1975 and 2012), we get the following graph:
 
 ```{r}
+#| echo: false
+#| message: false
 ggplot(data = finches,
        mapping = aes(x = blength,
                      y = bdepth,
@@ -36,31 +42,66 @@ ggplot(data = finches,
   facet_wrap(facets = vars(year))
 ```
 
+It seems that there is a potential linear relationship between beak depth and beak length. There are some differences between the two species and two time points with, what seems, more spread in the data in 2012. The data for both species also seem to be less separated than in 1975.
+
+For the current purpose, we'll focus on one group of data: those of _Geospiza fortis_ in 1975.
+
 ```{r}
+#| echo: false
 fortis_1975 <- finches %>% 
   filter(species == "fortis",
          year == 1975)
 ```
 
+## Linear model
+
+Let's look at the _G. fortis_ data more closely, assuming that the have a linear relationship. We can visualise that as follows:
+
 ```{r}
-ggplot(fortis_1975, aes(blength, bdepth)) +
+#| echo: false
+#| message: false
+ggplot(data = fortis_1975,
+       mapping = aes(x = blength,
+                     y = bdepth)) +
   geom_point() +
   geom_smooth(method = "lm")
 ```
 
-### Least-squares regression
+If you recall from the [Core statistics linear regression](https://cambiotraining.github.io/corestats/materials/cs3_practical_linear-regression.html) session, what we're doing here is assuming that there is a linear relationship between the response variable (in this case `bdepth`) and predictor variable (here, `blength`).
 
-Finding the line of best fit gives you the model. Each data point consists of the fitted value (the predicted beak depth at a given beak length), combined with the error. The error is the difference between the fitted value and the data point.
+We can get more information on this linear relationship by defining a linear model, which has the form of:
+
+$Y = \beta_0 + \beta_1X$
+
+where $Y$ is the response variable (the thing we're interested in), $X$ the predictor variable and $\beta_0$ and $\beta_1$ are model coefficients. 
+More explicitly for our data, we get:
+
+$bdepth = \beta_0 + \beta_1 \times blength$
 
 ```{r}
+#| echo: false
+lm_fortis_1975 <- lm(bdepth ~ blength,
+                     data = fortis_1975)
+```
+
+But how do we find this model? The computer uses a method called **least-squares regression**. There are several steps involved in this.
+
+### Line of best fit
+
+The computer tries to find the **line of best fit**. This is a linear line that best describes your data. We could draw a linear line through our cloud of data points in many ways, but the least-squares method converges to a single solution, where the **sum of squared residual deviations** is at its smallest.
+
+To understand this a bit better, it's helpful to realise that each data point consists of a fitted value (the beak depth predicted by the model at a given beak length), combined with the error. The error is the difference between the fitted value and the data point.
+
+Let's look at this for one of the observations, for example finch 473:
+
+```{r}
+#| echo: false
+#| message: false
 fortis_1975_example <- fortis_1975 %>% 
   mutate(min_depth = min(bdepth),
          max_depth = max(bdepth),
          min_length = min(blength),
          max_length = max(blength)) 
-
-lm_fortis_1975 <- lm(bdepth ~ blength,
-                     data = fortis_1975)
 
 fortis_1975_example <- lm_fortis_1975 %>% 
   augment() %>% 
@@ -111,11 +152,30 @@ fortis_1975_example %>%
   annotate(geom = "text", x = 10.45, y = 9.3, label = "\u03b5")
 ```
 
-We can then perform a linear regression. The question we're asking:
+Obtaining the fitted value and error happens for each data point. All these residuals are then squared (to ensure that they are positive), and added together. This is the so-called sum-of-squares.
+
+You can imagine that if you draw a line through the data that doesn't fit the data all that well, the error associated with each data point increases. The sum-of-squares then also increases. Equally, the closer the data are to the line, the smaller the error. This results in a smaller sum-of-squares.
+
+The linear line where the sum-of-squares is at its smallest, is called the **line of best fit**. This line acts as a model for our data.
+
+For finch 473 we have the following values:
+
+* the observed beak depth is `r finch473 %>% pull(bdepth)`
+* the observed beak length is `r finch473 %>% pull(blength)`
+* the fitted value is `r fortis_1975_example %>% filter(band == 473) %>% pull(.fitted) %>% round(digits = 2)`
+* the error is `r fortis_1975_example %>% filter(band == 473) %>% pull(.resid) %>% round(digits = 2)`
+
+### Linear regression
+
+Once we have the line of best fit, we can perform a **linear regression**. What we're doing with the regression, is asking:
 
 > Is the line of best fit a better predictor of our data than a horizontal line across the average value?
 
+Visually, that looks like this:
+
 ```{r}
+#| echo: false
+#| message: false
 fortis_1975_example %>%
   ggplot(aes(blength, bdepth)) +
   geom_point(colour = "#999999") +
@@ -130,45 +190,29 @@ fortis_1975_example %>%
              linetype = "dashed", colour = "#D55E00") +
   annotate(geom = "text", x = 8.5, y = 9.3, hjust = 0,
            label = "average beak depth")
-
-fortis_1975_example %>% summarise(mean_bl = mean(blength)) %>% pull()
-```
-What we're actually testing is whether the slope of the line of best fit is any different from zero.
-
-To find the answer, we perform an ANOVA.
-
-### ANOVA on the linear model
-
-We define the linear model, then perform an ANOVA.
-
-```{r}
-lm_fortis_1975 <- lm(bdepth ~ blength,
-                     data = fortis_1975)
-
-anova(lm_fortis_1975)
 ```
 
-The result suggests that `blength` is a statistically significant predictor of `bdepth`.
+What we're actually testing is whether the _slope_ ($\beta_1$) of the line of best fit is any different from zero.
 
-We can write the linear equation, if we know the model coefficients:
+To find the answer, we perform an ANOVA. This gives us a p-value of `r anova(lm_fortis_1975) %>% tidy() %>% filter(term == "blength") %>% pull(p.value) %>% formatC(x = ., format = "e", digits = 2)`.
 
-```{r}
-lm_fortis_1975
-```
+Needless to say, this p-value is extremely small, and definitely smaller than any common significance threshold, such as $p < 0.05$. This suggests that beak length is a statistically significant predictor of beak depth.
 
-The equation is in the form of:
+In this case the model has an **intercept** ($\beta_0$) of `r round(lm_fortis_1975$coefficients[1], 2)` and a **slope** ($\beta_1$) of `r round(lm_fortis_1975$coefficients[2], 2)`. We can use this to write a simple linear equation, describing our data. Remember that this takes the form of:
 
 $Y = \beta_0 + \beta_1X$
 
 which in our case is
 
-$beak\_depth = \beta_0 + \beta_1 \times beak\_length$
+$bdepth = \beta_0 + \beta_1 \times blength$
 
 and gives us
 
-$beak\_depth = -0.34 + 0.90 \times beak\_length$
+$bdepth = -0.34 + 0.90 \times blength$
 
 ### Assumptions
+
+In example above we just got on with things once we suspected that there was a linear relationship between beak depth and beak length. However, for the linear regression to be valid, several assumptions need to be met. If any of those assumptions are violated, we can't trust the results. The following four assumptions need to be met, with a 5th point being a case of good scientific practice:
 
 1. Data should be linear
 2. Residuals are normally distributed
@@ -176,9 +220,16 @@ $beak\_depth = -0.34 + 0.90 \times beak\_length$
 4. Data are independent
 5. (no influential points)
 
+As we did many times during the [Core statistics](https://cambiotraining.github.io/corestats/) sessions, we mainly rely on diagnostic plots to check these assumptions. For this particular model they look as follows:
+
 ```{r}
+#| echo: false
+#| message: false
 lm_fortis_1975 %>% 
   resid_panel(plots = c("resid", "qq", "ls", "cookd"),
               smoother = TRUE)
 ```
 
+These plots look very good to me. For a recap on how to interpret these plots, see [CS2: ANOVA](https://cambiotraining.github.io/corestats/materials/cs2_practical_anova.html).
+
+Taken together, we can see the relationship between beak depth and beak length as a linear one, described by a (linear) model that has a predicted value for each data point, and an associated error.

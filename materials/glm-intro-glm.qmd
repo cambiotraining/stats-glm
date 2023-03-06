@@ -15,23 +15,19 @@ import shutup;shutup.please()
 exec(open('setup_files/setup.py').read())
 ```
 
-## Data
-
 ```{r}
+#| echo: false
+#| message: false
+
+# required data sets
 finches <- read_csv("data/finch_beaks.csv")
 
-finches <- finches %>% 
-  rename(blength = beak_length_mm,
-         bdepth = beak_depth_mm)
-
-fortis_1975 <- finches %>% 
-  filter(species == "fortis",
-         year == 1975)
+fortis_1975 <- finches %>% filter(species == "fortis", year == 1975)
 ```
 
 ## Generalised features
 
-In this case the assumptions are all met. But what if we have data where that isn't the case? For example, what if we have data where we _can't_ describe the relationship between the predictor and response variables in a linear way?
+In the previous linear model example all the assumptions were met. But what if we have data where that isn't the case? For example, what if we have data where we _can't_ describe the relationship between the predictor and response variables in a linear way?
 
 One of the ways we can deal with this is by using generalised linear models. It's an extension on the linear model we discussed in the previous section. It consists of three main elements:
 
