@@ -34,12 +34,16 @@ Our data contains measurements from two years (`year`) and two species (`species
 ```{r}
 #| echo: false
 #| message: false
+#| label: fig-finches_1975v2012
+#| fig-cap: "Beak depth and length for _G. fortis_ and _G. scandens_"
 ggplot(data = finches,
        mapping = aes(x = blength,
                      y = bdepth,
                      colour = species)) +
   geom_point() +
-  facet_wrap(facets = vars(year))
+  facet_wrap(facets = vars(year)) +
+  labs(x = "beak length (mm)",
+       y = "beak depth (mm)")
 ```
 
 It seems that there is a potential linear relationship between beak depth and beak length. There are some differences between the two species and two time points with, what seems, more spread in the data in 2012. The data for both species also seem to be less separated than in 1975.
@@ -60,23 +64,31 @@ Let's look at the _G. fortis_ data more closely, assuming that the have a linear
 ```{r}
 #| echo: false
 #| message: false
+#| label: fig-lm_fortis_1975
+#| fig-cap: "Beak depth vs beak length _G. fortis_ (1975)"
 ggplot(data = fortis_1975,
        mapping = aes(x = blength,
                      y = bdepth)) +
   geom_point() +
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm") +
+  labs(x = "beak length (mm)",
+       y = "beak depth (mm)")
 ```
 
 If you recall from the [Core statistics linear regression](https://cambiotraining.github.io/corestats/materials/cs3_practical_linear-regression.html) session, what we're doing here is assuming that there is a linear relationship between the response variable (in this case `bdepth`) and predictor variable (here, `blength`).
 
 We can get more information on this linear relationship by defining a linear model, which has the form of:
 
-$Y = \beta_0 + \beta_1X$
+$$
+Y = \beta_0 + \beta_1X
+$$
 
 where $Y$ is the response variable (the thing we're interested in), $X$ the predictor variable and $\beta_0$ and $\beta_1$ are model coefficients. 
 More explicitly for our data, we get:
 
-$bdepth = \beta_0 + \beta_1 \times blength$
+$$
+beak\ depth = \beta_0 + \beta_1 \times beak\ length
+$$
 
 ```{r}
 #| echo: false
@@ -97,6 +109,8 @@ Let's look at this for one of the observations, for example finch 473:
 ```{r}
 #| echo: false
 #| message: false
+#| label: fig-finch473
+#| fig-cap: "Beak depth vs beak length (finch 473, 1975)"
 fortis_1975_example <- fortis_1975 %>% 
   mutate(min_depth = min(bdepth),
          max_depth = max(bdepth),
@@ -114,9 +128,8 @@ fortis_1975_example %>%
   ggplot(aes(blength, bdepth)) +
   geom_point(colour = "#999999") +
   theme_bw() +
-  labs(title = "Finch 473 (1975)",
-       x = "Beak length (mm)",
-       y = "Beak depth (mm)") +
+  labs(x = "beak length (mm)",
+       y = "beak depth (mm)") +
   geom_point(data = . %>% filter(band == 473),
              mapping = aes(blength, bdepth),
              colour = "#D55E00",
@@ -160,10 +173,10 @@ The linear line where the sum-of-squares is at its smallest, is called the **lin
 
 For finch 473 we have the following values:
 
-* the observed beak depth is `r finch473 %>% pull(bdepth)`
-* the observed beak length is `r finch473 %>% pull(blength)`
-* the fitted value is `r fortis_1975_example %>% filter(band == 473) %>% pull(.fitted) %>% round(digits = 2)`
-* the error is `r fortis_1975_example %>% filter(band == 473) %>% pull(.resid) %>% round(digits = 2)`
+* the observed beak depth is `r finch473 %>% pull(bdepth)` mm
+* the observed beak length is `r finch473 %>% pull(blength)` mm
+* the fitted value is `r fortis_1975_example %>% filter(band == 473) %>% pull(.fitted) %>% round(digits = 2)` mm
+* the error is `r fortis_1975_example %>% filter(band == 473) %>% pull(.resid) %>% round(digits = 2)` mm
 
 ### Linear regression
 
@@ -176,13 +189,15 @@ Visually, that looks like this:
 ```{r}
 #| echo: false
 #| message: false
+#| label: fig-lm_regression
+#| fig-cap: "Regression: is the slope different from zero?"
 fortis_1975_example %>%
   ggplot(aes(blength, bdepth)) +
   geom_point(colour = "#999999") +
   theme_bw() +
   labs(title = "Finch beak observations (1975)",
-       x = "Beak length (mm)",
-       y = "Beak depth (mm)") +
+       x = "beak length (mm)",
+       y = "beak depth (mm)") +
   geom_smooth(method = "lm", se = FALSE) +
   geom_hline(yintercept = fortis_1975_example %>%
                summarise(mean_bd = mean(bdepth)) %>%
@@ -200,15 +215,21 @@ Needless to say, this p-value is extremely small, and definitely smaller than an
 
 In this case the model has an **intercept** ($\beta_0$) of `r round(lm_fortis_1975$coefficients[1], 2)` and a **slope** ($\beta_1$) of `r round(lm_fortis_1975$coefficients[2], 2)`. We can use this to write a simple linear equation, describing our data. Remember that this takes the form of:
 
-$Y = \beta_0 + \beta_1X$
+$$
+Y = \beta_0 + \beta_1X
+$$
 
 which in our case is
 
-$bdepth = \beta_0 + \beta_1 \times blength$
+$$
+beak\ depth = \beta_0 + \beta_1 \times beak\ length
+$$
 
 and gives us
 
-$bdepth = -0.34 + 0.90 \times blength$
+$$
+beak\ depth = -0.34 + 0.90 \times beak\ length
+$$
 
 ### Assumptions
 
@@ -225,6 +246,8 @@ As we did many times during the [Core statistics](https://cambiotraining.github.
 ```{r}
 #| echo: false
 #| message: false
+#| label: fig-fortis1975_lm_dgplots
+#| fig-cap: "Diagnostic plots for _G. fortis_ (1975) model"
 lm_fortis_1975 %>% 
   resid_panel(plots = c("resid", "qq", "ls", "cookd"),
               smoother = TRUE)
