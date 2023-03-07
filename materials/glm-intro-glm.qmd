@@ -25,7 +25,7 @@ finches <- read_csv("data/finch_beaks.csv")
 fortis_1975 <- finches %>% filter(species == "fortis", year == 1975)
 ```
 
-## Putting the "G" into "GLM"
+## Putting the "G" into GLM
 
 In the previous linear model example all the assumptions were met. But what if we have data where that isn't the case? For example, what if we have data where we _can't_ describe the relationship between the predictor and response variables in a linear way?
 
@@ -232,29 +232,82 @@ p5 <- glm_early %>%
 p3
 ```
 
-The data in @fig-beak_class show the classification of beak shape for a collection of finches. They are either classed as `blunt` or `pointed`. Various (continuous) measurements were taken from each bird, with the beak depth shown here.
+The data in @fig-beak_class show the classification of beak shape for a collection of finches. They are either classed as `blunt` or `pointed`. Various (continuous) measurements were taken from each bird, with the beak length shown here.
 
-We'll look into this example in more detail later. For now it's important to note that the response variable (`class`) is not continuous. In this case, it's a binary response (`blunt` or `pointed`). As a result, the assumptions for a regular linear model go out of the window If we were foolish enough to fit a linear model to these data, then the residuals would look rather non-normal (@fig-beak_residuals, A).
+We'll look into this example in more detail later. For now it's important to note that the response variable (`class`) is not continuous. In this case, it's a binary response (`blunt` or `pointed`). As a result, the assumptions for a regular linear model go out of the window. If we were foolish enough to fit a linear model to these data, then the residuals would look rather non-normal (@fig-beak_residuals).
 
-With generalised linear models we can actually still _model_ these data as a linear relationship between the predictor (beak length) and response variable (class). But we do this through a **link function** that is able to map this linear predictor to the non-linear relationship in the data.
+<!-- With generalised linear models we can actually still _model_ these data as a linear relationship between the predictor (beak length) and response variable (class). But we do this through a **link function** that is able to map this linear predictor to the non-linear relationship in the data. -->
 
-When we do this and then look at the residuals, we end up with residuals that are much more normally distributed (@fig-beak_residuals, B).
+<!-- When we do this and then look at the residuals, we end up with residuals that are much more normally distributed (@fig-beak_residuals, B). -->
 
 ```{r}
 #| echo: false
 #| label: fig-beak_residuals
 #| fig-cap: Beak class model residuals
-(p4 + p5) +
-  plot_annotation(tag_levels = "A")
+p4
 ```
+
+So what do we do? Well, the normal distribution is not the only one there is. In @fig-dist_examples there are a few examples of distributions (including the normal one).
+
+```{r}
+#| echo: false
+#| label: fig-dist_examples
+#| fig-cap: Different distributions
+
+df <- data.frame()
+
+pl_norm <- ggplot(df) +
+  stat_halfeye(aes(xdist = dist_normal(0, 1))) +
+  labs(title = "normal distribution")
+
+pl_log <- ggplot(df) +
+  stat_histinterval(aes(xdist = dist_logistic(0, 1))) +
+  labs(title = "logistic distribution")
+
+
+pl_pois <- ggplot(df) +
+    stat_histinterval(aes(xdist = dist_poisson(10))) +
+  labs(title = "poisson distribution")
+
+pl_exp <- ggplot(df) +
+  stat_halfeye(aes(xdist = dist_exponential(10))) +
+  labs(title = "exponential distribution")
+
+
+(pl_norm + pl_log) / (pl_pois + pl_exp)
+```
+
+In order to understand how this can help us, we need to be aware of two more concepts: **linear predictors** and **link functions**.
 
 ## Linear predictors
 
+The nice thing about linear models is that the predictors are, well, linear. Straight lines make for easy interpretation of any potential relationship between predictor and response.
+
+As mentioned before, predictors are in the form of a _linear combination_, where each predictor variable is multiplied by a coefficient and all the terms are added together:
+
+$$
+\beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_3 + ...
+$$
+
+Fortunately, this is no different for generalised linear models! We still have a linear combination but, as we'll see, if the relationship is not linear then we need an additional step before we can model the data.
+
+At this point, we have two options at our disposal (well, there are more, but let's not muddy the waters too much).
+
+:::{.callout-important}
+
+1. Transform our data and use a normal linear model
+2. Use a GLM
+:::
+
+The first option, transforming our data, seems like a useful option and can work. It keeps things familiar (we'd still use a standard linear model) and all is well with the world. Up to the point of interpreting the data. If we, for example, log-transform our data, how do we interpret this? After all, the outcome of the linear model is directly related to the predicted response variable. Furthermore, although transforming the data may normalise the residuals, it also changes the ratio scale properties of the measured variables [@stevens1946].
+
+The second option would be to use a generalised linear model. Here we keep the data the same, but we _transform the linear predictor_, enabling us to drop the assumption that the response variable comes from a normal distribution. This transformation is done using a link function, which maps the non-linear response to a linear one.
+
 ## Link functions
 
-Let's look some data that come from an analysis of gene flow across two finch species.
+Right, now we've got that out of the way, let's illustrate this with an example. We'll look at some data that come from an analysis of gene flow across two finch species [@lamichhaney2020].
 
-Two species, _Geospiza fortis_ and _G. scandens_. There are measurements that are split by a uniquely timed event: an particularly strong El Nino event in 1983 changed the vegetation and food supply of the finches, allowing F1 hybrids to survive. These measurements are classed as `early` (pre-1983) and `late` (1983 onwards).
+Two species, _Geospiza fortis_ and _G. scandens_. There are measurements that are split by a uniquely timed event: a particularly strong El Niño event in 1983 changed the vegetation and food supply of the finches, allowing F1 hybrids to survive. These measurements are classed as `early` (pre-1983) and `late` (1983 onwards).
 
 ```{r}
 #| echo: false
@@ -270,10 +323,10 @@ library(janitor)
 
 finches_2020 <- finches_2020 %>% 
   clean_names() %>% 
-  mutate(timepoint = (str_detect(group, "Late")),
+  rename(class = group) %>% 
+  mutate(timepoint = (str_detect(class, "Late")),
          timepoint = if_else(timepoint == FALSE, "early", "late"),
-         timepoint = factor(timepoint)) %>% 
-  rename(class = group)
+         timepoint = factor(timepoint))
   
 ```
 
@@ -283,7 +336,7 @@ Visualising the different groups:
 #| echo: false
 #| message: false
 #| label: fig-beak_classification
-#| fig-cap: "Beak classification pre- and post El Nino"
+#| fig-cap: "Beak classification pre- and post El Niño"
 finches_2020 %>% 
 ggplot(aes(x = blength, y = class,
            colour = species)) +
