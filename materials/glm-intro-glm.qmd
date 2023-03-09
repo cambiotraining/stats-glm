@@ -346,7 +346,7 @@ We could then try to model this with the knowledge we've got so far and perform 
 
 This is really bad practice. Why? Well, the linear model suggests that it is possible to have a higher than 100%, and lower-than-zero, probability that a beak would be pointed! That, makes no sense. So, we can't describe these data with some kind of linear relationship.
 
-We'll use a _logistic regression_ to analyse these data. We'll cover that in more detail in a later chapter, but for now it's sufficient to realise that one of the ways we could model these data could look like this:
+Instead, we'll use a _logistic model_ to analyse these data. We'll cover the practicalities of how to do this in more detail in a later chapter, but for now it's sufficient to realise that one of the ways we could model these data could look like this:
 
 ```{r}
 #| echo: false
@@ -364,7 +364,7 @@ ggplot(early_finches, aes(x = blength, y = pointed_beak)) +
 
 This sigmoidal curve at least ensures that our predicted probabilities do not exceed the $[0, 1]$ range.
 
-Now, what happened behind the scenes here is that the generalised linear model has taken the linear predictor and transformed it using the _logit_ function. This links the linear predictor to the non-linear _outcome_ (or response). Conversely, we can look at the fitted values of the model (before they get transformed). They look like this:
+Now, what happened behind the scenes is that the generalised linear model has taken the linear predictor and transformed it using the _logit_ function. This links the linear predictor to the non-linear _outcome_ (or response). Conversely, we can look at the fitted values of the model (before they get transformed). They look like this:
 
 ```{r}
 #| echo: false
