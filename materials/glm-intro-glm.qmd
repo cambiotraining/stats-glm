@@ -190,43 +190,6 @@ p4 <- lm_early %>%
 
 ```{r}
 #| echo: false
-glm_early <- glm(pointed_beak ~ blength,
-                 family = binomial(link = "logit"),
-                 data = early_finches)
-
-mean_resid_early_glm <- glm_early %>% 
-  resid() %>%
-  as_tibble() %>%
-  summarise(mean = mean(value)) %>% 
-  pull()
-
-sd_resid_early_glm <- glm_early %>% 
-  resid() %>%
-  as_tibble() %>%
-  summarise(sd = sd(value)) %>% 
-  pull()
-
-p5 <- glm_early %>% 
-  resid() %>%
-  as_tibble() %>%
-  #rstatix::get_summary_stats()
-  ggplot(aes(x = value)) +
-  
-  stat_dist_halfeye(aes(dist = dist_normal(mean_resid_early_glm,
-                                           sd_resid_early_glm)),
-                    orientation = "horizontal") +
-    stat_dotsinterval(aes(x = value),
-                    orientation = "horizontal",
-                    fill = "firebrick", scale = 1) +
-    geom_vline(xintercept = mean_resid_early_glm,
-               colour = "blue", linetype = "dashed") +
-    labs(title = "through link function",
-       x = NULL,
-       y = "probability")
-```
-
-```{r}
-#| echo: false
 #| label: fig-beak_class
 #| fig-cap: "Classification in beak shape"
 p3
@@ -277,6 +240,8 @@ pl_exp <- ggplot(df) +
 (pl_norm + pl_log) / (pl_pois + pl_exp)
 ```
 
+Different distributions are useful for different types of data. For example, a logistic distribution is particularly useful in the context of binary or proportional response data. The Poisson distribution is useful when we've got count data.
+
 In order to understand how this can help us, we need to be aware of two more concepts: **linear predictors** and **link functions**.
 
 ## Linear predictors
@@ -295,19 +260,19 @@ At this point, we have two options at our disposal (well, there are more, but le
 
 :::{.callout-important}
 
-1. Transform our data and use a normal linear model
-2. Use a GLM
+1. Transform our data and use a normal linear model on the transformed data
+2. Use a generalised linear model (GLM)
 :::
 
-The first option, transforming our data, seems like a useful option and can work. It keeps things familiar (we'd still use a standard linear model) and all is well with the world. Up to the point of interpreting the data. If we, for example, log-transform our data, how do we interpret this? After all, the outcome of the linear model is directly related to the predicted response variable. Furthermore, although transforming the data may normalise the residuals, it also changes the ratio scale properties of the measured variables [@stevens1946].
+The first option, transforming our data, seems like a useful option and can work. It keeps things familiar (we'd still use a standard linear model) and so all is well with the world. Up to the point of interpreting the data. If we, for example, log-transform our data, how do we interpret this? After all, the predictions of the linear model are directly related to the outcome or response variable. Transforming the data is usually done so that the residuals of the linear model resemble a more normal distribution. An unwanted side-effect of this is that this also changes the ratio scale properties of the measured variables [@stevens1946].
 
-The second option would be to use a generalised linear model. Here we keep the data the same, but we _transform the linear predictor_, enabling us to drop the assumption that the response variable comes from a normal distribution. This transformation is done using a link function, which maps the non-linear response to a linear one.
+The second option would be to use a generalised linear model. Here we leave the data the same, and instead we _transform the linear predictor_. This enables us to map a _non-linear_ outcome (or response variable) to a _linear_ model. This transformation is done using a **link function**.
 
 ## Link functions
 
 Right, now we've got that out of the way, let's illustrate this with an example. We'll look at some data that come from an analysis of gene flow across two finch species [@lamichhaney2020].
 
-Two species, _Geospiza fortis_ and _G. scandens_. There are measurements that are split by a uniquely timed event: a particularly strong El Niño event in 1983 changed the vegetation and food supply of the finches, allowing F1 hybrids to survive. These measurements are classed as `early` (pre-1983) and `late` (1983 onwards).
+The data focus on two species, _Geospiza fortis_ and _G. scandens_. The measurements are split by a uniquely timed event: a particularly strong El Niño event in 1983. This event changed the vegetation and food supply of the finches, allowing F1 hybrids of the two species to survive, whereas before 1983 they could not. The measurements are classed as `early` (pre-1983) and `late` (1983 onwards).
 
 ```{r}
 #| echo: false
@@ -330,7 +295,7 @@ finches_2020 <- finches_2020 %>%
   
 ```
 
-Visualising the different groups:
+Let's first look at the different groups:
 
 ```{r}
 #| echo: false
@@ -346,83 +311,89 @@ ggplot(aes(x = blength, y = class,
        y = "class")
 ```
 
-We can see that in the early time point (pre-1983) both species had relatively clear beak shapes. Generally, _G. fortis_ had blunt beaks, whereas _G. scandens_ had pointed beaks.
+We can see that in the early time point (pre-1983) both species had relatively distinct beak shapes. Generally, _G. fortis_ had blunt beaks, whereas _G. scandens_ had pointed beaks.
 
-Let's say we were in a situation where we only had the beak length measurements. Could we make some predictions about the species? Let's first focus on just the early time points.
+After the 1983 El Niño event, some of the F1 hybrids between the two species survived which, over time, started to show intermediate beak shapes. There's a lot more to this story, and we'll come back to it later. For now, let's say we were in a situation where we did not have the beak classification. but we did have the beak length measurements.
+
+Could we make some predictions about how likely a given measurement would be classified as blunt or pointed? Let's focus on just the early time points, where the effect is most pronounced. This is visualised in @fig-beak_classification_nospecies, A.
 
 ```{r}
 #| echo: false
 #| message: false
 #| label: fig-beak_classification_nospecies
-#| fig-cap: "Beak classification without species information"
+#| fig-cap: "Beak classification without class information"
 # filter for early time points
 early_finches <- finches_2020 %>% 
   filter(timepoint == "early") %>% 
   mutate(pointed_beak = if_else(str_detect(class, "blunt"), 0, 1))
 
-ggplot(early_finches, aes(x = blength, y = pointed_beak)) +
+p1 <- ggplot(early_finches, aes(x = blength, y = pointed_beak)) +
   geom_point() +
   labs(x = "beak length (mm)",
-       y = "pointed beak")
+       y = "probability of having a pointed beak")
+
+p2 <- ggplot(early_finches, aes(x = blength, y = pointed_beak)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+    labs(x = "beak length (mm)",
+         y = "probability of having a pointed beak")
+
+(p1 + p2) +
+  plot_annotation(tag_levels = "A")
 ```
 
-We could try to model this with the knowledge we've got so far and perform a linear regression analysis.
+We could then try to model this with the knowledge we've got so far and perform a linear regression analysis, the results of which are in @fig-beak_classification_nospecies, B.
+
+This is really bad practice. Why? Well, the linear model suggests that it is possible to have a higher than 100%, and lower-than-zero, probability that a beak would be pointed! That, makes no sense. So, we can't describe these data with some kind of linear relationship.
+
+We'll use a _logistic regression_ to analyse these data. We'll cover that in more detail in a later chapter, but for now it's sufficient to realise that one of the ways we could model these data could look like this:
 
 ```{r}
+#| echo: false
+#| message: false
+#| label: fig-beak_class_glm
+#| fig-cap: "Logistic model for beak classification"
 ggplot(early_finches, aes(x = blength, y = pointed_beak)) +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE)
+  geom_smooth(method = "glm",
+              method.args = list(family = "binomial"),
+              se = FALSE) +
+  labs(x = "beak length (mm)",
+       y = "probability of having a pointed beak")
 ```
 
-```{r}
-lm_early <- lm(pointed_beak ~ blength,
-               data = early_finches)
+This sigmoidal curve at least ensures that our predicted probabilities do not exceed the $[0, 1]$ range.
 
-anova(lm_early)
-
-lm_early %>% 
-  resid_panel(plots = c("resid", "qq", "ls", "cookd"),
-              smoother = TRUE)
-
-lm_early %>% 
-  augment() %>% 
-  ggplot(aes(x = .resid)) +
-  geom_histogram()
-```
-
-Assumptions are definitely violated. Surprisingly, the Q-Q plot and histogram of the residuals doesn't look too bad.
-
-But we can't describe these data with some kind of linear relationship, of course.
+Now, what happened behind the scenes here is that the generalised linear model has taken the linear predictor and transformed it using the _logit_ function. This links the linear predictor to the non-linear _outcome_ (or response). Conversely, we can look at the fitted values of the model (before they get transformed). They look like this:
 
 ```{r}
+#| echo: false
+#| message: false
+#| label: fig-beak_class_glm_fitted
+#| fig-cap: "Fitted values for beak classification"
 glm_early <- glm(pointed_beak ~ blength,
                  family = binomial(link = "logit"),
                  data = early_finches)
 
-summary(glm_early)
-```
-
-Let's plot the fitted model values:
-
-```{r}
 glm_early %>% 
   augment() %>% 
   ggplot(aes(x = blength, y = .fitted)) +
-  geom_point(colour = "blue")
+  geom_point(colour = "blue") +
+  labs(x = "beak length (mm)",
+       y = "fitted model values")
 ```
 
-Main points:
+As we can see, the values predicted by the model are still on a linear scale!
 
-* `blength` is a significant predictor of `pointed_beak`
-* the fitted model values are still linear!
+The fitted model values are linear because the non-linear outcome (the relationship between beak length and beak classification) is linearised by the model, through the link function.
 
-The fitted model values are linear because the non-linear relationship between beak length and beak type is linearised by the model. It does so using a **link function**.
-
-In this case the default link function for the binomial family of models is the **logit** function.
-
-So the values we're seeing are on a logit scale. If we wanted to visualise the actual _probabilities_, we could do that as follows (also displaying the model predictions as a dashed line for clarity):
+In this case we've used the _logit_ link function (more on this later). So the values we're seeing are on a logit scale. If we wanted to visualise the actual _probabilities_, we could do that as follows (also displaying the model predictions as a dashed line for clarity):
 
 ```{r}
+#| echo: false
+#| message: false
+#| label: fig-beak_class_glm_probs
+#| fig-cap: "Predicted probabilities for beak classification"
 glm_early %>% 
   augment(type.predict = "response") %>% 
   ggplot() +
@@ -432,19 +403,64 @@ glm_early %>%
             colour = "blue") +
   geom_point(aes(x = blength, y = .fitted),
              colour = "blue", alpha = 0.4) +
-  labs(title = "Logistic model predictions for pointed beaks",
-       x = "beak length (mm)",
+  labs(x = "beak length (mm)",
        y = "Probability")
 ```
 
 From this we can see that the probability of having a pointed beak (which is considered a "success") is approaching 1 as the beak length gets longer.
 
+What about the residuals of the model? If all is well, then the residuals should, following the transformation, approach normality.
+
 ```{r}
-library(modelr)
+#| echo: false
+#| message: false
+#| label: fig-beak_class_residuals
+#| fig-cap: "Residuals before and after link function"
+glm_early <- glm(pointed_beak ~ blength,
+                 family = binomial(link = "logit"),
+                 data = early_finches)
 
-blength <- data.frame(blength = c(8.2, 9.4, 11.6, 12.8, 13.9, 15.7))
+mean_resid_early_glm <- glm_early %>% 
+  resid() %>%
+  as_tibble() %>%
+  summarise(mean = mean(value)) %>% 
+  pull()
 
-add_predictions(blength, glm_early,
-                type = "response")
+sd_resid_early_glm <- glm_early %>% 
+  resid() %>%
+  as_tibble() %>%
+  summarise(sd = sd(value)) %>% 
+  pull()
+
+p5 <- glm_early %>% 
+  resid() %>%
+  as_tibble() %>%
+  #rstatix::get_summary_stats()
+  ggplot(aes(x = value)) +
+  
+  stat_dist_halfeye(aes(dist = dist_normal(mean_resid_early_glm,
+                                           sd_resid_early_glm)),
+                    orientation = "horizontal") +
+    stat_dotsinterval(aes(x = value),
+                    orientation = "horizontal",
+                    fill = "firebrick", scale = 1) +
+    geom_vline(xintercept = mean_resid_early_glm,
+               colour = "blue", linetype = "dashed") +
+    labs(title = "through link function",
+       x = NULL,
+       y = "probability")
+
+(p4 + p5) +
+  plot_annotation(tag_levels = "A")
 ```
 
+This is displayed in @fig-beak_class_residuals. We can see the original residuals (based on the standard linear model) in @fig-beak_class_residuals, A. We've seen these before, with the corresponding hypothetical normal distribution in the background for comparison. The residuals look markedly different to a normal distribution!
+
+In contrast, the residuals of the generalised linear model we created, via the link function, are in @fig-beak_class_residuals, B. They are not perfect, but clearly much improved!
+
+## Key points
+
+::: {.callout-note}
+- GLMs allow us to map a non-linear outcome to a linear model
+- The link function determines _how_ this occurs, transforming the linear predictor
+:::
