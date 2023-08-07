@@ -28,7 +28,6 @@ $callout-color-caution: #D62828;
 $callout-color-warning: #D62828;
 $callout-color-important: #28828A;
 
-
 /*-- scss:rules --*/
 
 // headings colour
@@ -43,7 +42,9 @@ div.sidebar-item-container .active {
 
 // part titles text bold
 div.sidebar-item-container .text-start {
+  color: #003a41;
   font-weight: bold;
+  font-size: 0.8rem;
 }
 
 // active links - affects header and TOC navigation bar

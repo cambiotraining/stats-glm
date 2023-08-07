@@ -17,12 +17,14 @@ exec(open('setup_files/setup.py').read())
 
 ## Data
 
-For this example, we'll be using the `finches` data set.
+For this example, we'll be using the several data sets about Darwin's finches. They are part of a long-term genetic and phenotypic study on the evolution of several species of finches. The exact details are less important for now, but there are data on multiple species where several phenotypic characteristics were measured (see @fig-finchphenotypes).
+
+![Finches phenotypes (courtesy of [HHMI BioInteractive](https://www.biointeractive.org))](images/finches-phenotypes.png){width=75% #fig-finchphenotypes}
 
 ```{r}
 #| echo: false
 #| message: false
-finches <- read_csv("data/finch_beaks.csv")
+finches <- read_csv("data/finches_beaks.csv")
 ```
 
 ## Exploring data
@@ -109,6 +111,7 @@ Let's look at this for one of the observations, for example finch 473:
 ```{r}
 #| echo: false
 #| message: false
+#| warning: false
 #| label: fig-finch473
 #| fig-cap: "Beak depth vs beak length (finch 473, 1975)"
 fortis_1975_example <- fortis_1975 %>% 
@@ -140,6 +143,7 @@ fortis_1975_example %>%
                aes(x = blength, xend = blength,
                    y = min_depth, yend = bdepth),
                linetype = "dashed",
+               linewidth = 1,
                colour = "#D55E00") +
   annotate(geom = "text", x = 10.55, y = 8, hjust = 0,
            label = "observed beak length") +
@@ -147,6 +151,7 @@ fortis_1975_example %>%
                aes(x = min_length, xend = blength,
                    y = bdepth, yend = bdepth),
                linetype = "dashed",
+               linewidth = 1,
                colour = "#D55E00") +
   geom_smooth(method = "lm", se = FALSE) +
   geom_point(data = finch473, aes(x = blength,
@@ -202,7 +207,9 @@ fortis_1975_example %>%
   geom_hline(yintercept = fortis_1975_example %>%
                summarise(mean_bd = mean(bdepth)) %>%
                pull(),
-             linetype = "dashed", colour = "#D55E00") +
+             linetype = "dashed", 
+             linewidth = 1,
+             colour = "#D55E00") +
   annotate(geom = "text", x = 8.5, y = 9.3, hjust = 0,
            label = "average beak depth")
 ```
@@ -238,7 +245,7 @@ In example above we just got on with things once we suspected that there was a l
 1. Data should be linear
 2. Residuals are normally distributed
 3. Equality of variance
-4. Data are independent
+4. The residuals are independent
 5. (no influential points)
 
 As we did many times during the [Core statistics](https://cambiotraining.github.io/corestats/) sessions, we mainly rely on diagnostic plots to check these assumptions. For this particular model they look as follows:

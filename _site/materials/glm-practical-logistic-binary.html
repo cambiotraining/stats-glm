@@ -80,6 +80,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -260,9 +279,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#load-and-visualise-the-data" id="toc-load-and-visualise-the-data" class="nav-link" data-scroll-target="#load-and-visualise-the-data"><span class="toc-section-number">7.2</span>  Load and visualise the data</a></li>
   <li><a href="#creating-a-suitable-model" id="toc-creating-a-suitable-model" class="nav-link" data-scroll-target="#creating-a-suitable-model"><span class="toc-section-number">7.3</span>  Creating a suitable model</a></li>
   <li><a href="#model-output" id="toc-model-output" class="nav-link" data-scroll-target="#model-output"><span class="toc-section-number">7.4</span>  Model output</a></li>
-  <li><a href="#assessing-significance" id="toc-assessing-significance" class="nav-link" data-scroll-target="#assessing-significance"><span class="toc-section-number">7.5</span>  Assessing significance</a></li>
-  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise"><span class="toc-section-number">7.6</span>  Exercise</a></li>
-  <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points"><span class="toc-section-number">7.7</span>  Key points</a></li>
+  <li>
+<a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="toc-section-number">7.5</span>  Exercises</a>
+  <ul class="collapse">
+<li><a href="#sec-exr_diabetes" id="toc-sec-exr_diabetes" class="nav-link" data-scroll-target="#sec-exr_diabetes"><span class="toc-section-number">7.5.1</span>  Diabetes</a></li>
+  </ul>
+</li>
+  <li><a href="#key-points" id="toc-key-points" class="nav-link" data-scroll-target="#key-points"><span class="toc-section-number">7.6</span>  Key points</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -343,17 +366,19 @@ Click to expand
 <section id="libraries-1" class="level3" data-number="7.1.3"><h3 data-number="7.1.3" class="anchored" data-anchor-id="libraries-1">
 <span class="header-section-number">7.1.3</span> Libraries</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A Python data analysis and manipulation tool</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Python equivalent of `ggplot2`</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Statistical models, conducting tests and statistical data exploration</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Convenience interface for specifying models using formula strings and DataFrames</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A maths library</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># A Python data analysis and manipulation tool</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Python equivalent of `ggplot2`</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Statistical models, conducting tests and statistical data exploration</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Convenience interface for specifying models using formula strings and DataFrames</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="functions-1" class="level3" data-number="7.1.4"><h3 data-number="7.1.4" class="anchored" data-anchor-id="functions-1">
 <span class="header-section-number">7.1.4</span> Functions</h3>
@@ -365,8 +390,10 @@ Click to expand
 </div>
 </div>
 <p>The example in this section uses the following data set:</p>
-<p><code>data/diabetes.csv</code></p>
-<p>This is a data set comprising 768 observations of three variables (one dependent and two predictor variables). This records the results of a diabetes test result as a binary variable (1 is a positive result, 0 is a negative result), along with the result of a glucose test and the diastolic blood pressure for each of 767 women. The variables are called <code>test_result</code>, <code>glucose</code> and <code>diastolic</code>.</p>
+<p><code>data/finches_early.csv</code></p>
+<p>These data come from an analysis of gene flow across two finch species <span class="citation" data-cites="lamichhaney2020">(<a href="../references.html#ref-lamichhaney2020" role="doc-biblioref">Lamichhaney et al. 2020</a>)</span>. They are slightly adapted here for illustrative purposes.</p>
+<p>The data focus on two species, <em>Geospiza fortis</em> and <em>G. scandens</em>. The original measurements are split by a uniquely timed event: a particularly strong El Niño event in 1983. This event changed the vegetation and food supply of the finches, allowing F1 hybrids of the two species to survive, whereas before 1983 they could not. The measurements are classed as <code>early</code> (pre-1983) and <code>late</code> (1983 onwards).</p>
+<p>Here we are looking only at the <code>early</code> data. We are specifically focussing on the beak shape classification, which we saw earlier in <a href="glm-intro-glm.html#fig-beak_shape_glm">Figure&nbsp;<span>6.5</span></a>.</p>
 </section><section id="load-and-visualise-the-data" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="load-and-visualise-the-data">
 <span class="header-section-number">7.2</span> Load and visualise the data</h2>
 <p>First we load the data, then we visualise it.</p>
@@ -378,18 +405,18 @@ Click to expand
 <div class="tab-content" data-group="language">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">diabetes</span> <span class="op">&lt;-</span> <span class="fu">read_csv</span><span class="op">(</span><span class="st">"data/diabetes.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">early_finches</span> <span class="op">&lt;-</span> <span class="fu">read_csv</span><span class="op">(</span><span class="st">"data/finches_early.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>diabetes_py <span class="op">=</span> pd.read_csv(<span class="st">"data/diabetes.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>early_finches_py <span class="op">=</span> pd.read_csv(<span class="st">"data/finches_early.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
 </div>
-<p>Looking at the data, we can see that the <code>test_result</code> column contains zeros and ones. These are yes/no test result outcomes and not actually numeric representations.</p>
-<p>We’ll have to deal with this soon. For now, we can plot the data, by outcome:</p>
+<p>Looking at the data, we can see that the <code>pointed_beak</code> column contains zeros and ones. These are actually yes/no classification outcomes and not numeric representations.</p>
+<p>We’ll have to deal with this soon. For now, we can plot the data:</p>
 <div class="panel-tabset" data-group="language">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li>
@@ -398,9 +425,9 @@ Click to expand
 <div class="tab-content" data-group="language">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">diabetes</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">test_result</span><span class="op">)</span>,</span>
-<span>             y <span class="op">=</span> <span class="va">glucose</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">early_finches</span>,</span>
+<span>       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">pointed_beak</span><span class="op">)</span>,</span>
+<span>          y <span class="op">=</span> <span class="va">blength</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
@@ -408,12 +435,12 @@ Click to expand
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<p>We could just give Python the <code>test_result</code> data directly, but then it would view the values as numeric. Which doesn’t really work, because we have two groups as such: those with a negative diabetes test result, and those with a positive one.</p>
-<p>We can force Python to temporarily covert the data to a factor, by making the <code>test_result</code> column an <code>object</code> type. We can do this directly inside the <code>ggplot()</code> function.</p>
+<p>We could just give Python the <code>pointed_beak</code> data directly, but then it would view the values as numeric. Which doesn’t really work, because we have two groups as such: those with a pointed beak (<code>1</code>), and those with a blunt one (<code>0</code>).</p>
+<p>We can force Python to temporarily covert the data to a factor, by making the <code>pointed_beak</code> column an <code>object</code> type. We can do this directly inside the <code>ggplot()</code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> diabetes_py.test_result.astype(<span class="bu">object</span>),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"glucose"</span>)) <span class="op">+</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(ggplot(early_finches_py,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> early_finches_py.pointed_beak.astype(<span class="bu">object</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"blength"</span>)) <span class="op">+</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>     geom_boxplot())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="614"></p>
@@ -422,7 +449,7 @@ Click to expand
 </div>
 </div>
 </div>
-<p>It looks as though the patients with a positive diabetes test have slightly higher glucose levels than those with a negative diabetes test.</p>
+<p>It looks as though the finches with blunt beaks generally have shorter beak lengths.</p>
 <p>We can visualise that differently by plotting all the data points as a classic binary response plot:</p>
 <div class="panel-tabset" data-group="language">
 <ul class="nav nav-tabs" role="tablist">
@@ -432,8 +459,8 @@ Click to expand
 <div class="tab-content" data-group="language">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">diabetes</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">glucose</span>, y <span class="op">=</span> <span class="va">test_result</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">early_finches</span>,</span>
+<span>       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">blength</span>, y <span class="op">=</span> <span class="va">pointed_beak</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid" width="672"></p>
@@ -442,9 +469,9 @@ Click to expand
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"glucose"</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"test_result"</span>)) <span class="op">+</span></span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(ggplot(early_finches_py,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"blength"</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"pointed_beak"</span>)) <span class="op">+</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>     geom_point())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="614"></p>
@@ -462,10 +489,10 @@ Click to expand
 <div class="tab-content" data-group="language">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">diabetes</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">glucose</span>, y <span class="op">=</span> <span class="va">test_result</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">early_finches</span>,</span>
+<span>       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">blength</span>, y <span class="op">=</span> <span class="va">pointed_beak</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_smooth</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">geom_smooth</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span>, se <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-10-3.png" class="img-fluid" width="672"></p>
 </div>
@@ -473,12 +500,13 @@ Click to expand
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"glucose"</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"test_result"</span>)) <span class="op">+</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(ggplot(early_finches_py,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"blength"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"pointed_beak"</span>)) <span class="op">+</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>     geom_point() <span class="op">+</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>     geom_smooth(method <span class="op">=</span> <span class="st">"lm"</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                 colour <span class="op">=</span> <span class="st">"blue"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                 colour <span class="op">=</span> <span class="st">"blue"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                 se <span class="op">=</span> <span class="va">False</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="614"></p>
 </div>
@@ -486,7 +514,7 @@ Click to expand
 </div>
 </div>
 </div>
-<p>Of course this is rubbish - we can’t have test results outside the range of [0, 1].</p>
+<p>Of course this is rubbish - we can’t have a beak classification outside the range of <span class="math inline">\([0, 1]\)</span>. It’s either blunt (<code>0</code>) or pointed (<code>1</code>).</p>
 <p>But for the sake of exploration, let’s look at the assumptions:</p>
 <div class="panel-tabset" data-group="language">
 <ul class="nav nav-tabs" role="tablist">
@@ -496,16 +524,12 @@ Click to expand
 <div class="tab-content" data-group="language">
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_dia</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">test_result</span> <span class="op">~</span> <span class="va">glucose</span>,</span>
-<span>             data <span class="op">=</span> <span class="va">diabetes</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_bks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">pointed_beak</span> <span class="op">~</span> <span class="va">blength</span>,</span>
+<span>             data <span class="op">=</span> <span class="va">early_finches</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">lm_dia</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">resid_panel</span><span class="op">(</span>plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"resid"</span>, <span class="st">"qq"</span>, <span class="st">"ls"</span>, <span class="st">"cookd"</span><span class="op">)</span>,</span>
-<span>              smoother <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula 'y ~ x'
-`geom_smooth()` using formula 'y ~ x'</code></pre>
-</div>
+<span><span class="fu">resid_panel</span><span class="op">(</span><span class="va">lm_bks</span>,</span>
+<span>            plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"resid"</span>, <span class="st">"qq"</span>, <span class="st">"ls"</span>, <span class="st">"cookd"</span><span class="op">)</span>,</span>
+<span>            smoother <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid" width="672"></p>
 </div>
@@ -514,22 +538,22 @@ Click to expand
 <div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
 <p>First, we create a linear model:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a linear model</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.ols(formula<span class="op">=</span> <span class="st">"test_result ~ glucose"</span>,</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> diabetes_py)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>lm_dia_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a linear model</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.ols(formula <span class="op">=</span> <span class="st">"pointed_beak ~ blength"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> early_finches_py)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>lm_bks_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we can create the diagnostic plots:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dgplots(lm_dia_py)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dgplots(lm_bks_py)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/dgplots/2023_03_06-08:43:43_am_dgplots.png" class="img-fluid" width="794"></p>
+<p><img src="images/dgplots/2023_08_07-02-26-41_PM_dgplots.png" class="img-fluid" width="805"></p>
 </div>
 </div>
 </div>
@@ -538,71 +562,35 @@ Click to expand
 <p>They’re <del>pretty</del> extremely bad.</p>
 <ul>
 <li>The response is not linear (Residual Plot, binary response plot, common sense).</li>
-<li>The residuals are not distributed normally (Q-Q Plot)</li>
+<li>The residuals do not appear to be distributed normally (Q-Q Plot)</li>
 <li>The variance is not homogeneous across the predicted values (Location-Scale Plot)</li>
 <li>But - there is always a silver lining - we don’t have influential data points.</li>
-</ul>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Viewing residuals
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Another way of viewing the residuals (apart from the Q-Q plot) is as a dot-plot. In R, the <code>ggdist</code> and <code>distributional</code> packages are extremely useful for this kind of stuff.</p>
-<p>What I’m doing here is:</p>
-<ul>
-<li>define the model</li>
-<li>create a normal distribution with <span class="math inline">\(\mu = 0\)</span> and <span class="math inline">\(\sigma = 0.415\)</span> (I’ve extracted the <span class="math inline">\(\sigma\)</span> value from the residuals with <code><a href="https://rpkgs.datanovia.com/rstatix/reference/get_summary_stats.html">rstatix::get_summary_stats()</a></code>)</li>
-<li>plot the residuals</li>
-</ul>
-<div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">diabetes</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">test_result</span> <span class="op">~</span> <span class="va">glucose</span>, data <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="co"># rstatix::get_summary_stats()</span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">stat_dist_halfeye</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>dist <span class="op">=</span> <span class="fu">dist_normal</span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.415</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                    orientation <span class="op">=</span> <span class="st">"horizontal"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">stat_dotsinterval</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">value</span><span class="op">)</span>,</span>
-<span>                    orientation <span class="op">=</span> <span class="st">"horizontal"</span>,</span>
-<span>                    fill <span class="op">=</span> <span class="st">"firebrick"</span>, scale <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Linear model (diabetes)"</span>, y <span class="op">=</span> <span class="st">"probability"</span>, x <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>This again shows us that the residuals are really not normally distributed. If they were, then they would overlap much more closely with the distribution (in grey).</p>
-</div>
-</div>
-</section><section id="creating-a-suitable-model" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="creating-a-suitable-model">
+</ul></section><section id="creating-a-suitable-model" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="creating-a-suitable-model">
 <span class="header-section-number">7.3</span> Creating a suitable model</h2>
-<p>So far we’ve established that using a simple linear model to describe a potential relationship between <code>glucose</code> levels and the probability of getting a positive test result is not a good idea. So, what <em>can</em> we do?</p>
+<p>So far we’ve established that using a simple linear model to describe a potential relationship between beak length and the probability of having a pointed beak is not a good idea. So, what <em>can</em> we do?</p>
 <p>One of the ways we can deal with binary outcome data is by performing a logistic regression. Instead of fitting a straight line to our data, and performing a regression on that, we fit a line that has an S shape. This avoids the model making predictions outside the <span class="math inline">\([0, 1]\)</span> range.</p>
-<p>There are many mathematical functions that produce S-shaped graphs. The <strong>logistic function</strong> is one of them and well-suited to these kind of data.</p>
-<p>In the most simple form a logistic function is written like this:</p>
-<p><span class="math inline">\(Y = \frac{\exp(X)}{1 + \exp(X)}\)</span></p>
-<div class="callout-important callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
+<p>We described our standard linear relationship as follows:</p>
+<p><span class="math inline">\(Y = \beta_0 + \beta_1X\)</span></p>
+<p>We can now map this to our non-linear relationship via the <strong>logistic link function</strong>:</p>
+<p><span class="math inline">\(Y = \frac{\exp(X)}{1 + \exp(\beta_0 + \beta_1X)}\)</span></p>
+<p>Note that the <span class="math inline">\(\beta_0 + \beta_1X\)</span> part is identical to the formula of a straight line.</p>
+<p>The rest of the function is what makes the straight line curve into its characteristic S shape.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Euler’s number
+Euler’s number (<span class="math inline">\(\exp\)</span>): would you like to know more?
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>In mathematics, <span class="math inline">\(\rm e\)</span> represents a constant of around 2.718. Another notation is <span class="math inline">\(\exp\)</span>, which is often used when notations become a bit cumbersome. Here, I exclusively use the <span class="math inline">\(\exp\)</span> notation for consistency.</p>
 </div>
 </div>
-<p>We can <em>generalise</em> this, by writing it as follows:</p>
-<p><span class="math inline">\(Y = \frac{\exp(X)}{1 + \exp(\beta_0 + \beta_1X)}\)</span></p>
-<p>Note that the <span class="math inline">\(\beta_0 + \beta_1X\)</span> part is identical to the formula of a straight line. We’ve come across this before when we were doing simple linear regression!</p>
-<p>The rest of the function is what makes the straight line curve into its characteristic S shape. The middle of the S (where <span class="math inline">\(Y = 0.5\)</span>) occurs when <span class="math inline">\(X = \frac{-a}{b}\)</span>.</p>
+</div>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -617,7 +605,7 @@ The logistic function
 <p>The first plot shows the logistic function in its simplest form, with the others showing the effect of varying <span class="math inline">\(\beta_1\)</span>.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <ul>
@@ -629,7 +617,7 @@ The logistic function
 </ul>
 </div>
 </div>
-<p>We can fit such an S-shaped curve to our <code>diabetes</code> data set, by creating a generalised linear model.</p>
+<p>We can fit such an S-shaped curve to our <code>early_finches</code> data set, by creating a generalised linear model.</p>
 <div class="panel-tabset" data-group="language">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">R</a></li>
@@ -637,24 +625,26 @@ The logistic function
 </ul>
 <div class="tab-content" data-group="language">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
-<p>In R we have a few options to do this, and by far the most familiar function would be <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code>. Here we save the model in an object called <code>glm_dia</code>:</p>
+<p>In R we have a few options to do this, and by far the most familiar function would be <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code>. Here we save the model in an object called <code>glm_bks</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_dia</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">test_result</span> <span class="op">~</span> <span class="va">glucose</span>,</span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_bks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">pointed_beak</span> <span class="op">~</span> <span class="va">blength</span>,</span>
 <span>               family <span class="op">=</span> <span class="va">binomial</span>,</span>
-<span>               data <span class="op">=</span> <span class="va">diabetes</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>               data <span class="op">=</span> <span class="va">early_finches</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The format of this function is similar to that used by the <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> function for linear models. The important difference is that we must specify the <em>family</em> of error distribution to use. For logistic regression we must set the family to <strong>binomial</strong>.</p>
 <p>If you forget to set the <code>family</code> argument, then the <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> function will perform a standard linear model fit, identical to what the <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> function would do.</p>
 </div>
 <div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<p>In Python we have a few options to do this, and by far the most familiar function would be <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code>. Here we save the model in an object called <code>glm_bks_py</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a linear model</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula<span class="op">=</span> <span class="st">"test_result ~ glucose"</span>,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> diabetes_py)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>glm_dia_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a linear model</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"pointed_beak ~ blength"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> early_finches_py)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>glm_bks_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>The format of this function is similar to that used by the <code>ols()</code> function for linear models. The important difference is that we must specify the <em>family</em> of error distribution to use. For logistic regression we must set the family to <strong>binomial</strong>. This is buried deep inside the <code>statsmodels</code> package and needs to be defined as <code>sm.families.Binomial()</code>.</p>
 </div>
 </div>
 </div>
@@ -669,15 +659,358 @@ The logistic function
 <div class="tab-content" data-group="language">
 <div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">glm_dia</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">glm_bks</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = pointed_beak ~ blength, family = binomial, data = early_finches)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept)  -43.410     15.250  -2.847  0.00442 **
+blength        3.387      1.193   2.839  0.00452 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 84.5476  on 60  degrees of freedom
+Residual deviance:  9.1879  on 59  degrees of freedom
+AIC: 13.188
+
+Number of Fisher Scoring iterations: 8</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_bks_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:           pointed_beak   No. Observations:                   61
+Model:                            GLM   Df Residuals:                       59
+Model Family:                Binomial   Df Model:                            1
+Link Function:                  Logit   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -4.5939
+Date:                Mon, 07 Aug 2023   Deviance:                       9.1879
+Time:                        14:26:42   Pearson chi2:                     15.1
+No. Iterations:                     8   Pseudo R-squ. (CS):             0.7093
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept    -43.4096     15.250     -2.847      0.004     -73.298     -13.521
+blength        3.3866      1.193      2.839      0.005       1.049       5.724
+==============================================================================</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>There’s a lot to unpack here, but for the purpose of today we are mostly focussing on the coefficients.</p>
+<div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<p>The coefficients can be found in the <code>Coefficients</code> block. The main numbers to extract from the output are the two numbers underneath <code>Estimate.Std</code>:</p>
+<pre><code>Coefficients:
+            Estimate Std.
+(Intercept)  -43.410
+blength        3.387 </code></pre>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<p>Right at the bottom is a table showing the model coefficients. The main numbers to extract from the output are the two numbers in the <code>coef</code> column:</p>
+<pre><code>======================
+                 coef
+----------------------
+Intercept    -43.4096
+blength        3.3866
+======================</code></pre>
+</div>
+</div>
+</div>
+<p>These are the coefficients of the logistic model equation and need to be placed in the correct equation if we want to be able to calculate the probability of having a pointed beak for a given beak length.</p>
+<p>The <span class="math inline">\(p\)</span> values at the end of each coefficient row merely show whether that particular coefficient is significantly different from zero. This is similar to the <span class="math inline">\(p\)</span> values obtained in the summary output of a linear model. As with continuous predictors in simple models, these <span class="math inline">\(p\)</span> values can be used to decide whether that predictor is important (so in this case beak length appears to be significant). However, these <span class="math inline">\(p\)</span> values aren’t great to work with when we have multiple predictor variables, or when we have categorical predictors with multiple levels (since the output will give us a <span class="math inline">\(p\)</span> value for each level rather than for the predictor as a whole).</p>
+<p>We can use the coefficients to calculate the probability of having a pointed beak for a given beak length:</p>
+<p><span class="math display">\[ P(pointed \ beak) = \frac{\exp(-43.41 + 3.39 \times blength)}{1 + \exp(-43.41 + 3.39 \times blength)} \]</span></p>
+<p>Having this formula means that we can calculate the probability of having a pointed beak for any beak length. How do we work this out in practice?</p>
+<div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<p>Well, the probability of having a pointed beak if the beak length is large (for example 15 mm) can be calculated as follows:</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">43.41</span> <span class="op">+</span> <span class="fl">3.39</span> <span class="op">*</span> <span class="fl">15</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">43.41</span> <span class="op">+</span> <span class="fl">3.39</span> <span class="op">*</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9994131</code></pre>
+</div>
+</div>
+<p>If the beak length is small (for example 10 mm), the probability of having a pointed beak is extremely low:</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">43.41</span> <span class="op">+</span> <span class="fl">3.39</span> <span class="op">*</span> <span class="fl">10</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">43.41</span> <span class="op">+</span> <span class="fl">3.39</span> <span class="op">*</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7.410155e-05</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<p>Well, the probability of having a pointed beak if the beak length is large (for example 15 mm) can be calculated as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import the math library</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>math.exp(<span class="op">-</span><span class="fl">43.41</span> <span class="op">+</span> <span class="fl">3.39</span> <span class="op">*</span> <span class="dv">15</span>) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> math.exp(<span class="op">-</span><span class="fl">43.41</span> <span class="op">+</span> <span class="fl">3.39</span> <span class="op">*</span> <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.9994130595039192</code></pre>
+</div>
+</div>
+<p>If the beak length is small (for example 10 mm), the probability of having a pointed beak is extremely low:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>math.exp(<span class="op">-</span><span class="fl">43.41</span> <span class="op">+</span> <span class="fl">3.39</span> <span class="op">*</span> <span class="dv">10</span>) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> math.exp(<span class="op">-</span><span class="fl">43.41</span> <span class="op">+</span> <span class="fl">3.39</span> <span class="op">*</span> <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>7.410155028945912e-05</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>We can calculate the the probabilities for all our observed values and if we do that then we can see that the larger the beak length is, the higher the probability that a beak shape would be pointed. I’m visualising this together with the logistic curve, where the blue points are the calculated probabilities:</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Code available here
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-11-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-2" role="tab" aria-controls="tabset-11-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
+<div class="cell">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_bks</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">augment</span><span class="op">(</span>type.predict <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">blength</span>, y <span class="op">=</span> <span class="va">pointed_beak</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">blength</span>, y <span class="op">=</span> <span class="va">.fitted</span><span class="op">)</span>,</span>
+<span>            linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
+<span>            colour <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">blength</span>, y <span class="op">=</span> <span class="va">.fitted</span><span class="op">)</span>,</span>
+<span>             colour <span class="op">=</span> <span class="st">"blue"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"beak length (mm)"</span>,</span>
+<span>       y <span class="op">=</span> <span class="st">"Probability"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-11-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-11-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>(ggplot(early_finches_py) <span class="op">+</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  geom_point(aes(x <span class="op">=</span> <span class="st">"blength"</span>, y <span class="op">=</span> <span class="st">"pointed_beak"</span>)) <span class="op">+</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  geom_line(aes(x <span class="op">=</span> <span class="st">"blength"</span>, y <span class="op">=</span> glm_bks_py.fittedvalues),</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>            linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>            colour <span class="op">=</span> <span class="st">"blue"</span>) <span class="op">+</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  geom_point(aes(x <span class="op">=</span> <span class="st">"blength"</span>, y <span class="op">=</span> glm_bks_py.fittedvalues),</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>             colour <span class="op">=</span> <span class="st">"blue"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  labs(x <span class="op">=</span> <span class="st">"beak length (mm)"</span>,</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>       y <span class="op">=</span> <span class="st">"Probability"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-beak_class_glm_probs" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/fig-beak_class_glm_probs-2.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;7.1: Predicted probabilities for beak classification</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The graph shows us that, based on the data that we have and the model we used to make predictions about our response variable, the probability of seeing a pointed beak increases with beak length.</p>
+<p>Short beaks are more closely associated with the bluntly shaped beaks, whereas long beaks are more closely associated with the pointed shape. It’s also clear that there is a range of beak lengths (around 13 mm) where the probability of getting one shape or another is much more even.</p>
+<p>There is an interesting genetic story behind all this, but that will be explained in more detail in the full-day <a href="https://cambiotraining.github.io/stats-glm/">Generalised linear models</a> course.</p>
+</section><section id="exercises" class="level2" data-number="7.5"><h2 data-number="7.5" class="anchored" data-anchor-id="exercises">
+<span class="header-section-number">7.5</span> Exercises</h2>
+<section id="sec-exr_diabetes" class="level3" data-number="7.5.1"><h3 data-number="7.5.1" class="anchored" data-anchor-id="sec-exr_diabetes">
+<span class="header-section-number">7.5.1</span> Diabetes</h3>
+<div class="callout-exercise callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><font style="font-variant: small-caps">Level:</font> <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><br></p>
+<p>For this exercise we’ll be using the data from <code>data/diabetes.csv</code>.</p>
+<p>This is a data set comprising 768 observations of three variables (one dependent and two predictor variables). This records the results of a diabetes test result as a binary variable (1 is a positive result, 0 is a negative result), along with the result of a glucose tolerance test and the diastolic blood pressure for each of 768 women. The variables are called <code>test_result</code>, <code>glucose</code> and <code>diastolic</code>.</p>
+<p>We want to see if the <code>glucose</code> tolerance is a meaningful predictor for predictions on a diabetes test. To investigate this, do the following:</p>
+<ol type="1">
+<li>Load and visualise the data</li>
+<li>Create a suitable model</li>
+<li>Determine if there are any statistically significant predictors</li>
+<li>Calculate the probability of a positive diabetes test result for a glucose tolerance test value of <code>glucose = 150</code>
+</li>
+</ol>
+<div class="callout-answer callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<section id="load-and-visualise-the-data-1" class="level4"><h4 class="anchored" data-anchor-id="load-and-visualise-the-data-1">Load and visualise the data</h4>
+<p>First we load the data, then we visualise it.</p>
+<div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
+<div class="cell">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">diabetes</span> <span class="op">&lt;-</span> <span class="fu">read_csv</span><span class="op">(</span><span class="st">"data/diabetes.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>diabetes_py <span class="op">=</span> pd.read_csv(<span class="st">"data/diabetes.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>Looking at the data, we can see that the <code>test_result</code> column contains zeros and ones. These are yes/no test result outcomes and not actually numeric representations.</p>
+<p>We’ll have to deal with this soon. For now, we can plot the data, by outcome:</p>
+<div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-13-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-1" role="tab" aria-controls="tabset-13-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-2" role="tab" aria-controls="tabset-13-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-13-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-13-1-tab">
+<div class="cell">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">diabetes</span>,</span>
+<span>       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">test_result</span><span class="op">)</span>,</span>
+<span>           y <span class="op">=</span> <span class="va">glucose</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-13-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-2-tab">
+<p>We could just give Python the <code>test_result</code> data directly, but then it would view the values as numeric. Which doesn’t really work, because we have two groups as such: those with a negative diabetes test result, and those with a positive one.</p>
+<p>We can force Python to temporarily covert the data to a factor, by making the <code>test_result</code> column an <code>object</code> type. We can do this directly inside the <code>ggplot()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> diabetes_py.test_result.astype(<span class="bu">object</span>),</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"glucose"</span>)) <span class="op">+</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>     geom_boxplot())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="614"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>It looks as though the patients with a positive diabetes test have slightly higher glucose levels than those with a negative diabetes test.</p>
+<p>We can visualise that differently by plotting all the data points as a classic binary response plot:</p>
+<div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-14-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-14-1" role="tab" aria-controls="tabset-14-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-14-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-14-2" role="tab" aria-controls="tabset-14-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-14-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-14-1-tab">
+<div class="cell">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">diabetes</span>,</span>
+<span>       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">glucose</span>,</span>
+<span>           y <span class="op">=</span> <span class="va">test_result</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-34-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-14-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-14-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"glucose"</span>,</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"test_result"</span>)) <span class="op">+</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>     geom_point())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="614"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section><section id="create-a-suitable-model" class="level4"><h4 class="anchored" data-anchor-id="create-a-suitable-model">Create a suitable model</h4>
+<div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-15-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-15-1" role="tab" aria-controls="tabset-15-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-15-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-15-2" role="tab" aria-controls="tabset-15-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-15-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-15-1-tab">
+<p>We’ll use the <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> function to create a generalised linear model. Here we save the model in an object called <code>glm_dia</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_dia</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">test_result</span> <span class="op">~</span> <span class="va">glucose</span>,</span>
+<span>               family <span class="op">=</span> <span class="va">binomial</span>,</span>
+<span>               data <span class="op">=</span> <span class="va">diabetes</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The format of this function is similar to that used by the <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> function for linear models. The important difference is that we must specify the <em>family</em> of error distribution to use. For logistic regression we must set the family to <strong>binomial</strong>.</p>
+</div>
+<div id="tabset-15-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-15-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a linear model</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"test_result ~ glucose"</span>,</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> diabetes_py)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>glm_dia_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>Let’s look at the model parameters:</p>
+<div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-16-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-16-1" role="tab" aria-controls="tabset-16-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-16-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-16-2" role="tab" aria-controls="tabset-16-2" aria-selected="false">Python</a></li>
+</ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-16-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-16-1-tab">
+<div class="cell">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">glm_dia</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 glm(formula = test_result ~ glucose, family = binomial, data = diabetes)
-
-Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--2.1353  -0.7819  -0.5189   0.8269   2.2832  
 
 Coefficients:
              Estimate Std. Error z value Pr(&gt;|z|)    
@@ -696,9 +1029,9 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
 </div>
-<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div id="tabset-16-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-16-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_dia_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_dia_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 Generalized Linear Model Regression Results                  
 ==============================================================================
@@ -707,8 +1040,8 @@ Model:                            GLM   Df Residuals:                      726
 Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
-Date:                Mon, 06 Mar 2023   Deviance:                       752.20
-Time:                        08:43:52   Pearson chi2:                     713.
+Date:                Mon, 07 Aug 2023   Deviance:                       752.20
+Time:                        14:26:45   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -722,168 +1055,44 @@ glucose        0.0395      0.003     11.628      0.000       0.033       0.046
 </div>
 </div>
 </div>
-<p>There’s a lot to unpack here so take a deep breath (or make sure you have a coffee) before continuing…</p>
-<div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist">
-<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true">R</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false">Python</a></li>
-</ul>
-<div class="tab-content" data-group="language">
-<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
-<ul>
-<li>The first lines just confirm which model we’ve been fitting (trust me, this can be useful when you’re in the middle of a load of analysis and you’ve lost track of what the hell is going on!)</li>
-<li>The next block is called Deviance Residuals. This isn’t particularly useful, but just so you know: for linear models the residuals were calculated for each data point and then squared and added up to get the <code>SS</code> (sum of squares), which is used to fit the model. For generalised linear models we don’t use SS to fit the model and instead we use an entirely different method called maximum likelihood. This fitting procedure generates a different quantity, called Deviance, which is the analogue of SS. A deviance of zero indicates the best model we could hope for and bigger values indicate a model that doesn’t fit quite as well. The deviance residuals are then values associated with each data point, that when squared and summed give the deviance for the model (an exact analogy to normal residuals). You’re unlikely to ever need to know this, but I had some time on my hands and decided to share this little nugget with you :-)</li>
-<li>The <code>Coefficients</code> block is next. The main numbers to extract from the output are the two numbers underneath <code>Estimate.Std</code>:</li>
-</ul>
-<pre><code>(Intercept)  -5.611732
-glucose      0.039510</code></pre>
-</div>
-<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
-<p>The top part of table contains a lot of information about the model we’ve just created at a high level. The left-hand column just tells us a lot of stuff that we really don’t care about like:</p>
-<ul>
-<li>the name of the dependent variable (which we already know because we entered it ourselves!);</li>
-<li>the type of model (a binomial glm which we again already knew).</li>
-<li>the type of link function (in this case a logit link – we don’t really care about this either).</li>
-<li>Generalized Linear Models don’t have exact analytical methods for fitting to the data and they all use some form of iterative algorithm. In this case we used the standard method called Iteratively Reweighted Least Squares (IRLS),</li>
-<li>and the model took 4 iterations to converge.</li>
-<li>This left-hand column also helpfully tells us the time and date when the analysis was carried out – how helpful!</li>
-</ul>
-<p>The right-hand column starts to give us some more useful summary statistics that we’ll end up using. In particular we care about the Deviance value. For linear models the residuals were calculated for each data point and then squared and added up to get the SS (sum of squares), which is used to fit the model. For generalised linear models we don’t use SS to fit the model and instead we use an entirely different method called maximum likelihood. This fitting procedure generates a different quantity, called Deviance, which is the analogue of SS. A deviance of zero indicates the best model we could hope for (basically that the model completely matches the data) and bigger values indicate a model that doesn’t fit quite as well. We’ll also need the Df residuals value here (degrees of freedom) for some later calculations.</p>
-<p>Right at the bottom is a table showing the model coefficients. The main numbers to extract from the output are the two numbers in the <code>coef</code> column:</p>
-<pre><code>======================
-                 coef
-----------------------
-Intercept     -5.6117
-glucose        0.0395
-======================</code></pre>
-</div>
-</div>
-</div>
-<p>These are the coefficients of the logistic model equation and need to be placed in the correct equation if we want to be able to actually calculate the probability of having a positive diabetes test for a given glucose level.</p>
-<p>The p values (<code>Pr(&gt;|z|</code>) at the end of each coefficient row merely show whether that particular coefficient is significantly different from zero. This is similar to the p-values obtained in the summary output of a linear model, and as before, for continuous predictors in simple models these p-values can be used to decide whether that predictor is important (so in this case glucose appears to be significant). However, these p-values aren’t great when we have multiple predictor variables, or when we have categorical predictors with multiple levels (since the output will give us a p-value for each level rather than for the predictor as a whole).</p>
-<p>We can use the coefficients to actually calculate the probability of having a positive diabetes test for a given glucose level:</p>
+<p>We can see that <code>glucose</code> is a significant predictor for the <code>test_result</code> (the <span class="math inline">\(p\)</span> value is much smaller than 0.05).</p>
+<p>Knowing this, we’re interested in the coefficients. We have an intercept of <code>-5.61</code> and <code>0.0395</code> for <code>glucose</code>. We can use these coefficients to write a formula that describes the potential relationship between the probability of having a positive test result, dependent on the glucose tolerance level value:</p>
 <p><span class="math display">\[ P(positive \ test\ result) = \frac{\exp(-5.61 + 0.04 \times glucose)}{1 + \exp(-5.61 + 0.04 \times glucose)} \]</span></p>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Expanded explanation
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>We started with:</p>
-<ul>
-<li><p>Our linear predictor equation <span class="math display">\[logit(p) = \beta_0 + \beta_1 x_1 + ... + \beta_p x_p\]</span></p></li>
-<li><p>and link function <span class="math display">\[logit(p) = log(\frac{p}{1 - p})\]</span></p></li>
-</ul>
-<p>Our coefficients are as follows:</p>
-<table class="table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead><tr class="header">
-<th style="text-align: left;">coefficient</th>
-<th style="text-align: left;">value</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><span class="math inline">\(\beta_0\)</span></td>
-<td style="text-align: left;">-5.6117317</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><span class="math inline">\(\beta_1\)</span></td>
-<td style="text-align: left;">0.0395101</td>
-</tr>
-</tbody>
-</table>
-<p>Which means that we can write the linear predictor equation as follows:</p>
-<p><span class="math display">\[logit(p) = -5.61 + 0.04 \times glucose\]</span> We still have to take into account our link function. Combining the two equations gives us:</p>
-<p><span class="math display">\[log(\frac{p}{1 - p}) = -5.61 + 0.04 \times glucose\]</span></p>
-<p>To get our <span class="math inline">\(p\)</span> (the probability of a person having a positive diabetes test result), we need to exponentiate our equation:</p>
-<p><span class="math display">\[\frac{p}{1 - p} = \exp{(-5.61 + 0.04 \times glucose)}\]</span></p>
-<p>leading to…</p>
-<p><span class="math display">\[p = \frac{\exp{(-5.61 + 0.04 \times glucose)}}{1 + \exp{(-5.61 + 0.04 \times glucose)}}\]</span></p>
-</div>
-</div>
-</div>
+</section><section id="calculating-probabilities" class="level4"><h4 class="anchored" data-anchor-id="calculating-probabilities">Calculating probabilities</h4>
+<p>Using the formula above, we can now calculate the probability of having a positive test result, for a given <code>glucose</code> value. If we do this for <code>glucose = 150</code>, we get the following:</p>
 <div class="panel-tabset" data-group="language">
 <ul class="nav nav-tabs" role="tablist">
-<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true">R</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false">Python</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-17-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-17-1" role="tab" aria-controls="tabset-17-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-17-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-17-2" role="tab" aria-controls="tabset-17-2" aria-selected="false">Python</a></li>
 </ul>
 <div class="tab-content" data-group="language">
-<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
-<ul>
-<li>The next line tells us that the dispersion parameter was assumed to be 1 for this binomial model. Dispersion is a property that says whether the data were more or less spread out around the logistic curve than we would expect. A dispersion parameter of 1 says that the data are spread out exactly as we would expect. Greater than 1 is called over-dispersion and less than 1 is called under-dispersion. Here this line is saying that when we fitted this model, we were assuming that the dispersion of the data was exactly 1. For binary data, like we have here, the data cannot be over or under-dispersed but this is something that we’ll need to check for other sorts of glms.</li>
-</ul>
-<p>The last three lines relate to quantities called deviance and AIC (Akaike Information Criterion).</p>
-<p>As we said just above, the deviance values are the equivalent of Sums of Squares values in linear models (and are a product of the technique used to fit the curve to the data). They can be used as a metric of goodness of fit for the model, with a deviance of 0 indicating a perfect fitting model. The deviance for the null model (i.e.&nbsp;the model without any predictors, basically saying that the probability of getting a positive diabetes score is constant and doesn’t depend on glucose level) is given by the first line and the deviance for the actual model is given by the residual deviance line. We will see how we can use the deviance to do two things.</p>
-<ol type="1">
-<li>to check of whether the model is actually any good (i.e.&nbsp;does it in any way look like it’s close to the data). This is akin to what we were doing with <span class="math inline">\(R^2\)</span> values in linear models.</li>
-<li>to check if the model we’ve specified is better than the null model.</li>
-</ol>
-<p>It’s important to realise that these two things can be independent of each other; we can have a model that is significantly better than a null model whilst still being rubbish overall (the null model will have been even more rubbish in comparison), and we can have a model that is brilliant yet still not be better than the null model (in this case the null model was already brilliant).</p>
-<p>As we found in the <a href="https://cambiotraining.github.io/corestats/materials/cs5_practical_model-comparisons.html">model comparisons practical</a>, the AIC value is meaningless by itself, but it will allow us to compare this model to another model with different terms (with the model with the smaller AIC value being the better fitting model).</p>
-</div>
-<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
-<p>There are some additional parameters in the right-hand column, but we’ll first focus on how we can assess significance.</p>
+<div id="tabset-17-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-17-1-tab">
+<div class="cell">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="fl">150</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="fl">145</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6685441</code></pre>
 </div>
 </div>
 </div>
-</section><section id="assessing-significance" class="level2" data-number="7.5"><h2 data-number="7.5" class="anchored" data-anchor-id="assessing-significance">
-<span class="header-section-number">7.5</span> Assessing significance</h2>
-<div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist">
-<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true">R</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-11-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-2" role="tab" aria-controls="tabset-11-2" aria-selected="false">Python</a></li>
-</ul>
-<div class="tab-content" data-group="language">
-<div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
-
-</div>
-<div id="tabset-11-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-11-2-tab">
-
-</div>
-</div>
-</div>
-</section><section id="exercise" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="exercise">
-<span class="header-section-number">7.6</span> Exercise</h2>
-<div class="callout-tip callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Answer
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist">
-<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true">R</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false">Python</a></li>
-</ul>
-<div class="tab-content" data-group="language">
-<div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
-
-</div>
-<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
-
+<div id="tabset-17-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-17-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>math.exp(<span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="dv">150</span>) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> math.exp(<span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="dv">145</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.6685441044999503</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
+<p>This tells us that the probability of having a positive diabetes test result, given a glucose tolerance level of 150 is around 67%.</p>
+</section>
 </div>
-</section><section id="key-points" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="key-points">
-<span class="header-section-number">7.7</span> Key points</h2>
+</div>
+</div>
+</div>
+</div>
+</section></section><section id="key-points" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="key-points">
+<span class="header-section-number">7.6</span> Key points</h2>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -902,6 +1111,11 @@ Note
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-lamichhaney2020" class="csl-entry" role="doc-biblioentry">
+Lamichhaney, Sangeet, Fan Han, Matthew T. Webster, B. Rosemary Grant, Peter R. Grant, and Leif Andersson. 2020. <span>“Female-Biased Gene Flow Between Two Species of Darwin’s Finches.”</span> <em>Nature Ecology <span>&amp;</span> Evolution</em> 4 (7): 979–86. <a href="https://doi.org/10.1038/s41559-020-1183-9">https://doi.org/10.1038/s41559-020-1183-9</a>.
+</div>
+</div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

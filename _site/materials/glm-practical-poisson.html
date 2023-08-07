@@ -419,11 +419,11 @@ Aims &amp; objectives
 <p>For example:</p>
 <ul>
 <li>
-<code><a href="https://parsnip.tidymodels.org/reference/linear_reg.html">linear_reg()</a></code> for linear regression</li>
+<code>linear_reg()</code> for linear regression</li>
 <li>
-<code><a href="https://parsnip.tidymodels.org/reference/logistic_reg.html">logistic_reg()</a></code> for logistic regression</li>
+<code>logistic_reg()</code> for logistic regression</li>
 <li>
-<code><a href="https://parsnip.tidymodels.org/reference/poisson_reg.html">poisson_reg()</a></code> for poisson regression (we’ll be using that here)</li>
+<code>poisson_reg()</code> for poisson regression (we’ll be using that here)</li>
 </ul>
 <ol start="2" type="1">
 <li><p><strong>When required, declare the mode of the model.</strong> The mode reflects the type of prediction outcome. For numeric outcomes, the mode is <em>regression</em>; for qualitative outcomes, it is <em>classification.</em> If a model can only create one type of model, such as poisson regression, the mode is already set to, in this case, <code>mode = "regression"</code>.</p></li>
@@ -438,16 +438,16 @@ Aims &amp; objectives
 <li>
 <code>"stan"</code> for Bayesian inference</li>
 </ul>
-<p>You can find out which engines can be used with the <code><a href="https://parsnip.tidymodels.org/reference/show_engines.html">show_engines()</a></code> function. The command <code>show_engines("poisson_reg")</code> will give you the available engines for the <code><a href="https://parsnip.tidymodels.org/reference/poisson_reg.html">poisson_reg()</a></code> function.</p>
+<p>You can find out which engines can be used with the <code>show_engines()</code> function. The command <code>show_engines("poisson_reg")</code> will give you the available engines for the <code>poisson_reg()</code> function.</p>
 <p>So, we can create the model as follows:</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/poisson_reg.html">poisson_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html">set_mode</a></span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">"glm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_mod</span> <span class="op">&lt;-</span> <span class="fu">poisson_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Note that we are not actually specifying any of the variables just yet! All we’ve done is tell R what kind of model we’re planning to use. If we want to see how <code>parsnip</code> converts this code to the package syntax, we can check this with <code><a href="https://parsnip.tidymodels.org/reference/translate.html">translate()</a></code>:</p>
+<p>Note that we are not actually specifying any of the variables just yet! All we’ve done is tell R what kind of model we’re planning to use. If we want to see how <code>parsnip</code> converts this code to the package syntax, we can check this with <code>translate()</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/translate.html">translate</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_mod</span> <span class="op">%&gt;%</span> <span class="fu">translate</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Poisson Regression Model Specification (regression)
 
@@ -485,15 +485,15 @@ The <code>family</code> argument
 <p>which sets the family to poisson, using a log link function.</p>
 </div>
 </div>
-<p>Now we’ve specified what kind of model we’re planning to use, we can fit our data to it, using the <code><a href="https://generics.r-lib.org/reference/fit.html">fit()</a></code> function:</p>
+<p>Now we’ve specified what kind of model we’re planning to use, we can fit our data to it, using the <code>fit()</code> function:</p>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op">&lt;-</span> <span class="va">isl_mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">species</span> <span class="op">~</span> <span class="va">area</span>,</span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op">&lt;-</span> <span class="va">isl_mod</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">species</span> <span class="op">~</span> <span class="va">area</span>,</span>
 <span>      data <span class="op">=</span> <span class="va">islands</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We can look at the output directly, but I prefer to tidy the data up using the <code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code> function from <code>broom</code> package:</p>
+<p>We can look at the output directly, but I prefer to tidy the data up using the <code>tidy()</code> function from <code>broom</code> package:</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op">%&gt;%</span> <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 5
   term        estimate std.error statistic   p.value
@@ -527,7 +527,7 @@ The <code>family</code> argument
 </div>
 <p>Next, we feed our model these data:</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">curve</span> <span class="op">&lt;-</span> <span class="va">isl_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span>new_data <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">curve</span> <span class="op">&lt;-</span> <span class="va">isl_fit</span> <span class="op">%&gt;%</span> <span class="fu">augment</span><span class="op">(</span>new_data <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This gives the predicted number of <code>species</code> for each given value of <code>area</code>. If we have a closer look at these data we can see that, for example, for an <code>area</code> with a surface area of 4 km<sup>2</sup> the predicted number of species is around 80. Nice.</p>
 <div class="cell">
@@ -566,14 +566,14 @@ The <code>family</code> argument
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <p>We can get these parameters as follows and we’ll store them in a new object, so we can extract them in a bit.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op">%&gt;%</span> <span class="fu">glance</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 8
   null.deviance df.null logLik   AIC   BIC deviance df.residual  nobs
           &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt; &lt;int&gt;
 1          857.      34  -139.  283.  286.     30.4          33    35</code></pre>
 </div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_parameters</span> <span class="op">&lt;-</span> <span class="va">isl_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_parameters</span> <span class="op">&lt;-</span> <span class="va">isl_fit</span> <span class="op">%&gt;%</span> <span class="fu">glance</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The values we are interested in are in the <code>deviance</code> and <code>df.residual</code> columns, respectively.</p>
 <p>Next, we use the <code><a href="https://rdrr.io/r/stats/Chisquare.html">pchisq()</a></code> function to calculate the correct probability.</p>
@@ -613,7 +613,7 @@ Important
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
 <p>We extracted the parameters of the model by using</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op">%&gt;%</span> <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 5
   term        estimate std.error statistic   p.value
@@ -624,10 +624,10 @@ Important
 </div>
 <p>Although we focussed on the <code>estimate</code> column, we can see that the associated standard errors for each estimate is also given in the <code>std.error</code> column. We can use these values to calculate the 95% confidence intervals.</p>
 <p>We can either do this by hand through multiplying the standard errors by 1.96. We can then subtract from (giving the lower confidence estimate) or add to (giving the higher confidence estimate) the estimated parameter. This gives a pretty decent approximation.</p>
-<p>But then again, life is short, so we can just use the additional argument that is available for the <code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code> function. You can look at what columns are returned, but I’m selecting the relevant ones here:</p>
+<p>But then again, life is short, so we can just use the additional argument that is available for the <code>tidy()</code> function. You can look at what columns are returned, but I’m selecting the relevant ones here:</p>
 <div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span>,        <span class="co"># default is FALSE</span></span>
-<span>                 conf.level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>  <span class="co"># is the default</span></span>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op">%&gt;%</span> <span class="fu">tidy</span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span>,        <span class="co"># default is FALSE</span></span>
+<span>                 conf.level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="co"># is the default</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, <span class="va">conf.low</span>, <span class="va">conf.high</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
@@ -639,9 +639,9 @@ Important
 </div>
 <p>What we’re interested in here is the confidence intervals for the <code>area</code> parameter. Before we delve into that, I’m also going to calculate the exponent for these confidence intervals. We can do this using the <code><a href="https://rdrr.io/r/base/Log.html">exp()</a></code> function.</p>
 <div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span>,        <span class="co"># default is FALSE</span></span>
-<span>                 conf.level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>  <span class="co"># is the default</span></span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, <span class="va">conf.low</span>, <span class="va">conf.high</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">isl_fit</span> <span class="op">%&gt;%</span> <span class="fu">tidy</span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span>,        <span class="co"># default is FALSE</span></span>
+<span>                 conf.level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="co"># is the default</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, <span class="va">conf.low</span>, <span class="va">conf.high</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>conf.low_exp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">conf.low</span><span class="op">)</span>,</span>
 <span>         conf.high_exp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">conf.high</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -726,7 +726,7 @@ dbl (9): drivers_killed, drivers, front, rear, kms, petrol_price, van_killed...
 <div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
 <p>We have to convert the <code>law</code> column to a factor, otherwise R will see it as numerical.</p>
 <div class="cell">
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">seatbelts</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">seatbelts</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="fu">as_factor</span><span class="op">(</span><span class="va">law</span><span class="op">)</span>, <span class="va">drivers_killed</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>   <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -735,7 +735,7 @@ dbl (9): drivers_killed, drivers, front, rear, kms, petrol_price, van_killed...
 </div>
 <p>The data are recorded by month and year, so we can also display the number of drivers killed by year:</p>
 <div class="cell">
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">seatbelts</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">seatbelts</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">year</span>, <span class="va">drivers_killed</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -756,13 +756,13 @@ dbl (9): drivers_killed, drivers, front, rear, kms, petrol_price, van_killed...
 <div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
 <p>As before, we first define the model type.</p>
 <div class="cell">
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/poisson_reg.html">poisson_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html">set_mode</a></span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">"glm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_mod</span> <span class="op">&lt;-</span> <span class="fu">poisson_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And check that everything is in order.</p>
 <div class="cell">
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/translate.html">translate</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_mod</span> <span class="op">%&gt;%</span> <span class="fu">translate</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Poisson Regression Model Specification (regression)
 
@@ -775,13 +775,13 @@ stats::glm(formula = missing_arg(), data = missing_arg(), weights = missing_arg(
 </div>
 <p>Next, we fit our data to the model we just specified:</p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_fit</span> <span class="op">&lt;-</span> <span class="va">stb_mod</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">drivers_killed</span> <span class="op">~</span> <span class="va">year</span>,</span>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_fit</span> <span class="op">&lt;-</span> <span class="va">stb_mod</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">drivers_killed</span> <span class="op">~</span> <span class="va">year</span>,</span>
 <span>      data <span class="op">=</span> <span class="va">seatbelts</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And we can extract the estimated coefficients from these fitted data:</p>
 <div class="cell">
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_fit</span> <span class="op">%&gt;%</span> <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 5
   term        estimate std.error statistic  p.value
@@ -809,7 +809,7 @@ stats::glm(formula = missing_arg(), data = missing_arg(), weights = missing_arg(
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1969</span>, <span class="fl">1984</span>, <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">12</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># fit these data to the model</span></span>
-<span><span class="va">stb_curve</span> <span class="op">&lt;-</span> <span class="va">stb_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span>new_data <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
+<span><span class="va">stb_curve</span> <span class="op">&lt;-</span> <span class="va">stb_fit</span> <span class="op">%&gt;%</span> <span class="fu">augment</span><span class="op">(</span>new_data <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot the predicted values</span></span>
 <span><span class="co"># and overlay the observed values</span></span>
@@ -835,7 +835,7 @@ stats::glm(formula = missing_arg(), data = missing_arg(), weights = missing_arg(
 <p>First we store the parameter estimates in an object. Then we use the <code><a href="https://rdrr.io/r/stats/Chisquare.html">pchisq()</a></code> function to calculate the probability that the residual deviance is actually distributed as a <span class="math inline">\(\chi^2\)</span> random variable with degrees of freedom equal to the model’s residual degrees of freedom.</p>
 <p>Yes, you can read that sentence three times and still wonder what that really means. Suffice to say is that the outcome gives us a measure of how well-specified the model is.</p>
 <div class="cell">
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_parameter</span> <span class="op">&lt;-</span> <span class="va">stb_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_parameter</span> <span class="op">&lt;-</span> <span class="va">stb_fit</span> <span class="op">%&gt;%</span> <span class="fu">glance</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">stb_parameter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -863,9 +863,9 @@ stats::glm(formula = missing_arg(), data = missing_arg(), weights = missing_arg(
 <div class="tab-content">
 <div id="tabset-13-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-13-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span>,        <span class="co"># default is FALSE</span></span>
-<span>                 conf.level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>  <span class="co"># is the default</span></span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, <span class="va">conf.low</span>, <span class="va">conf.high</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stb_fit</span> <span class="op">%&gt;%</span> <span class="fu">tidy</span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span>,        <span class="co"># default is FALSE</span></span>
+<span>                 conf.level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="co"># is the default</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, <span class="va">conf.low</span>, <span class="va">conf.high</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>conf.low_exp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">conf.low</span><span class="op">)</span>,</span>
 <span>         conf.high_exp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">conf.high</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
