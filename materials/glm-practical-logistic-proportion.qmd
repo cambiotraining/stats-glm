@@ -195,8 +195,11 @@ The prediction proportion of damaged o-rings is markedly less in this scenario, 
 :::
 :::
 
-## Key points
+## Summary
 
-::: callout-note
+::: {.callout-tip}
+#### Key points
+
 -   We can use a logistic model for proportion response variables
+
 :::

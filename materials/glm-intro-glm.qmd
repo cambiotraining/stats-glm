@@ -1,5 +1,5 @@
 ---
-title: "Generalising your model"
+title: "Generalise your model"
 ---
 ```{r}
 #| echo: false

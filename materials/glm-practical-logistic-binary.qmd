@@ -254,7 +254,7 @@ $Y = \beta_0 + \beta_1X$
 
 We can now map this to our non-linear relationship via the **logistic link function**:
 
-$Y = \frac{\exp(X)}{1 + \exp(\beta_0 + \beta_1X)}$
+$Y = \frac{\exp(\beta_0 + \beta_1X)}{1 + \exp(\beta_0 + \beta_1X)}$
 
 Note that the $\beta_0 + \beta_1X$ part is identical to the formula of a straight line.
 
@@ -360,11 +360,13 @@ print(glm_bks_py.summary())
 
 :::
 
-There’s a lot to unpack here, but for the purpose of today we are mostly focussing on the coefficients.
+There’s a lot to unpack here, but let's start with what we're familiar with: coefficients!
+
+## Parameter interpretation
 
 ::: {.panel-tabset group="language"}
 ## R
-The coefficients can be found in the `Coefficients` block. The main numbers to extract from the output are the two numbers underneath `Estimate.Std`:
+The coefficients or parameters can be found in the `Coefficients` block. The main numbers to extract from the output are the two numbers underneath `Estimate.Std`:
 
 ```
 Coefficients:
@@ -498,7 +500,17 @@ The graph shows us that, based on the data that we have and the model we used to
 
 Short beaks are more closely associated with the bluntly shaped beaks, whereas long beaks are more closely associated with the pointed shape. It's also clear that there is a range of beak lengths (around 13 mm) where the probability of getting one shape or another is much more even.
 
-There is an interesting genetic story behind all this, but that will be explained in more detail in the full-day [Generalised linear models](https://cambiotraining.github.io/stats-glm/) course.
+## Parameter estimation explained
+
+Now that we know how to interpret the coefficients or parameters, let's have a look at how they're actually determined. To understand this, we need to take a step back.
+
+* Sum of squares (OLS)
+* MLE
+* Deviance
+
+## Assumptions
+
+* GAMLSS
 
 ## Exercises
 
@@ -672,9 +684,11 @@ This tells us that the probability of having a positive diabetes test result, gi
 :::
 :::
 
-## Key points
+## Summary
 
-::: {.callout-note}
+::: {.callout-tip}
+#### Key points
+
 -   We use a logistic regression to model a binary response
 -   We can feed new observations into the model and get probabilities for the outcome
 :::

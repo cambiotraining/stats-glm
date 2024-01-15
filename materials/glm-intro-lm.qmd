@@ -19,7 +19,7 @@ exec(open('setup_files/setup.py').read())
 
 For this example, we'll be using the several data sets about Darwin's finches. They are part of a long-term genetic and phenotypic study on the evolution of several species of finches. The exact details are less important for now, but there are data on multiple species where several phenotypic characteristics were measured (see @fig-finchphenotypes).
 
-![Finches phenotypes (courtesy of [HHMI BioInteractive](https://www.biointeractive.org))](images/finches-phenotypes.png){width=75% #fig-finchphenotypes}
+![Finches phenotypes (courtesy of [HHMI BioInteractive](https://www.biointeractive.org))](img/finches-phenotypes.png){width=75% #fig-finchphenotypes}
 
 ```{r}
 #| echo: false

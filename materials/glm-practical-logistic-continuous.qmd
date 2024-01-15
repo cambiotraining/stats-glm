@@ -103,8 +103,11 @@ glm(score ~ id, family = gaussian, data = exam_A)
 :::
 :::
 
-## Key points
+## Summary
 
-::: {.callout-note}
--  
+::: {.callout-tip}
+#### Key points
+
+-   
+
 :::
