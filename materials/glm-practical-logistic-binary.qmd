@@ -416,6 +416,7 @@ exp(-43.41 + 3.39 * 10) / (1 + exp(-43.41 + 3.39 * 10))
 ```
 
 ## Python
+
 Well, the probability of having a pointed beak if the beak length is large (for example 15 mm) can be calculated as follows:
 
 ```{python}
@@ -500,17 +501,17 @@ The graph shows us that, based on the data that we have and the model we used to
 
 Short beaks are more closely associated with the bluntly shaped beaks, whereas long beaks are more closely associated with the pointed shape. It's also clear that there is a range of beak lengths (around 13 mm) where the probability of getting one shape or another is much more even.
 
-## Parameter estimation explained
+<!-- ## Parameter estimation explained -->
 
-Now that we know how to interpret the coefficients or parameters, let's have a look at how they're actually determined. To understand this, we need to take a step back.
+<!-- Now that we know how to interpret the coefficients or parameters, let's have a look at how they're actually determined. To understand this, we need to take a step back. -->
 
-* Sum of squares (OLS)
-* MLE
-* Deviance
+<!-- * Sum of squares (OLS) -->
+<!-- * MLE -->
+<!-- * Deviance -->
 
-## Assumptions
+<!-- ## Assumptions -->
 
-* GAMLSS
+<!-- * GAMLSS -->
 
 ## Exercises
 
@@ -532,7 +533,6 @@ We want to see if the `glucose` tolerance is a meaningful predictor for predicti
 4. Calculate the probability of a positive diabetes test result for a glucose tolerance test value of `glucose = 150`
 
 ::: {.callout-answer collapse="true"}
-## Answer
 
 #### Load and visualise the data
 

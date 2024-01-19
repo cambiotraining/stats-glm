@@ -2,13 +2,16 @@
 title: "Proportional response"
 ---
 
-```{r, echo=FALSE}
+```{r}
+#| echo: false
+#| message: false
 # adjust and load as needed
 source(file = "setup_files/setup.R")
 ```
 
-::: callout-note
-## Aims & objectives
+::: {.callout-tip}
+## Learning outcomes
+
 -   How do I analyse proportion responses?
 -   Be able to create a logistic model to test proportion response variables
 -   Be able to plot the data and fitted curve
@@ -17,19 +20,39 @@ source(file = "setup_files/setup.R")
 
 ## Libraries and functions
 
-::: panel-tabset
-## tidyverse
+::: {.callout-note collapse="true"}
+## Click to expand
 
-| Library      | Description                                                                            |
-|:-----------------------------------|:-----------------------------------|
-| `tidyverse`  | A collection of R packages designed for data science                                   |
-| `tidymodels` | A collection of packages for modelling and machine learning using tidyverse principles |
+::: {.panel-tabset group="language"}
+## R
+
+### Libraries
+### Functions
+
+## Python
+
+### Libraries
+
+```{python}
+#| eval: false
+# A maths library
+import math
+# A Python data analysis and manipulation tool
+import pandas as pd
+
+# Python equivalent of `ggplot2`
+from plotnine import *
+
+# Statistical models, conducting tests and statistical data exploration
+import statsmodels.api as sm
+
+# Convenience interface for specifying models using formula strings and DataFrames
+import statsmodels.formula.api as smf
+```
+
+### Functions
 :::
-
-## Datasets
-
-::: panel-tabset
-## Challenger
+:::
 
 The example in this section uses the following data set:
 
@@ -40,19 +63,16 @@ These data, obtained from the [faraway package](https://www.rdocumentation.org/p
 The night before the launch was unusually cold, with temperatures below freezing. The final report suggested that the cold snap during the night made the o-rings stiff, and unable to adjust to changes in pressure. As a result, exhaust gases leaked away from the solid booster rockets, causing one of them to break loose and rupture the main fuel tank, leading to the final explosion.
 
 The question we're trying to answer in this session is: based on the data from the previous flights, would it have been possible to predict the failure of most o-rings on the Challenger flight?
-:::
 
-## Visualise the data
+## Load and visualise the data
 
-First, we read in the data:
+First we load the data, then we visualise it.
 
-::: panel-tabset
-## tidyverse
+::: {.panel-tabset group="language"}
+## R
 
 ```{r}
 challenger <- read_csv("data/challenger.csv")
-
-challenger
 ```
 :::
 
@@ -63,8 +83,8 @@ The data set contains several columns:
 
 Before we have a further look at the data, let's calculate the proportion of damaged o-rings (`prop_damaged`) and the total number of o-rings (`total`) and update our data set.
 
-::: panel-tabset
-## tidyverse
+::: {.panel-tabset group="language"}
+## R
 
 ```{r}
 challenger <-
@@ -79,8 +99,8 @@ challenger
 
 Plotting the proportion of damaged o-rings against the launch temperature shows the following picture:
 
-::: panel-tabset
-## tidyverse
+::: {.panel-tabset group="language"}
+## R
 
 ```{r}
 ggplot(challenger, aes(x = temp, y = prop_damaged)) +
@@ -92,78 +112,108 @@ The point on the left is the data point corresponding to the coldest flight expe
 
 Here we'll explore if we could have predicted the failure of both o-rings on the Challenger flight, where the launch temperature was 31 degrees Fahrenheit.
 
-## Model building
+## Creating a suitable model
 
 We only have 23 data points in total. So we're building a model on not that much data - we should keep this in mind when we draw our conclusions!
 
-::: panel-tabset
-## tidyverse
+::: {.panel-tabset group="language"}
+## R
 
 We are using a logistic regression for a proportion response in this case, since we're interested in the proportion of o-rings that are damaged.
 
-The `logistic_reg()` function we used in the binary response section does not work here, because it expects a binary (yes/no; positive/negative; 0/1 etc) response.
-
-To deal with that, we are using the standard `linear_reg()` function, still using the `glm` or generalised linear model engine, with the family or error distribution set to *binomial* (as before).
-
-First we set the model specification:
+We can define this as follows:
 
 ```{r}
-chl_mod <- linear_reg(mode = "regression") %>%
-  set_engine("glm", family = "binomial")
+glm_chl <- glm(cbind(damage, intact) ~ temp,
+               family = binomial,
+               data = challenger)
 ```
 
-Then we fit the data. Fitting the data for proportion responses is a bit annoying, where you have to give the `glm` model a two-column matrix to specify the response variable.
+Defining the relationship for proportion responses is a bit annoying, where you have to give the `glm` model a two-column matrix to specify the response variable.
 
 Here, the first column corresponds to the number of damaged o-rings, whereas the second column refers to the number of intact o-rings. We use the `cbind()` function to bind these two together into a matrix.
 
-```{r}
-chl_fit <- chl_mod %>% 
-  fit(cbind(damage, intact) ~ temp,
-      data = challenger)
-```
+:::
+
+## Model output
+
+That's the easy part done! The trickier part is interpreting the output. First of all, we'll get some summary information.
+
+::: {.panel-tabset group="language"}
+## R
 
 Next, we can have a closer look at the results:
 
 ```{r}
-chl_fit %>% tidy()
+summary(glm_chl)
 ```
 
 We can see that the p-values of the `intercept` and `temp` are significant. We can also use the intercept and `temp` coefficients to construct the logistic equation, which we can use to sketch the logistic curve.
+
+:::
 
 $$E(prop \ failed\ orings) = \frac{\exp{(11.66 -  0.22 \times temp)}}{1 + \exp{(11.66 -  0.22 \times temp)}}$$
 
 Let's see how well our model would have performed if we would have fed it the data from the ill-fated Challenger launch.
 
-One way of doing this it to generate a table with data for a range of temperatures, from 25 to 85 degrees Fahrenheit, in steps of 1. We can then use these data to generate the logistic curve, based on the fitted model.
+::: {.panel-tabset group="language"}
+## R
 
 ```{r}
-model <- tibble(temp = seq(25, 85, 1))
+#| message: false
+ggplot(challenger, aes(temp, prop_damaged)) +
+  geom_point() +
+  geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
+              method.args = list(family = binomial)) +
+  xlim(25,85)
+```
+
+::: {.callout-note collapse=true}
+## Generating predicted values
+
+::: {.panel-tabset group="language"}
+## R
+
+Another way of doing this it to generate a table with data for a range of temperatures, from 25 to 85 degrees Fahrenheit, in steps of 1. We can then use these data to generate the logistic curve, based on the fitted model.
+
+```{r}
+# create a table with sequential numbers ranging from 25 to 85
+model <- tibble(temp = seq(25, 85, by = 1)) %>% 
+  # add a new column containing the predicted values
+  mutate(.pred = predict(glm_chl, newdata = ., type = "response"))
+
+ggplot(model, aes(temp, .pred)) +
+  geom_line()
 ```
 
 ```{r}
-# get the predicted proportions for the curve
-curve <- chl_fit %>% augment(new_data = model)
-
 # plot the curve and the original data
-ggplot(curve, aes(temp, .pred)) +
-  geom_line(colour = "red") +
+ggplot(model, aes(temp, .pred)) +
+  geom_line(colour = "blue") +
   geom_point(data = challenger, aes(temp, prop_damaged)) +
   # add a vertical line at the disaster launch temperature
   geom_vline(xintercept = 31, linetype = "dashed")
 ```
 
-It seems that there was a high probability of both o-rings failing at that launch temperature. One thing that the graph shows is that there is a lot of uncertainty involved in this model.
+It seems that there was a high probability of both o-rings failing at that launch temperature. One thing that the graph shows is that there is a lot of uncertainty involved in this model. We can tell, because the fit of the line is very poor at the lower temperature range. There is just very little data to work on, with the data point at 53 F having a large influence on the fit.
+:::
+:::
 :::
 
-## Exercise - predicting failure
+## Exercises
+
+### Predicting failure {#sec-exr_failure}
+
+:::{.callout-exercise}
+
+{{< level 2 >}}
 
 The data point at 53 degrees Fahrenheit is quite influential for the analysis. Remove this data point and repeat the analysis. Is there still a predicted link between launch temperature and o-ring failure?
 
-::: {.callout-caution collapse="true"}
-## Answer
+::: {.callout-answer collapse="true"}
 
-::: panel-tabset
-## tidyverse
+::: {.panel-tabset group="language"}
+## R
 
 First, we need to remove the influential data point:
 
@@ -171,27 +221,55 @@ First, we need to remove the influential data point:
 challenger_new <- challenger %>% filter(temp != 53)
 ```
 
-We can reuse the model specification, but we do have to update our fit:
+We can create a new generalised linear model, based on these data:
 
 ```{r}
-chl_new_fit <- chl_mod %>% 
-  fit(cbind(damage, intact) ~ temp,
-      data = challenger_new)
+glm_chl_new <- glm(cbind(damage, intact) ~ temp,
+               family = binomial,
+               data = challenger_new)
+```
+
+We can get the model parameters as follows:
+
+```{r}
+summary(glm_chl_new)
 ```
 
 ```{r}
-# get the predicted proportions for the curve
-curve_new <- chl_new_fit %>% augment(new_data = model)
-
-# plot the curve and the original data
-ggplot(curve_new, aes(temp, .pred)) +
-  geom_line(colour = "red") +
-  geom_point(data = challenger_new, aes(temp, prop_damaged)) +
-  # add a vertical line at the disaster launch temperature
-  geom_vline(xintercept = 31, linetype = "dashed")
+#| message: false
+ggplot(challenger_new, aes(temp, prop_damaged)) +
+  geom_point() +
+  geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
+              method.args = list(family = binomial)) +
+  xlim(25,85) +
+  # add a vertical line at 53 F temperature
+  geom_vline(xintercept = 53, linetype = "dashed")
 ```
 
-The prediction proportion of damaged o-rings is markedly less in this scenario, with a failure rate of around 80%. The original fitted curve already had quite some uncertainty associated with it, but the uncertainty of this model is much greater.
+The prediction proportion of damaged o-rings is markedly less than what was observed.
+
+Before we can make any firm conclusions, though, we need to check our model:
+
+```{r}
+1- pchisq(12.633,20)
+```
+
+We get quite a high score (around 0.9) for this, which tells us that our goodness of fit is pretty good – our points are quite close to our curve, overall.
+
+Is the model any better than the null though?
+
+```{r}
+1 - pchisq(16.375 - 12.633, 1)
+
+anova(glm_chl_new, test = 'Chisq')
+```
+
+However, the model is not significantly better than the null in this case, with a p-value here of just over 0.05 for both of these tests (they give a similar result since, yet again, we have just the one predictor variable).
+:::
+
+So, could NASA have predicted what happened? This model is not significantly different from the null, i.e., temperature is not a significant predictor. Note that it’s only marginally non-significant, and we do have a high goodness-of-fit value.
+
+It is possible that if more data points were available that followed a similar trend, the story might be different). Even if we did use our non-significant model to make a prediction, it doesn’t give us a value anywhere near 5 failures for a temperature of 53 degrees Fahrenheit. So overall, based on the model we’ve fitted with these data, there was no indication that a temperature just a few degrees cooler than previous missions could have been so disastrous for the Challenger.
 :::
 :::
 

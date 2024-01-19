@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.531">
+<meta name="generator" content="quarto-1.4.546">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>7&nbsp; Binary response</title>
 <style>
@@ -79,6 +79,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../materials/glm-practical-logistic-proportion.html" rel="next">
 <link href="../materials/glm-intro-glm.html" rel="prev">
 <link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
@@ -265,6 +266,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Binary response</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-practical-logistic-proportion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Proportional response</span></span></a>
+  </div>
+</li>
       </ul>
 </li>
     </ul>
@@ -280,15 +287,13 @@ window.Quarto = {
   <li><a href="#creating-a-suitable-model" id="toc-creating-a-suitable-model" class="nav-link" data-scroll-target="#creating-a-suitable-model"><span class="header-section-number">7.3</span> Creating a suitable model</a></li>
   <li><a href="#model-output" id="toc-model-output" class="nav-link" data-scroll-target="#model-output"><span class="header-section-number">7.4</span> Model output</a></li>
   <li><a href="#parameter-interpretation" id="toc-parameter-interpretation" class="nav-link" data-scroll-target="#parameter-interpretation"><span class="header-section-number">7.5</span> Parameter interpretation</a></li>
-  <li><a href="#parameter-estimation-explained" id="toc-parameter-estimation-explained" class="nav-link" data-scroll-target="#parameter-estimation-explained"><span class="header-section-number">7.6</span> Parameter estimation explained</a></li>
-  <li><a href="#assumptions" id="toc-assumptions" class="nav-link" data-scroll-target="#assumptions"><span class="header-section-number">7.7</span> Assumptions</a></li>
   <li>
-<a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">7.8</span> Exercises</a>
+<a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">7.6</span> Exercises</a>
   <ul class="collapse">
-<li><a href="#sec-exr_diabetes" id="toc-sec-exr_diabetes" class="nav-link" data-scroll-target="#sec-exr_diabetes"><span class="header-section-number">7.8.1</span> Diabetes</a></li>
+<li><a href="#sec-exr_diabetes" id="toc-sec-exr_diabetes" class="nav-link" data-scroll-target="#sec-exr_diabetes"><span class="header-section-number">7.6.1</span> Diabetes</a></li>
   </ul>
 </li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">7.10</span> Summary</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">7.7</span> Summary</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -579,7 +584,7 @@ Click to expand
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="images/dgplots/2024_01_15-10-25-49_AM_dgplots.png" class="img-fluid figure-img" width="804"></p>
+<figure class="figure"><p><img src="images/dgplots/2024_01_19-06-05-54_PM_dgplots.png" class="img-fluid figure-img" width="804"></p>
 </figure>
 </div>
 </div>
@@ -724,8 +729,8 @@ Model:                            GLM   Df Residuals:                       59
 Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -4.5939
-Date:                Mon, 15 Jan 2024   Deviance:                       9.1879
-Time:                        10:25:50   Pearson chi2:                     15.1
+Date:                Fri, 19 Jan 2024   Deviance:                       9.1879
+Time:                        18:05:55   Pearson chi2:                     15.1
 No. Iterations:                     8   Pseudo R-squ. (CS):             0.7093
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -869,7 +874,7 @@ Code available here
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-beak_class_glm_probs" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
+<div id="fig-beak_class_glm_probs" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-beak_class_glm_probs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="glm-practical-logistic-binary_files/figure-html/fig-beak_class_glm_probs-2.png" class="img-fluid figure-img" width="672">
 </div>
@@ -881,21 +886,30 @@ Figure&nbsp;7.1: Predicted probabilities for beak classification
 </div>
 <p>The graph shows us that, based on the data that we have and the model we used to make predictions about our response variable, the probability of seeing a pointed beak increases with beak length.</p>
 <p>Short beaks are more closely associated with the bluntly shaped beaks, whereas long beaks are more closely associated with the pointed shape. It’s also clear that there is a range of beak lengths (around 13 mm) where the probability of getting one shape or another is much more even.</p>
-</section><section id="parameter-estimation-explained" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="parameter-estimation-explained">
-<span class="header-section-number">7.6</span> Parameter estimation explained</h2>
-<p>Now that we know how to interpret the coefficients or parameters, let’s have a look at how they’re actually determined. To understand this, we need to take a step back.</p>
-<ul>
-<li>Sum of squares (OLS)</li>
-<li>MLE</li>
-<li>Deviance</li>
-</ul></section><section id="assumptions" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="assumptions">
-<span class="header-section-number">7.7</span> Assumptions</h2>
-<ul>
-<li>GAMLSS</li>
-</ul></section><section id="exercises" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="exercises">
-<span class="header-section-number">7.8</span> Exercises</h2>
-<section id="sec-exr_diabetes" class="level3" data-number="7.8.1"><h3 data-number="7.8.1" class="anchored">
-<span class="header-section-number">7.8.1</span> Diabetes</h3>
+<!-- ## Parameter estimation explained -->
+<!-- Now that we know how to interpret the coefficients or parameters, let's have a look at how they're actually determined. To understand this, we need to take a step back. -->
+<!-- * Sum of squares (OLS) -->
+<!-- * MLE -->
+<!-- * Deviance -->
+<!-- ## Assumptions -->
+<!-- * GAMLSS -->
+</section><section id="exercises" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="exercises">
+<span class="header-section-number">7.6</span> Exercises</h2>
+<section id="sec-exr_diabetes" class="level3" data-number="7.6.1"><h3 data-number="7.6.1" class="anchored" data-anchor-id="sec-exr_diabetes">
+<span class="header-section-number">7.6.1</span> Diabetes</h3>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div>
 <div class="callout-exercise">
 <p><font style="font-variant: small-caps">Level:</font> <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><br></p>
 <p>For this exercise we’ll be using the data from <code>data/diabetes.csv</code>.</p>
@@ -908,8 +922,20 @@ Figure&nbsp;7.1: Predicted probabilities for beak classification
 <li>Calculate the probability of a positive diabetes test result for a glucose tolerance test value of <code>glucose = 150</code>
 </li>
 </ol>
-<section id="answer" class="level2 callout-answer" data-collapse="true" data-number="7.9"><h2 data-number="7.9" class="anchored" data-anchor-id="answer">
-<span class="header-section-number">7.9</span> Answer</h2>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-answer" data-collapse="true">
 <section id="load-and-visualise-the-data-1" class="level4"><h4 class="anchored" data-anchor-id="load-and-visualise-the-data-1">Load and visualise the data</h4>
 <p>First we load the data, then we visualise it.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
@@ -1079,8 +1105,8 @@ Model:                            GLM   Df Residuals:                      726
 Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
-Date:                Mon, 15 Jan 2024   Deviance:                       752.20
-Time:                        10:25:54   Pearson chi2:                     713.
+Date:                Fri, 19 Jan 2024   Deviance:                       752.20
+Time:                        18:05:59   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1124,10 +1150,19 @@ glucose        0.0395      0.003     11.628      0.000       0.033       0.046
 </div>
 </div>
 <p>This tells us that the probability of having a positive diabetes test result, given a glucose tolerance level of 150 is around 67%.</p>
-</section></section>
+</section>
 </div>
-</section></section><section id="summary" class="level2" data-number="7.10"><h2 data-number="7.10" class="anchored" data-anchor-id="summary">
-<span class="header-section-number">7.10</span> Summary</h2>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section></section><section id="summary" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="summary">
+<span class="header-section-number">7.7</span> Summary</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1312,7 +1347,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -1538,6 +1578,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../materials/glm-practical-logistic-proportion.html" class="pagination-link" aria-label="<span class='chapter-number'>8</span>&nbsp; <span class='chapter-title'>Proportional response</span>">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Proportional response</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
