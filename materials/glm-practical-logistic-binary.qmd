@@ -513,6 +513,84 @@ Short beaks are more closely associated with the bluntly shaped beaks, whereas l
 
 <!-- * GAMLSS -->
 
+
+## Assumptions
+
+As explained in the background chapter, we can't really use the standard diagnostic plots to assess assumptions. We're not going to go into a lot of detail for now, but there is one thing that we can do: look for influential points using the Cook’s distance plot:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+plot(glm_bks , which=4)
+```
+
+:::
+
+This shows that there are no very obvious influential points. You could regard point `34` as potentially influential (it's got a Cook's distance of around `0.8`), but I'm not overly worried.
+
+## Assessing significance
+
+We can ask several questions.
+
+**Is the model well-specified?**
+
+Roughly speaking this asks "can our model predict our data reasonably well?"
+
+::: {.panel-tabset group="language"}
+## R
+
+Unfortunately, there isn’t a single command that does this for us, and we have to lift some of the numbers from the summary output ourselves. 
+
+```{r}
+1 - pchisq(9.1879, 59)
+```
+
+
+Here, we’ve used the `pchisq` function (which calculates the correct probability for us – ask if you want a hand-wavy explanation). The first argument to it is the residual deviance value from the summary table, the second argument to is the residual degrees of freedom argument from the same table.
+
+This gives us a probability of `1`. We can interpret this as the probability that the model is actually good. There aren’t any strict conventions on how to interpret this value but, for me, a tiny value would indicate a rubbish model.
+
+:::
+
+**Is the overall model better than the null model?**
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+1 - pchisq(84.5476 - 9.1879, 60 - 59)
+```
+
+Here we’ve used the `pchisq` function again (if you didn’t ask before, you probably aren’t going to ask now). The first argument is the difference between the null and residual deviances and the second argument is the difference in degrees of freedom between the null and residual models. All of these values can be lifted from the summary table.
+
+This gives us a probability of 0, which is technically not possible. This value is doing a formal test to see whether our fitted model is significantly different from the null model. Here we can treat this a classical hypothesis test and since this p-value is less than 0.05 then we can say that our fitted model (with `blength` as a predictor variable) is definitely better than the null model (which has no predictor variables). Woohoo!
+
+:::
+
+**Are any of the individual predictors significant?**
+
+Finally, we’ll use the anova function from before to determine which predictor variables are important, and specifically in this case whether the glucose predictor is significant.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+anova(glm_bks , test = "Chisq")
+```
+
+The `anova()` function is a true workhorse within R! This time we’ve used it to create an Analysis of Deviance table. This is exactly equivalent to an ordinary ANOVA table where we have rows corresponding to each predictor variable and a p-value telling us whether that variable is significant or not.
+
+The p-value for the `blength` predictor is written under then Pr(>Chi) column and we can see that it is less than `< 2.2e-16`. So, beak length is a significant predictor.
+
+This shouldn’t be surprising since we already saw that our overall model was better than the null model, which in this case is exactly the same as asking whether the beak length term is significant. However, in more complicated models with multiple predictors these two comparisons (and p-values) won’t be the same.
+
+
+:::
+
+
+
+
 ## Exercises
 
 ### Diabetes {#sec-exr_diabetes}
