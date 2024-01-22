@@ -254,7 +254,7 @@ Before we can make any firm conclusions, though, we need to check our model:
 1- pchisq(12.633,20)
 ```
 
-We get quite a high score (around 0.9) for this, which tells us that our goodness of fit is pretty good – our points are quite close to our curve, overall.
+We get quite a high score (around 0.9) for this, which tells us that our goodness of fit is pretty rubbish – our points are not very close to our curve, overall.
 
 Is the model any better than the null though?
 

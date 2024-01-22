@@ -747,17 +747,17 @@ Using the formula above, we can now calculate the probability of having a positi
 ## R
 
 ```{r}
-exp(-5.61 + 0.04 * 150) / (1 + exp(-5.61 + 0.04 * 145))
+exp(-5.61 + 0.04 * 150) / (1 + exp(-5.61 + 0.04 * 150))
 ```
 
 ## Python
 
 ```{python}
-math.exp(-5.61 + 0.04 * 150) / (1 + math.exp(-5.61 + 0.04 * 145))
+math.exp(-5.61 + 0.04 * 150) / (1 + math.exp(-5.61 + 0.04 * 150))
 ```
 :::
 
-This tells us that the probability of having a positive diabetes test result, given a glucose tolerance level of 150 is around 67%.
+This tells us that the probability of having a positive diabetes test result, given a glucose tolerance level of 150 is around `r round(exp(-5.61 + 0.04 * 150) / (1 + exp(-5.61 + 0.04 * 150)) * 100)` %.
 
 :::
 :::

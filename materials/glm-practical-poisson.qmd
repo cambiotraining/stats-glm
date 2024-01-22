@@ -181,7 +181,7 @@ To assess if the model is any good we’ll again use the residual deviance and t
 
 :::
 
-This gives a probability of `0.60`. This suggests that this model is actually a good one and that the data are pretty well supported by the model. For Poisson models this has an extra interpretation. This can be used to assess whether we have significant over-dispersion in our data.
+This gives a probability of `0.60`. This suggests that this model is actually a reasonably decent one and that the data are pretty well supported by the model. For Poisson models this has an extra interpretation. This can be used to assess whether we have significant over-dispersion in our data.
 
 For a Poisson model to be appropriate we need that the variance of the data to be exactly the same as the mean of the data. Visually, this would correspond to the data spreading out more for higher predicted values of `species.` However, we don’t want the data to spread out too much. If that happens then a Poisson model wouldn’t be appropriate.
 
@@ -317,6 +317,7 @@ Is the model well-specified?
 1 - pchisq(850.41, 190)
 ```
 
+This value indicates that the model is actually pretty good. Remember, it is between $[0, 1]$ and the closer to zero, the better the model.
 :::
 
 How about the overall fit?
@@ -327,6 +328,8 @@ How about the overall fit?
 ```{r}
 1 - pchisq(984.50 - 850.41, 191 - 190)
 ```
+
+Again, this indicates that the model is markedly better than the null model.
 
 :::
 
