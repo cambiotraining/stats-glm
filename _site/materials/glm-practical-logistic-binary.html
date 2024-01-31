@@ -401,7 +401,10 @@ Click to expand
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Convenience interface for specifying models using formula strings and DataFrames</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Needed for additional probability functionality</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> <span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="functions-1" class="level3" data-number="7.1.4"><h3 data-number="7.1.4" class="anchored" data-anchor-id="functions-1">
 <span class="header-section-number">7.1.4</span> Functions</h3>
@@ -603,7 +606,7 @@ Click to expand
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="images/dgplots/2024_01_22-03-59-55_PM_dgplots.png" class="img-fluid figure-img" width="805"></p>
+<figure class="figure"><p><img src="images/dgplots/2024_01_31-02-26-30_PM_dgplots.png" class="img-fluid figure-img" width="804"></p>
 </figure>
 </div>
 </div>
@@ -748,8 +751,8 @@ Model:                            GLM   Df Residuals:                       59
 Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -4.5939
-Date:                Mon, 22 Jan 2024   Deviance:                       9.1879
-Time:                        15:59:56   Pearson chi2:                     15.1
+Date:                Wed, 31 Jan 2024   Deviance:                       9.1879
+Time:                        14:26:31   Pearson chi2:                     15.1
 No. Iterations:                     8   Pseudo R-squ. (CS):             0.7093
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -914,16 +917,96 @@ Figure&nbsp;7.1: Predicted probabilities for beak classification
 <!-- * GAMLSS -->
 </section><section id="assumptions" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="assumptions">
 <span class="header-section-number">7.6</span> Assumptions</h2>
-<p>As explained in the background chapter, we can’t really use the standard diagnostic plots to assess assumptions. We’re not going to go into a lot of detail for now, but there is one thing that we can do: look for influential points using the Cook’s distance plot:</p>
+<p>As explained in the background chapter, we can’t really use the standard diagnostic plots to assess assumptions. We’re not going to go into a lot of detail for now, but there is one thing that we can do: look for influential points using the Cook’s distance plot.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true">R</a></li></ul>
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false">Python</a></li>
+</ul>
 <div class="tab-content" data-group="language">
 <div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">glm_bks</span> , which<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">glm_bks</span> , which <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Extracting the Cook’s distances from the <code>glm</code> object
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Instead of using the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function, we can also extract the values directly from the <code>glm</code> object. We can use the <code>augment()</code> function to do this and create a lollipop or stem plot:</p>
+<div class="cell">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_bks</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">augment</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>            <span class="co"># get underlying data</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">.cooksd</span><span class="op">)</span> <span class="op">%&gt;%</span>      <span class="co"># select the Cook's d</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>obs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="co"># create an index column</span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">obs</span>, y <span class="op">=</span> <span class="va">.cooksd</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_segment</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">obs</span>, y <span class="op">=</span> <span class="va">.cooksd</span>, xend <span class="op">=</span> <span class="va">obs</span>, yend <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
+<p>As always, there are different ways of doing this. Here we extract the Cook’s d values from the <code>glm</code> object and put them in a Pandas DataFrame. We can then use that to plot them in a lollipop or stem plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract the Cook's distances</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>glm_bks_py_resid <span class="op">=</span> pd.DataFrame(glm_bks_py.</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                                get_influence().</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                                summary_frame()[<span class="st">"cooks_d"</span>])</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># add row index </span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>glm_bks_py_resid[<span class="st">'obs'</span>] <span class="op">=</span> glm_bks_py_resid.reset_index().index</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now have two columns:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>glm_bks_py_resid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         cooks_d  obs
+0   1.854360e-07    0
+1   3.388262e-07    1
+2   3.217960e-05    2
+3   1.194847e-05    3
+4   6.643975e-06    4
+..           ...  ...
+56  1.225519e-05   56
+57  2.484468e-05   57
+58  6.781364e-06   58
+59  1.850240e-07   59
+60  3.532360e-05   60
+
+[61 rows x 2 columns]</code></pre>
+</div>
+</div>
+<p>We can use these to create the plot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>(ggplot(glm_bks_py_resid,</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"obs"</span>,</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"cooks_d"</span>)) <span class="op">+</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>     geom_segment(aes(x <span class="op">=</span> <span class="st">"obs"</span>,y <span class="op">=</span> <span class="st">"cooks_d"</span>, xend <span class="op">=</span> <span class="st">"obs"</span>, yend <span class="op">=</span> <span class="dv">0</span>)) <span class="op">+</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>     geom_point())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="614"></p>
 </figure>
 </div>
 </div>
@@ -932,51 +1015,110 @@ Figure&nbsp;7.1: Predicted probabilities for beak classification
 </div>
 </div>
 <p>This shows that there are no very obvious influential points. You could regard point <code>34</code> as potentially influential (it’s got a Cook’s distance of around <code>0.8</code>), but I’m not overly worried.</p>
+<p>If we were worried, we’d remove the troublesome data point, re-run the analysis and see if that changes the statistical outcome. If so, then our entire (statistical) conclusion hinges on one data point, which is not a very robust bit of research. If it <em>doesn’t</em> change our significance, then all is well, even though that data point is influential.</p>
 </section><section id="assessing-significance" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="assessing-significance">
 <span class="header-section-number">7.7</span> Assessing significance</h2>
 <p>We can ask several questions.</p>
 <p><strong>Is the model well-specified?</strong></p>
 <p>Roughly speaking this asks “can our model predict our data reasonably well?”</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-13-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-1" role="tab" aria-controls="tabset-13-1" aria-selected="true">R</a></li></ul>
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-13-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-1" role="tab" aria-controls="tabset-13-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-2" role="tab" aria-controls="tabset-13-2" aria-selected="false">Python</a></li>
+</ul>
 <div class="tab-content" data-group="language">
 <div id="tabset-13-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-13-1-tab">
 <p>Unfortunately, there isn’t a single command that does this for us, and we have to lift some of the numbers from the summary output ourselves.</p>
 <div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">pchisq</a></span><span class="op">(</span><span class="fl">9.1879</span>, <span class="fl">59</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">pchisq</a></span><span class="op">(</span><span class="fl">9.1879</span>, <span class="fl">59</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1</code></pre>
 </div>
 </div>
 <p>Here, we’ve used the <code>pchisq</code> function (which calculates the correct probability for us – ask if you want a hand-wavy explanation). The first argument to it is the residual deviance value from the summary table, the second argument to is the residual degrees of freedom argument from the same table.</p>
+</div>
+<div id="tabset-13-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> chi2</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>chi2.sf(<span class="fl">9.1879</span>, <span class="dv">59</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.9999999999999916</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 <p>This gives us a probability of <code>1</code>. We can interpret this as the probability that the model is actually good. There aren’t any strict conventions on how to interpret this value but, for me, a tiny value would indicate a rubbish model.</p>
-</div>
-</div>
-</div>
 <p><strong>Is the overall model better than the null model?</strong></p>
 <div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-14-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-14-1" role="tab" aria-controls="tabset-14-1" aria-selected="true">R</a></li></ul>
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-14-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-14-1" role="tab" aria-controls="tabset-14-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-14-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-14-2" role="tab" aria-controls="tabset-14-2" aria-selected="false">Python</a></li>
+</ul>
 <div class="tab-content" data-group="language">
 <div id="tabset-14-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-14-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">pchisq</a></span><span class="op">(</span><span class="fl">84.5476</span> <span class="op">-</span> <span class="fl">9.1879</span>, <span class="fl">60</span> <span class="op">-</span> <span class="fl">59</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">pchisq</a></span><span class="op">(</span><span class="fl">84.5476</span> <span class="op">-</span> <span class="fl">9.1879</span>, <span class="fl">60</span> <span class="op">-</span> <span class="fl">59</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
+<pre><code>[1] 3.923163e-18</code></pre>
 </div>
 </div>
-<p>Here we’ve used the <code>pchisq</code> function again (if you didn’t ask before, you probably aren’t going to ask now). The first argument is the difference between the null and residual deviances and the second argument is the difference in degrees of freedom between the null and residual models. All of these values can be lifted from the summary table.</p>
-<p>This gives us a probability of 0, which is technically not possible. This value is doing a formal test to see whether our fitted model is significantly different from the null model. Here we can treat this a classical hypothesis test and since this p-value is less than 0.05 then we can say that our fitted model (with <code>blength</code> as a predictor variable) is definitely better than the null model (which has no predictor variables). Woohoo!</p>
+<p>Here we’ve used the <code>pchisq</code> function again (if you didn’t ask before, you probably aren’t going to ask now).</p>
+</div>
+<div id="tabset-14-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-14-2-tab">
+<p>First we need to define the null model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a linear model</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"pointed_beak ~ 1"</span>,</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> early_finches_py)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>glm_bks_null_py <span class="op">=</span> model.fit()</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_bks_null_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:           pointed_beak   No. Observations:                   61
+Model:                            GLM   Df Residuals:                       60
+Model Family:                Binomial   Df Model:                            0
+Link Function:                  Logit   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -42.274
+Date:                Wed, 31 Jan 2024   Deviance:                       84.548
+Time:                        14:26:35   Pearson chi2:                     61.0
+No. Iterations:                     3   Pseudo R-squ. (CS):              0.000
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      0.0328      0.256      0.128      0.898      -0.469       0.535
+==============================================================================</code></pre>
+</div>
+</div>
+<p>In order to compare our original fitted model to the null model we need to know the deviances of both models and the residual degrees of freedom of both models, which we could get from the summary method.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>chi2.sf(<span class="fl">84.5476</span> <span class="op">-</span> <span class="fl">9.1879</span>, <span class="dv">60</span> <span class="op">-</span> <span class="dv">59</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3.9231627082752525e-18</code></pre>
 </div>
 </div>
 </div>
+</div>
+</div>
+<p>The first argument is the difference between the null and residual deviances and the second argument is the difference in degrees of freedom between the null and residual models. All of these values can be lifted from the summary table.</p>
+<p>This gives us a probability of pretty much zero. This value is doing a formal test to see whether our fitted model is significantly different from the null model. Here we can treat this a classical hypothesis test and since this p-value is less than 0.05 then we can say that our fitted model (with <code>blength</code> as a predictor variable) is definitely better than the null model (which has no predictor variables). Woohoo!</p>
 <p><strong>Are any of the individual predictors significant?</strong></p>
-<p>Finally, we’ll use the anova function from before to determine which predictor variables are important, and specifically in this case whether the glucose predictor is significant.</p>
+<p>Finally, we’ll use the anova function from before to determine which predictor variables are important, and specifically in this case whether the beak length predictor is significant.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-15-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-15-1" role="tab" aria-controls="tabset-15-1" aria-selected="true">R</a></li></ul>
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-15-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-15-1" role="tab" aria-controls="tabset-15-1" aria-selected="true">R</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-15-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-15-2" role="tab" aria-controls="tabset-15-2" aria-selected="false">Python</a></li>
+</ul>
 <div class="tab-content" data-group="language">
 <div id="tabset-15-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-15-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">glm_bks</span> , test <span class="op">=</span> <span class="st">"Chisq"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">glm_bks</span>, test <span class="op">=</span> <span class="st">"Chisq"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Deviance Table
 
@@ -997,6 +1139,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>The p-value for the <code>blength</code> predictor is written under then Pr(&gt;Chi) column and we can see that it is less than <code>&lt; 2.2e-16</code>. So, beak length is a significant predictor.</p>
 <p>This shouldn’t be surprising since we already saw that our overall model was better than the null model, which in this case is exactly the same as asking whether the beak length term is significant. However, in more complicated models with multiple predictors these two comparisons (and p-values) won’t be the same.</p>
 </div>
+<div id="tabset-15-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-15-2-tab">
+<p>Alas, for some inexplicable reason this is not (yet?) possible to do in Python. At least, not beknownst to me…</p>
+</div>
 </div>
 </div>
 </section><section id="exercises" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="exercises">
@@ -1004,7 +1149,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="sec-exr_diabetes" class="level3" data-number="7.8.1"><h3 data-number="7.8.1" class="anchored" data-anchor-id="sec-exr_diabetes">
 <span class="header-section-number">7.8.1</span> Diabetes</h3>
 <div class="callout callout-style-default callout-exercise no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -1013,7 +1158,7 @@ Exercise
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse show">
+<div id="callout-8" class="callout-8-contents callout-collapse collapse show">
 <div class="callout-body-container callout-body">
 <div>
 <div class="callout-exercise">
@@ -1029,7 +1174,7 @@ Exercise
 </li>
 </ol>
 <div class="callout callout-style-default callout-answer no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -1038,7 +1183,7 @@ Answer
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <div>
 <div class="callout-answer" data-collapse="true">
@@ -1052,12 +1197,12 @@ Answer
 <div class="tab-content" data-group="language">
 <div id="tabset-16-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-16-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">diabetes</span> <span class="op">&lt;-</span> <span class="fu">read_csv</span><span class="op">(</span><span class="st">"data/diabetes.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">diabetes</span> <span class="op">&lt;-</span> <span class="fu">read_csv</span><span class="op">(</span><span class="st">"data/diabetes.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div id="tabset-16-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-16-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>diabetes_py <span class="op">=</span> pd.read_csv(<span class="st">"data/diabetes.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>diabetes_py <span class="op">=</span> pd.read_csv(<span class="st">"data/diabetes.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -1072,13 +1217,13 @@ Answer
 <div class="tab-content" data-group="language">
 <div id="tabset-17-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-17-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">diabetes</span>,</span>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">diabetes</span>,</span>
 <span>       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">test_result</span><span class="op">)</span>,</span>
 <span>           y <span class="op">=</span> <span class="va">glucose</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1088,13 +1233,13 @@ Answer
 <p>We could just give Python the <code>test_result</code> data directly, but then it would view the values as numeric. Which doesn’t really work, because we have two groups as such: those with a negative diabetes test result, and those with a positive one.</p>
 <p>We can force Python to temporarily covert the data to a factor, by making the <code>test_result</code> column an <code>object</code> type. We can do this directly inside the <code>ggplot()</code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> diabetes_py.test_result.astype(<span class="bu">object</span>),</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"glucose"</span>)) <span class="op">+</span></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>     geom_boxplot())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> diabetes_py.test_result.astype(<span class="bu">object</span>),</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"glucose"</span>)) <span class="op">+</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>     geom_boxplot())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="614"></p>
+<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-44-1.png" class="img-fluid figure-img" width="614"></p>
 </figure>
 </div>
 </div>
@@ -1112,13 +1257,13 @@ Answer
 <div class="tab-content" data-group="language">
 <div id="tabset-18-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-18-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">diabetes</span>,</span>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">diabetes</span>,</span>
 <span>       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">glucose</span>,</span>
 <span>           y <span class="op">=</span> <span class="va">test_result</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-38-3.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-45-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1126,13 +1271,13 @@ Answer
 </div>
 <div id="tabset-18-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-18-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"glucose"</span>,</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"test_result"</span>)) <span class="op">+</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>     geom_point())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"glucose"</span>,</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"test_result"</span>)) <span class="op">+</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>     geom_point())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="614"></p>
+<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid figure-img" width="614"></p>
 </figure>
 </div>
 </div>
@@ -1150,7 +1295,7 @@ Answer
 <div id="tabset-19-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-19-1-tab">
 <p>We’ll use the <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> function to create a generalised linear model. Here we save the model in an object called <code>glm_dia</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_dia</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">test_result</span> <span class="op">~</span> <span class="va">glucose</span>,</span>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_dia</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">test_result</span> <span class="op">~</span> <span class="va">glucose</span>,</span>
 <span>               family <span class="op">=</span> <span class="va">binomial</span>,</span>
 <span>               data <span class="op">=</span> <span class="va">diabetes</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1158,12 +1303,12 @@ Answer
 </div>
 <div id="tabset-19-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-19-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a linear model</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"test_result ~ glucose"</span>,</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> diabetes_py)</span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>glm_dia_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a linear model</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"test_result ~ glucose"</span>,</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> diabetes_py)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>glm_dia_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -1177,7 +1322,7 @@ Answer
 <div class="tab-content" data-group="language">
 <div id="tabset-20-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-20-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">glm_dia</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">glm_dia</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1202,7 +1347,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 <div id="tabset-20-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-20-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_dia_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_dia_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 Generalized Linear Model Regression Results                  
 ==============================================================================
@@ -1211,8 +1356,8 @@ Model:                            GLM   Df Residuals:                      726
 Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
-Date:                Mon, 22 Jan 2024   Deviance:                       752.20
-Time:                        16:00:00   Pearson chi2:                     713.
+Date:                Wed, 31 Jan 2024   Deviance:                       752.20
+Time:                        14:26:37   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1239,7 +1384,7 @@ glucose        0.0395      0.003     11.628      0.000       0.033       0.046
 <div class="tab-content" data-group="language">
 <div id="tabset-21-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-21-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="fl">150</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="fl">150</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="fl">150</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="fl">150</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5962827</code></pre>
 </div>
@@ -1247,7 +1392,7 @@ glucose        0.0395      0.003     11.628      0.000       0.033       0.046
 </div>
 <div id="tabset-21-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-21-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>math.exp(<span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="dv">150</span>) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> math.exp(<span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="dv">150</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>math.exp(<span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="dv">150</span>) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> math.exp(<span class="op">-</span><span class="fl">5.61</span> <span class="op">+</span> <span class="fl">0.04</span> <span class="op">*</span> <span class="dv">150</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.5962826992967878</code></pre>
 </div>
