@@ -598,15 +598,7 @@ Click to expand
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="96"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="images/dgplots/2024_01_31-02-26-30_PM_dgplots.png" class="img-fluid figure-img" width="804"></p>
+<figure class="figure"><p><img src="images/dgplots/2024_02_01-07-29-38_AM_dgplots.png" class="img-fluid figure-img" width="805"></p>
 </figure>
 </div>
 </div>
@@ -751,8 +743,8 @@ Model:                            GLM   Df Residuals:                       59
 Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -4.5939
-Date:                Wed, 31 Jan 2024   Deviance:                       9.1879
-Time:                        14:26:31   Pearson chi2:                     15.1
+Date:                Thu, 01 Feb 2024   Deviance:                       9.1879
+Time:                        07:29:39   Pearson chi2:                     15.1
 No. Iterations:                     8   Pseudo R-squ. (CS):             0.7093
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1002,7 +994,7 @@ Extracting the Cook’s distances from the <code>glm</code> object
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>(ggplot(glm_bks_py_resid,</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"obs"</span>,</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"cooks_d"</span>)) <span class="op">+</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>     geom_segment(aes(x <span class="op">=</span> <span class="st">"obs"</span>,y <span class="op">=</span> <span class="st">"cooks_d"</span>, xend <span class="op">=</span> <span class="st">"obs"</span>, yend <span class="op">=</span> <span class="dv">0</span>)) <span class="op">+</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>     geom_segment(aes(x <span class="op">=</span> <span class="st">"obs"</span>, y <span class="op">=</span> <span class="st">"cooks_d"</span>, xend <span class="op">=</span> <span class="st">"obs"</span>, yend <span class="op">=</span> <span class="dv">0</span>)) <span class="op">+</span></span>
 <span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>     geom_point())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -1085,8 +1077,8 @@ Model:                            GLM   Df Residuals:                       60
 Model Family:                Binomial   Df Model:                            0
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -42.274
-Date:                Wed, 31 Jan 2024   Deviance:                       84.548
-Time:                        14:26:35   Pearson chi2:                     61.0
+Date:                Thu, 01 Feb 2024   Deviance:                       84.548
+Time:                        07:29:43   Pearson chi2:                     61.0
 No. Iterations:                     3   Pseudo R-squ. (CS):              0.000
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1140,7 +1132,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>This shouldn’t be surprising since we already saw that our overall model was better than the null model, which in this case is exactly the same as asking whether the beak length term is significant. However, in more complicated models with multiple predictors these two comparisons (and p-values) won’t be the same.</p>
 </div>
 <div id="tabset-15-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-15-2-tab">
-<p>Alas, for some inexplicable reason this is not (yet?) possible to do in Python. At least, not beknownst to me…</p>
+<p>Alas, for some inexplicable reason this is not (yet?) possible to do in Python. At least, unbeknownst to me…</p>
 </div>
 </div>
 </div>
@@ -1356,8 +1348,8 @@ Model:                            GLM   Df Residuals:                      726
 Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
-Date:                Wed, 31 Jan 2024   Deviance:                       752.20
-Time:                        14:26:37   Pearson chi2:                     713.
+Date:                Thu, 01 Feb 2024   Deviance:                       752.20
+Time:                        07:29:45   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================

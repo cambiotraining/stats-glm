@@ -217,11 +217,14 @@ lm_bks_py = model.fit()
 Next, we can create the diagnostic plots:
 ```{python}
 #| eval: false
+#| results: hide
 dgplots(lm_bks_py)
 ```
 
 ```{python}
 #| echo: false
+#| fig-keep: none
+#| fig-show: hide
 # load dgplots function for knitr
 exec(open('setup_files/dgplots_knitr.py').read())
 # create rendered diagnostic plots image
@@ -368,7 +371,6 @@ There’s a lot to unpack here, but let's start with what we're familiar with: c
 ## Parameter interpretation
 
 ::: {.panel-tabset group="language"}
-
 ## R
 
 The coefficients or parameters can be found in the `Coefficients` block. The main numbers to extract from the output are the two numbers underneath `Estimate.Std`:
@@ -574,7 +576,7 @@ We can use these to create the plot:
 (ggplot(glm_bks_py_resid,
          aes(x = "obs",
              y = "cooks_d")) +
-     geom_segment(aes(x = "obs",y = "cooks_d", xend = "obs", yend = 0)) +
+     geom_segment(aes(x = "obs", y = "cooks_d", xend = "obs", yend = 0)) +
      geom_point())
 ```
 
@@ -673,11 +675,9 @@ This shouldn’t be surprising since we already saw that our overall model was b
 
 ## Python
 
-Alas, for some inexplicable reason this is not (yet?) possible to do in Python. At least, not beknownst to me...
+Alas, for some inexplicable reason this is not (yet?) possible to do in Python. At least, unbeknownst to me...
 
 :::
-
-
 
 
 ## Exercises
