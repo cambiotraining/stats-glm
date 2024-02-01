@@ -9,6 +9,13 @@ title: "Proportional response"
 source(file = "setup_files/setup.R")
 ```
 
+```{python}
+#| echo: false
+#| message: false
+import shutup;shutup.please()
+exec(open('setup_files/setup.py').read())
+```
+
 ::: {.callout-tip}
 ## Learning outcomes
 
@@ -48,6 +55,9 @@ import statsmodels.api as sm
 
 # Convenience interface for specifying models using formula strings and DataFrames
 import statsmodels.formula.api as smf
+
+# Needed for additional probability functionality
+from scipy.stats import *
 ```
 
 ### Functions
@@ -58,7 +68,7 @@ The example in this section uses the following data set:
 
 `data/challenger.csv`
 
-These data, obtained from the [faraway package](https://www.rdocumentation.org/packages/faraway/versions/1.0.7), contain information related to the explosion of the USA Space Shuttle Challenger on 28 January, 1986. An investigation after the disaster traced back to certain joints on one of the two solid booster rockets, each containing O-rings that ensured no exhaust gases could escape from the booster.
+These data, obtained from the [faraway package](https://www.rdocumentation.org/packages/faraway/versions/1.0.7) in R, contain information related to the explosion of the USA Space Shuttle Challenger on 28 January, 1986. An investigation after the disaster traced back to certain joints on one of the two solid booster rockets, each containing O-rings that ensured no exhaust gases could escape from the booster.
 
 The night before the launch was unusually cold, with temperatures below freezing. The final report suggested that the cold snap during the night made the o-rings stiff, and unable to adjust to changes in pressure. As a result, exhaust gases leaked away from the solid booster rockets, causing one of them to break loose and rupture the main fuel tank, leading to the final explosion.
 
@@ -74,6 +84,13 @@ First we load the data, then we visualise it.
 ```{r}
 challenger <- read_csv("data/challenger.csv")
 ```
+
+## Python
+
+```{python}
+challenger_py = pd.read_csv("data/challenger.csv")
+```
+
 :::
 
 The data set contains several columns:
@@ -95,6 +112,15 @@ challenger %>%
 
 challenger
 ```
+
+## Python
+
+```{python}
+challenger_py['total'] = 6
+challenger_py['intact'] = challenger_py['total'] - challenger_py['damage']
+challenger_py['prop_damaged'] = challenger_py['damage'] / challenger_py['total']
+```
+
 :::
 
 Plotting the proportion of damaged o-rings against the launch temperature shows the following picture:
@@ -106,22 +132,33 @@ Plotting the proportion of damaged o-rings against the launch temperature shows 
 ggplot(challenger, aes(x = temp, y = prop_damaged)) +
   geom_point()
 ```
+
+## Python
+
+```{python}
+#| results: hide
+(ggplot(challenger_py,
+         aes(x = "temp",
+             y = "prop_damaged")) +
+     geom_point())
+```
+
 :::
 
 The point on the left is the data point corresponding to the coldest flight experienced before the disaster, where five damaged o-rings were found. Fortunately, this did not result in a disaster.
 
-Here we'll explore if we could have predicted the failure of both o-rings on the Challenger flight, where the launch temperature was 31 degrees Fahrenheit.
+Here we'll explore if we could have reasonably predicted the failure of both o-rings on the Challenger flight, where the launch temperature was 31 degrees Fahrenheit.
 
 ## Creating a suitable model
 
 We only have 23 data points in total. So we're building a model on not that much data - we should keep this in mind when we draw our conclusions!
 
-::: {.panel-tabset group="language"}
-## R
-
 We are using a logistic regression for a proportion response in this case, since we're interested in the proportion of o-rings that are damaged.
 
 We can define this as follows:
+
+::: {.panel-tabset group="language"}
+## R
 
 ```{r}
 glm_chl <- glm(cbind(damage, intact) ~ temp,
@@ -132,6 +169,17 @@ glm_chl <- glm(cbind(damage, intact) ~ temp,
 Defining the relationship for proportion responses is a bit annoying, where you have to give the `glm` model a two-column matrix to specify the response variable.
 
 Here, the first column corresponds to the number of damaged o-rings, whereas the second column refers to the number of intact o-rings. We use the `cbind()` function to bind these two together into a matrix.
+
+## Python
+
+```{python}
+# create a linear model
+model = smf.glm(formula = "damage + intact ~ temp",
+                family = sm.families.Binomial(),
+                data = challenger_py)
+# and get the fitted parameters of the model
+glm_chl_py = model.fit()
+```
 
 :::
 
@@ -150,6 +198,11 @@ summary(glm_chl)
 
 We can see that the p-values of the `intercept` and `temp` are significant. We can also use the intercept and `temp` coefficients to construct the logistic equation, which we can use to sketch the logistic curve.
 
+## Python
+
+```{python}
+print(glm_chl_py.summary())
+```
 :::
 
 $$E(prop \ failed\ orings) = \frac{\exp{(11.66 -  0.22 \times temp)}}{1 + \exp{(11.66 -  0.22 \times temp)}}$$
@@ -167,6 +220,36 @@ ggplot(challenger, aes(temp, prop_damaged)) +
               method.args = list(family = binomial)) +
   xlim(25,85)
 ```
+
+## Python
+
+We can get the predicted values for the model as follows:
+
+```{python}
+challenger_py['predicted_values'] = glm_chl_py.predict()
+
+challenger_py.head()
+```
+
+This would only give us the predicted values for the data we already have. Instead we want to extrapolate to what would have been predicted for a wider range of temperatures. Here, we use a range of $[25, 85]$ Fahrenheit.
+
+```{python}
+model = pd.DataFrame({'temp': list(range(25, 86))})
+
+model["pred"] = glm_chl_py.predict(model)
+
+model.head()
+```
+
+```{python}
+#| results: hide
+(ggplot(challenger_py,
+         aes(x = "temp",
+             y = "prop_damaged")) +
+     geom_point() +
+     geom_line(model, aes(x = "temp", y = "pred"), colour = "blue"))
+```
+
 
 ::: {.callout-note collapse=true}
 ## Generating predicted values
@@ -196,6 +279,11 @@ ggplot(model, aes(temp, .pred)) +
 ```
 
 It seems that there was a high probability of both o-rings failing at that launch temperature. One thing that the graph shows is that there is a lot of uncertainty involved in this model. We can tell, because the fit of the line is very poor at the lower temperature range. There is just very little data to work on, with the data point at 53 F having a large influence on the fit.
+
+## Python
+
+We already did this above, since this is the most straightforward way of plotting the model in Python.
+
 :::
 :::
 :::
