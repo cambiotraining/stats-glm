@@ -347,7 +347,7 @@ We get quite a high score (around 0.9) for this, which tells us that our goodnes
 Is the model any better than the null though?
 
 ```{r}
-1 - pchisq(16.375 - 12.633, 1)
+1 - pchisq(16.375 - 12.633, 21 - 20)
 
 anova(glm_chl_new, test = 'Chisq')
 ```
@@ -414,8 +414,21 @@ We get quite a high score (around 0.9) for this, which tells us that our goodnes
 
 Is the model any better than the null though?
 
+First we need to define the null model:
+
 ```{python}
-chi2.sf(16.375 - 12.633, 23 - 22)
+# create a linear model
+model = smf.glm(formula = "damage + intact ~ 1",
+                family = sm.families.Binomial(),
+                data = challenger_new_py)
+# and get the fitted parameters of the model
+glm_chl_new_null_py = model.fit()
+
+print(glm_chl_new_null_py.summary())
+```
+
+```{python}
+chi2.sf(16.375 - 12.633, 21 - 20)
 ```
 
 However, the model is not significantly better than the null in this case, with a p-value here of just over 0.05 for both of these tests (they give a similar result since, yet again, we have just the one predictor variable).

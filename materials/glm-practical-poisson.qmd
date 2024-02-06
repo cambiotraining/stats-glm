@@ -392,7 +392,7 @@ We have to convert the `law` column to a factor, otherwise R will see it as nume
 
 ```{r}
 seatbelts %>% 
-  ggplot(aes(as_factor(law), drivers_killed)) +
+  ggplot(aes(as_factor(law), casualties)) +
    geom_boxplot()
 ```
 
@@ -400,8 +400,30 @@ The data are recorded by month and year, so we can also display the number of dr
 
 ```{r}
 seatbelts %>% 
-  ggplot(aes(year, drivers_killed)) +
+  ggplot(aes(year, casualties)) +
   geom_point()
+```
+
+## Python
+
+We have to convert the `law` column to a factor, otherwise R will see it as numerical.
+
+```{python}
+#| results: hide
+(ggplot(seatbelts_py,
+         aes(x = seatbelts_py.law.astype(object),
+             y = "casualties")) +
+     geom_boxplot())
+```
+
+The data are recorded by month and year, so we can also display the number of casualties by year:
+
+```{python}
+#| results: hide
+(ggplot(seatbelts_py,
+         aes(x = "year",
+             y = "casualties")) +
+     geom_point())
 ```
 
 :::
@@ -416,7 +438,7 @@ So my initial thought is that these data are going to be a bit tricky to interpr
 ## R
 
 ```{r}
-glm_stb <- glm(drivers_killed ~ year,
+glm_stb <- glm(casualties ~ year,
                data = seatbelts, family = "poisson")
 ```
 
@@ -428,13 +450,37 @@ summary(glm_stb)
 
 ```
 (Intercept)    37.168958
-year           0.016373
+year           -0.016373
+```
+
+## Python
+
+```{python}
+# create a linear model
+model = smf.glm(formula = "casualties ~ year",
+                family = sm.families.Poisson(),
+                data = seatbelts_py)
+# and get the fitted parameters of the model
+glm_stb_py = model.fit()
+```
+
+```{python}
+print(glm_stb_py.summary())
+```
+
+```
+======================
+                 coef  
+----------------------
+Intercept     37.1690 
+year          -0.0164 
+======================
 ```
 :::
 
 These are the coefficients of the Poisson model equation and need to be placed in the following formula in order to estimate the expected number of species as a function of island size:
 
-$$ E(drivers\_killed) = \exp(37.17 + 0.164 \times year) $$
+$$ E(casualties) = \exp(37.17 - 0.164 \times year) $$
 
 #### Assessing significance
 
@@ -447,8 +493,14 @@ Is the model well-specified?
 1 - pchisq(850.41, 190)
 ```
 
-This value indicates that the model is actually pretty good. Remember, it is between $[0, 1]$ and the closer to zero, the better the model.
+## Python
+
+```{python}
+chi2.sf(850.41, 190)
+```
 :::
+
+This value indicates that the model is actually pretty good. Remember, it is between $[0, 1]$ and the closer to zero, the better the model.
 
 How about the overall fit?
 
@@ -459,9 +511,27 @@ How about the overall fit?
 1 - pchisq(984.50 - 850.41, 191 - 190)
 ```
 
-Again, this indicates that the model is markedly better than the null model.
+## Python
 
+First we need to define the null model:
+
+```{python}
+# create a linear model
+model = smf.glm(formula = "casualties ~ 1",
+                family = sm.families.Poisson(),
+                data = seatbelts_py)
+# and get the fitted parameters of the model
+glm_stb_null_py = model.fit()
+
+print(glm_stb_null_py.summary())
+```
+
+```{python}
+chi2.sf(984.50 - 850.41, 191 - 190)
+```
 :::
+
+Again, this indicates that the model is markedly better than the null model.
 
 #### Plotting the regression
 
@@ -471,13 +541,31 @@ Again, this indicates that the model is markedly better than the null model.
 ```{r}
 #| message: false
 #| warning: false
-ggplot(seatbelts, aes(year, drivers_killed)) +
+ggplot(seatbelts, aes(year, casualties)) +
   geom_point() +
   geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
               method.args = list(family = poisson)) +
   xlim(1970,1985)
 ```
 
+## Python
+
+```{python}
+model = pd.DataFrame({'year': list(range(1968, 1985))})
+
+model["pred"] = glm_stb_py.predict(model)
+
+model.head()
+```
+
+```{python}
+#| results: hide
+(ggplot(seatbelts_py,
+         aes(x = "year",
+             y = "casualties")) +
+     geom_point() +
+     geom_line(model, aes(x = "year", y = "pred"), colour = "blue", size = 1))
+```
 :::
 
 
