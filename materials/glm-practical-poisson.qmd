@@ -38,6 +38,33 @@ exec(open('setup_files/setup.py').read())
 
 ### Libraries
 ### Functions
+
+## Python
+
+### Libraries
+
+```{python}
+#| eval: false
+# A maths library
+import math
+# A Python data analysis and manipulation tool
+import pandas as pd
+
+# Python equivalent of `ggplot2`
+from plotnine import *
+
+# Statistical models, conducting tests and statistical data exploration
+import statsmodels.api as sm
+
+# Convenience interface for specifying models using formula strings and DataFrames
+import statsmodels.formula.api as smf
+
+# Needed for additional probability functionality
+from scipy.stats import *
+```
+
+### Functions
+
 :::
 :::
 
@@ -72,6 +99,19 @@ Let's have a glimpse at the data:
 islands
 ```
 
+
+## Python
+
+```{python}
+islands_py = pd.read_csv("data/islands.csv")
+```
+
+Let's have a glimpse at the data:
+
+```{python}
+islands_py.head()
+```
+
 :::
 
 Looking at the data, we can see that there are two columns: `species`, which contains the number of species recorded on each island and `area`, which contains the surface area of the island in square kilometers.
@@ -86,6 +126,13 @@ ggplot(islands, aes(x = area, y = species)) +
   geom_point()
 ```
 
+## Python
+
+```{python}
+#| results: hide
+(ggplot(islands_py, aes(x = "area", y = "species")) +
+  geom_point())
+```
 :::
 
 It looks as though `area` may have an effect on the number of species that we observe on each island. We note that the response variable is count data and so we try to construct a Poisson regression.
@@ -111,6 +158,23 @@ The output is strikingly similar to the logistic regression models (who’d have
 ```
 (Intercept)    4.241129
 area           0.035613
+```
+
+## Python
+
+```{python}
+# create a generalised linear model
+model = smf.glm(formula = "species ~ area",
+                family = sm.families.Poisson(),
+                data = islands_py)
+# and get the fitted parameters of the model
+glm_isl_py = model.fit()
+```
+
+Let's look at the model output:
+
+```{python}
+print(glm_isl_py.summary())
 ```
 
 :::
@@ -141,6 +205,24 @@ ggplot(islands, aes(area, species)) +
   xlim(10,50)
 ```
 
+## Python
+
+```{python}
+model = pd.DataFrame({'area': list(range(10, 50))})
+
+model["pred"] = glm_isl_py.predict(model)
+
+model.head()
+```
+
+```{python}
+#| results: hide
+(ggplot(islands_py,
+         aes(x = "area",
+             y = "species")) +
+     geom_point() +
+     geom_line(model, aes(x = "area", y = "pred"), colour = "blue", size = 1))
+```
 :::
 
 ## Assumptions
@@ -154,6 +236,29 @@ We can look for influential points using the Cook’s distance plot:
 
 ```{r}
 plot(glm_isl , which=4)
+```
+
+## Python
+
+```{python}
+# extract the Cook's distances
+glm_isl_py_resid = pd.DataFrame(glm_isl_py.
+                                get_influence().
+                                summary_frame()["cooks_d"])
+
+# add row index 
+glm_isl_py_resid['obs'] = glm_isl_py_resid.reset_index().index
+```
+
+We can use these to create the plot:
+
+```{python}
+#| results: hide
+(ggplot(glm_isl_py_resid,
+         aes(x = "obs",
+             y = "cooks_d")) +
+     geom_segment(aes(x = "obs", y = "cooks_d", xend = "obs", yend = 0)) +
+     geom_point())
 ```
 
 :::
@@ -179,6 +284,12 @@ To assess if the model is any good we’ll again use the residual deviance and t
 1 - pchisq(30.437, 33)
 ```
 
+## Python
+
+```{python}
+chi2.sf(30.437, 33)
+```
+
 :::
 
 This gives a probability of `0.60`. This suggests that this model is actually a reasonably decent one and that the data are pretty well supported by the model. For Poisson models this has an extra interpretation. This can be used to assess whether we have significant over-dispersion in our data.
@@ -198,9 +309,14 @@ Secondly, to assess whether the overall model, with all of the terms, is better 
 1 - pchisq(856.899 - 30.437, 34 - 33)
 ```
 
+## Python
+
+```{python}
+chi2.sf(856.899 - 30.437, 34 - 33)
+```
 :::
 
-This gives a reported p-value of 0, which is pretty damn small. So, yes, this model is better than nothing at all and species does appear to change with some of our predictors
+This gives a reported p-value of pretty much zero, which is pretty damn small. So, yes, this model is better than nothing at all and species does appear to change with some of our predictors
 
 Finally, we’ll construct an analysis of deviance table to look at the individual terms:
 
@@ -213,6 +329,9 @@ anova(glm_isl , test = "Chisq")
 
 The p-value in this table is just as small as we’d expect given our previous result (`<2.2e-16` is pretty close to 0), and we have the nice consistent result that `area` definitely has an effect on `species`.
 
+## Python
+
+As mentioned before, this is not quite possible in Python.
 :::
 
 ## Exercises
@@ -247,6 +366,17 @@ First we load the data, then we visualise it.
 seatbelts <- read_csv("data/seatbelts.csv")
 ```
 
+## Python
+
+```{python}
+seatbelts_py = pd.read_csv("data/seatbelts.csv")
+```
+
+Let's have a glimpse at the data:
+
+```{python}
+seatbelts_py.head()
+```
 :::
 
 The data tracks the number of drivers killed in road traffic accidents, before and after the seat belt law was introduced. The information on whether the law was in place is encoded in the `law` column as `0` (law not in place) or `1` (law in place).

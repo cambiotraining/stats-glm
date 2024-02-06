@@ -173,7 +173,7 @@ Here, the first column corresponds to the number of damaged o-rings, whereas the
 ## Python
 
 ```{python}
-# create a linear model
+# create a generalised linear model
 model = smf.glm(formula = "damage + intact ~ temp",
                 family = sm.families.Binomial(),
                 data = challenger_py)
@@ -231,7 +231,7 @@ challenger_py['predicted_values'] = glm_chl_py.predict()
 challenger_py.head()
 ```
 
-This would only give us the predicted values for the data we already have. Instead we want to extrapolate to what would have been predicted for a wider range of temperatures. Here, we use a range of $[25, 85]$ Fahrenheit.
+This would only give us the predicted values for the data we already have. Instead we want to extrapolate to what would have been predicted for a wider range of temperatures. Here, we use a range of $[25, 85]$ degrees Fahrenheit.
 
 ```{python}
 model = pd.DataFrame({'temp': list(range(25, 86))})
@@ -247,7 +247,7 @@ model.head()
          aes(x = "temp",
              y = "prop_damaged")) +
      geom_point() +
-     geom_line(model, aes(x = "temp", y = "pred"), colour = "blue"))
+     geom_line(model, aes(x = "temp", y = "pred"), colour = "blue", size = 1))
 ```
 
 
@@ -350,6 +350,72 @@ Is the model any better than the null though?
 1 - pchisq(16.375 - 12.633, 1)
 
 anova(glm_chl_new, test = 'Chisq')
+```
+
+However, the model is not significantly better than the null in this case, with a p-value here of just over 0.05 for both of these tests (they give a similar result since, yet again, we have just the one predictor variable).
+
+## Python
+
+First, we need to remove the influential data point:
+
+
+```{python}
+challenger_new_py = challenger_py.query("temp != 53")
+```
+
+We can create a new generalised linear model, based on these data:
+
+```{python}
+# create a generalised linear model
+model = smf.glm(formula = "damage + intact ~ temp",
+                family = sm.families.Binomial(),
+                data = challenger_new_py)
+# and get the fitted parameters of the model
+glm_chl_new_py = model.fit()
+```
+
+We can get the model parameters as follows:
+
+```{python}
+print(glm_chl_new_py.summary())
+```
+
+Generate new model data:
+
+```{python}
+model = pd.DataFrame({'temp': list(range(25, 86))})
+
+model["pred"] = glm_chl_new_py.predict(model)
+
+model.head()
+```
+
+```{python}
+#| results: hide
+#| message: false
+(ggplot(challenger_new_py,
+         aes(x = "temp",
+             y = "prop_damaged")) +
+     geom_point() +
+     geom_line(model, aes(x = "temp", y = "pred"), colour = "blue", size = 1) +
+     # add a vertical line at 53 F temperature
+     geom_vline(xintercept = 53, linetype = "dashed"))
+```
+
+The prediction proportion of damaged o-rings is markedly less than what was observed.
+
+Before we can make any firm conclusions, though, we need to check our model:
+
+```{python}
+chi2.sf(12.633, 20)
+```
+
+We get quite a high score (around 0.9) for this, which tells us that our goodness of fit is pretty rubbish – our points are not very close to our curve, overall.
+
+Is the model any better than the null though?
+
+```{python}
+chi2.sf(16.375 - 12.633, 23 - 22)
 ```
 
 However, the model is not significantly better than the null in this case, with a p-value here of just over 0.05 for both of these tests (they give a similar result since, yet again, we have just the one predictor variable).
