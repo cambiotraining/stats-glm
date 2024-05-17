@@ -235,7 +235,7 @@ We can look for influential points using the Cook’s distance plot:
 ## R
 
 ```{r}
-plot(glm_isl , which=4)
+plot(glm_isl , which = 4)
 ```
 
 ## Python
@@ -545,7 +545,7 @@ ggplot(seatbelts, aes(year, casualties)) +
   geom_point() +
   geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
               method.args = list(family = poisson)) +
-  xlim(1970,1985)
+  xlim(1970, 1985)
 ```
 
 ## Python

@@ -4,10 +4,12 @@ book:
       chapters:
         - materials/glm-intro-lm.qmd
         - materials/glm-intro-glm.qmd
-    - part: "Binary and proportional data"
+        - materials/significance-testing.qmd
+        - materials/checking-assumptions.qmd
+    - part: "Logistic regression"
       chapters:
         - materials/glm-practical-logistic-binary.qmd
         - materials/glm-practical-logistic-proportion.qmd
-    - part: "Count data"
+    - part: "Poisson regression"
       chapters:
         - materials/glm-practical-poisson.qmd
