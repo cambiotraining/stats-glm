@@ -1,0 +1,247 @@
+---
+title: "Negative binomial"
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| results: hide
+source(file = "setup_files/setup.R")
+```
+
+```{python}
+#| echo: false
+#| message: false
+import shutup;shutup.please()
+exec(open('setup_files/setup.py').read())
+```
+
+::: {.callout-tip}
+## Learning outcomes
+
+**Questions**
+
+- 
+
+**Objectives**
+
+- 
+:::
+
+## Libraries and functions
+
+::: {.callout-note collapse="true"}
+## Click to expand
+
+::: {.panel-tabset group="language"}
+## R
+
+### Libraries
+
+```{r}
+#| eval: false
+library(MASS)
+```
+
+### Functions
+
+```{r}
+#| eval: false
+# fits a negative binomial model
+MASS::glm.nb()
+```
+
+
+## Python
+
+### Libraries
+
+```{python}
+#| eval: false
+# A maths library
+import math
+# A Python data analysis and manipulation tool
+import pandas as pd
+
+# Python equivalent of `ggplot2`
+from plotnine import *
+
+# Statistical models, conducting tests and statistical data exploration
+import statsmodels.api as sm
+
+# Convenience interface for specifying models using formula strings and DataFrames
+import statsmodels.formula.api as smf
+
+# Needed for additional probability functionality
+from scipy.stats import *
+```
+
+### Functions
+
+:::
+:::
+
+Negative Binomial Models are also used for count data, but these models don’t
+require that the variance of the data exactly matches the mean of the data, and so they can be used in situations where your data exhibit overdispersion.
+
+The example in this section use the following data set:
+
+`data/galapagos.csv`
+
+There are 30 Galapagos islands and 4 variables in the data. The relationship between the number of plant species (`species`) and several geographic variables is of interest.
+
+* `endemics` – the number of endemic species
+* `area` – the area of the island km<sup>2</sup>
+* `elevation` – the highest elevation of the island (m).
+* `nearest` – the distance from the nearest island (km)
+
+## Load and visualise the data
+
+First we load the data, then we visualise it.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+#| message: false
+#| warning: false
+galapagos <- read_csv("data/galapagos.csv")
+```
+
+Let's have a glimpse at the data:
+
+```{r}
+galapagos
+```
+
+
+## Python
+
+```{python}
+galapagos_py = pd.read_csv("data/galapagos.csv")
+```
+
+Let's have a glimpse at the data:
+
+```{python}
+galapagos_py.head()
+```
+
+:::
+
+We can plot the data:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+galapagos %>% 
+  pairs(lower.panel = NULL)
+```
+
+## Python
+:::
+
+It looks as though `endemics` and `elevation` might be related to `species`, but
+`area` and `nearest` are harder to work out.
+
+Given that the response variable, `species`, is a count variable we try to construct a Poisson regression. We decide that there is no biological reason to look for interaction between the various predictor variables and so we don’t construct a model with any interactions. Remember that this may or may not be a sensible thing to do in general.
+
+## Constructing a model
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+
+glm_gal <- glm(species ~ area + endemics + elevation + nearest,
+               data = galapagos, family = "poisson")
+```
+
+and we look at the model summary:
+
+```{r}
+summary(glm_gal)
+```
+
+## Python
+
+:::
+
+Now, this time, before we start looking at interpreting the model coefficients were going to jump straight into assessing whether the model is well-specified (spoiler alert: we do this because I already know that it isn't...).
+
+The residual deviance is `r round(glm_gal$deviance, 2)`, but we only have `r glm_gal$df.residual` degrees of freedom in the model. This means that we are dealing with a lot of overdispersion. The estimated amount of overdispersion, $\theta$, is given by dividing these two numbers together, so we
+have $\theta$ = `r round(glm_gal$deviance, 2)` / `r glm_gal$df.residual` = `r round(glm_gal$deviance / glm_gal$df.residual, 2)`. This is definitely nowhere near close to 1.
+
+We can formally check this with our trusty "Is the model well-posed" probability
+value:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+1 - pchisq(315.88, 25)
+```
+
+## Python
+:::
+
+This gives a big fat 0, so no, there are definitely things wrong with our model and we can’t really trust anything that’s being spat out at this stage.
+So, with that conclusion, we won’t bother looking at the analysis of deviance table or asking whether the model is better than the null model. Instead we need to find a better fitting model...
+
+For count response data options are limited, but the main alternative to a Poisson model is something called a negative binomial model. 
+
+## Negative binomial model
+
+::: {.panel-tabset group="language"}
+## R
+
+To specify a negative binomial model, we use the `MASS` package.
+
+```{r}
+#| message: false
+library(MASS)
+```
+
+
+```{r}
+nb_gal <- glm.nb(species ~ area + endemics + elevation + nearest,
+               data = galapagos)
+```
+
+```{r}
+summary(nb_gal)
+```
+
+This output is very similar to the other glm outputs that we’ve seen but with some additional information at the bottom regarding the dispersion parameter that the negative binomial model has used, which it calls Theta (2.988). This is just for information rather than anything to worry about.
+
+As before, the main numbers to extract from the output are the numbers underneath `Estimate` in the `Coefficients` table:
+
+```
+Coefficients:
+              Estimate
+(Intercept)  2.4870922
+area        -0.0002911
+endemics     0.0457287
+elevation    0.0003053
+nearest      0.0040316
+```
+
+## Python
+:::
+
+These are the coefficients of the Negative Binomial model equation and need to be placed in the following formula in order to estimate the expected number of species as a function of the other variables.:
+
+$E(species) = \exp(2.49 + 0.046 \times endemics - 0.0003 \times elevation + 0.004 \times nearest)$
+
+The Negative Binomial model has the same form for its line of best fit as the Poisson model, but the underlying probability distribution is different.
+
+## Exercises
+
+## Summary
+
+::: {.callout-tip}
+#### Key points
+
+-   Negative binomial regression relaxes the assumption made by Poisson regressions that the variance is equal to the mean.
+:::

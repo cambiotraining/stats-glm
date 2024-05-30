@@ -6,10 +6,11 @@ book:
         - materials/glm-intro-glm.qmd
         - materials/significance-testing.qmd
         - materials/checking-assumptions.qmd
-    - part: "Logistic regression"
+    - part: "Binary outcomes"
       chapters:
         - materials/glm-practical-logistic-binary.qmd
         - materials/glm-practical-logistic-proportion.qmd
-    - part: "Poisson regression"
+    - part: "Count outcomes"
       chapters:
         - materials/glm-practical-poisson.qmd
+        - materials/glm-practical-negative_binomial.qmd
