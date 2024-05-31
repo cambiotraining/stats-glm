@@ -213,7 +213,7 @@ nb_gal <- glm.nb(species ~ area + endemics + elevation + nearest,
 summary(nb_gal)
 ```
 
-This output is very similar to the other glm outputs that we’ve seen but with some additional information at the bottom regarding the dispersion parameter that the negative binomial model has used, which it calls Theta (2.988). This is just for information rather than anything to worry about.
+This output is very similar to the other GLM outputs that we’ve seen but with some additional information at the bottom regarding the dispersion parameter that the negative binomial model has used, which it calls Theta (2.988). This is just for information rather than anything to worry about.
 
 As before, the main numbers to extract from the output are the numbers underneath `Estimate` in the `Coefficients` table:
 
@@ -235,6 +235,118 @@ These are the coefficients of the Negative Binomial model equation and need to b
 $E(species) = \exp(2.49 + 0.046 \times endemics - 0.0003 \times elevation + 0.004 \times nearest)$
 
 The Negative Binomial model has the same form for its line of best fit as the Poisson model, but the underlying probability distribution is different.
+
+### Assessing significance
+
+We can ask the same three questions we asked before.
+
+1. Is the model well-specified?
+2. Is the overall model better than the null model?
+3. Are any of the individual predictors significant?
+
+To assess whether the model is any good we’ll use the residual deviance and the
+residual degrees of freedom.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+1 - pchisq(33.395, 25)
+```
+Instead of manually typing in the values, which is of course prone to errors, we can also extract them directly from the model object:
+
+```{r}
+1 - pchisq(nb_gal$deviance, nb_gal$df.residual)
+```
+
+## Python
+:::
+
+This gives a probability of `r round(1 - pchisq(nb_gal$deviance, nb_gal$df.residual), 3)`. Whilst this isn’t brilliant, it is still much better than the model we had before, and now that we’ve taken account of the overdispersion issue, the fact that this probability is a bit small is probably down to the fact that the predictor variables we have in the model might not be enough to fully explain the number of `species` on each of the Galapagos islands. 
+However, since we don’t have any other data to play with there’s nothing we can do about that right now.
+
+
+Secondly, to assess whether the overall model, with all four terms, is better than the null model we’ll look at the difference in deviances and the difference in degrees of freedom:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+1 - pchisq(151.446 - 33.395, 29 - 25)
+```
+
+Or extracting them directly from the model object:
+
+```{r}
+1 - pchisq(nb_gal$null.deviance - nb_gal$deviance,
+           nb_gal$df.null - nb_gal$df.residual)
+```
+
+## Python
+:::
+
+This gives a reported p-value of `r 1 - pchisq(nb_gal$null.deviance - nb_gal$deviance, nb_gal$df.null - nb_gal$df.residual)`, which is pretty damn small. So, yes, this model is better than nothing at all and at least some of our predictors are related to the response variable in a meaningful fashion.
+
+Finally, we’ll construct an analysis of deviance table to look at the individual
+predictors:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+anova(nb_gal, test = "Chisq")
+```
+
+You might get a warning message about theta not being recalculated but this isn’t
+something to worry about.
+
+## Python
+:::
+
+We can now see that it looks like three of our predictor variables aren’t actually significant predictors at all, and that only the number of Endemic species on each island is a significant predictor of the number of plant species on each Galapagos island. We can check this further using backward stepwise elimination.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+step(nb_gal)
+```
+
+## Python
+:::
+
+This will confirm that only `endemics` is an appropriate predictor. (You may have to look back at the linear model handout to remember how the step function works.)
+
+Our new best model only contains `endemics` as a predictor, so we should fit this
+model and check that it still is an adequate model.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+nb_gal_min <- glm.nb(species ~ endemics, data = galapagos)
+```
+
+```{r}
+summary(nb_gal_min)
+```
+
+If we look at the deviance residuals (`r round(nb_gal_min$deviance, 3)`) and the residual degrees of freedom (`r nb_gal_min$df.residual`), we can use the `pchisq()` function to get an overall assessment of whether this model is well-specified.
+
+```{r}
+1 - pchisq(nb_gal_min$deviance, nb_gal_min$df.residual)
+```
+
+And we get a probability of `r round(1 - pchisq(nb_gal_min$deviance, nb_gal_min$df.residual), 3)` which is better than before, not amazing, but
+adequate for what we have. Woohoo!
+
+## Python
+:::
+
+The model equation for a negative binomial curve is the same as for a Poisson
+model and so, lifting the coefficients from the summary output we have the following relationship in our model:
+
+$E(species) = \exp(2.63 + 0.044 \times endemics$
 
 ## Exercises
 
