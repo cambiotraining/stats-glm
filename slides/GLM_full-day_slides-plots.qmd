@@ -1,0 +1,114 @@
+---
+title: "GLM_full-day_slides-plots"
+---
+
+```{r}
+library(tidyverse)
+library(broom)
+library(ggResidpanel)
+```
+
+## Proportional response (Challenger example)
+
+```{r}
+challenger <- read_csv("../materials/data/challenger.csv")
+```
+
+```{r}
+challenger <-
+challenger %>%
+  mutate(total = 6,                     # total number of o-rings
+         intact = 6 - damage,           # number of undamaged o-rings
+         prop_damaged = damage / total) # proportion damaged o-rings
+```
+
+```{r}
+chl_data <- ggplot(challenger, aes(x = temp, y = prop_damaged)) +
+  geom_point(size = 4) +
+  labs(x = "Temperature (F)",
+       y = "Proportion of damaged o-rings") +
+  theme_classic(base_size = 18)
+```
+
+```{r}
+ggsave("slides-images/chl_data.png",
+       plot = chl_data,
+       width = 5, height = 5,
+       units = "in")
+```
+
+### Challenger regression
+
+```{r}
+chl_reg <- chl_data +
+  geom_smooth(method = "lm", se = FALSE, colour = "blue", fullrange = TRUE)
+```
+
+```{r}
+ggsave("slides-images/chl_reg.png",
+       plot = chl_reg,
+       width = 5, height = 5,
+       units = "in")
+```
+
+### Challenger assumptions
+
+```{r}
+lm_chl <- lm(prop_damaged ~ temp, data = challenger)
+
+dplot_chl <- resid_panel(lm_chl,
+            plots = c("resid", "qq", "ls", "cookd"),
+            smoother = TRUE)
+```
+
+```{r}
+ggsave("slides-images/chl_dplot.png",
+       plot = dplot_chl,
+       width = 5, height = 5,
+       units = "in")
+```
+
+### Challenger - GLM
+
+```{r}
+glm_chl <- glm(cbind(damage, intact) ~ temp,
+               family = binomial,
+               data = challenger)
+```
+
+```{r}
+chl_reg_glm <- chl_data +
+  geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
+              method.args = list(family = binomial)) +
+  xlim(25, 85) +
+  labs(y = "Probability")
+```
+
+```{r}
+ggsave("slides-images/chl_reg_glm.png",
+       plot = chl_reg_glm,
+       width = 5, height = 5,
+       units = "in")
+```
+
+### Challenger - NULL model
+
+```{r}
+
+avg_prop <- pull(challenger %>% summarise(avg_prop = mean(prop_damaged)))
+
+chl_reg_null <- chl_data +
+    geom_hline(yintercept = avg_prop,
+               colour = "blue",
+               size = 1) +
+  xlim(25,85) +
+  ylim(0, 1) +
+  labs(y = "Probability")
+```
+
+```{r}
+ggsave("slides-images/chl_reg_null.png",
+       plot = chl_reg_null,
+       width = 5, height = 5,
+       units = "in")
+```
