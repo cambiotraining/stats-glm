@@ -1,15 +1,17 @@
 book:
   chapters:
-    - part: "Background"
+    - part: "Introduction"
       chapters:
         - materials/glm-intro-lm.qmd
         - materials/glm-intro-glm.qmd
-        - materials/significance-testing.qmd
-        - materials/checking-assumptions.qmd
     - part: "Binary outcomes"
       chapters:
         - materials/glm-practical-logistic-binary.qmd
         - materials/glm-practical-logistic-proportion.qmd
+    - part: "Model assessment"
+      chapters:
+        - materials/significance-testing.qmd
+        - materials/checking-assumptions.qmd
     - part: "Count outcomes"
       chapters:
         - materials/glm-practical-poisson.qmd

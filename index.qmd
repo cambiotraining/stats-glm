@@ -1,6 +1,6 @@
 ---
 title: "Course overview"
-author: ["Vicki Hodgson, Matt Castle, Martin van Rongen"]
+author: ["Vicki Hodgson, Matt Castle, Rob Nicholls, Martin van Rongen"]
 number-sections: false
 ---
 
@@ -40,13 +40,22 @@ About the author(s):
   <a href="https://github.com/Vicki-H" target="_blank"><i class="fa-brands fa-github" style="color:#4078c0"></i></a>  
   _Affiliation_: Bioinformatics Training Facility, University of Cambridge  
   _Roles_: writing - review & editing; conceptualisation; coding
+
+- **Matt Castle**
+  <a href="https://orcid.org/0000-0002-9439-552X" target="_blank"><i class="fa-brands fa-orcid" style="color:#a6ce39"></i></a>
+  _Affiliation_: Bioinformatics Training Facility, University of Cambridge  
+  _Roles_: conceptualisation; writing
+
+- **Rob Nicholls**
+  <a href="https://orcid.org/0000-0002-8577-8617" target="_blank"><i class="fa-brands fa-orcid" style="color:#a6ce39"></i></a> 
+  <a href="" target="_blank"><i class="fa-brands fa-github" style="color:#4078c0"></i></a>  
+  _Affiliation_: Bioinformatics Training Facility, University of Cambridge  
+  _Roles_: conceptualisation
+
+  
 - **Martin van Rongen**
   <a href="https://orcid.org/0000-0002-1441-367X" target="_blank"><i class="fa-brands fa-orcid" style="color:#a6ce39"></i></a> 
   <a href="https://github.com/mvanrongen" target="_blank"><i class="fa-brands fa-github" style="color:#4078c0"></i></a>  
   _Affiliation_: Bioinformatics Training Facility, University of Cambridge  
   _Roles_: writing - review & editing; conceptualisation; coding
-- **Matt Castle**
-  <a href="https://orcid.org/0000-0002-9439-552X" target="_blank"><i class="fa-brands fa-orcid" style="color:#a6ce39"></i></a> 
-  _Affiliation_: Bioinformatics Training Facility, University of Cambridge  
-  _Roles_: conceptualisation; writing
 

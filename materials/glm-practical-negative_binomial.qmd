@@ -153,7 +153,6 @@ Given that the response variable, `species`, is a count variable we try to const
 ## R
 
 ```{r}
-
 glm_gal <- glm(species ~ area + endemics + elevation + nearest,
                data = galapagos, family = "poisson")
 ```
@@ -210,10 +209,14 @@ nb_gal <- glm.nb(species ~ area + endemics + elevation + nearest,
 ```
 
 ```{r}
+class(nb_gal)
+```
+
+```{r}
 summary(nb_gal)
 ```
 
-This output is very similar to the other GLM outputs that we’ve seen but with some additional information at the bottom regarding the dispersion parameter that the negative binomial model has used, which it calls Theta (2.988). This is just for information rather than anything to worry about.
+This output is very similar to the other GLM outputs that we’ve seen but with some additional information at the bottom regarding the dispersion parameter that the negative binomial model has used, which it calls Theta (`r round(nb_gal$theta, 3)`). This is just for information rather than anything to worry about.
 
 As before, the main numbers to extract from the output are the numbers underneath `Estimate` in the `Coefficients` table:
 
@@ -232,7 +235,7 @@ nearest      0.0040316
 
 These are the coefficients of the Negative Binomial model equation and need to be placed in the following formula in order to estimate the expected number of species as a function of the other variables.:
 
-$E(species) = \exp(2.49 + 0.046 \times endemics - 0.0003 \times elevation + 0.004 \times nearest)$
+$E(species) = \exp(2.49 - 0.0003 \times area + 0.046 \times endemics  + 0.0003 \times elevation + 0.004 \times nearest)$
 
 The Negative Binomial model has the same form for its line of best fit as the Poisson model, but the underlying probability distribution is different.
 
@@ -285,10 +288,9 @@ Or extracting them directly from the model object:
 ## Python
 :::
 
-This gives a reported p-value of `r 1 - pchisq(nb_gal$null.deviance - nb_gal$deviance, nb_gal$df.null - nb_gal$df.residual)`, which is pretty damn small. So, yes, this model is better than nothing at all and at least some of our predictors are related to the response variable in a meaningful fashion.
+This gives a reported p-value of `r 1 - pchisq(nb_gal$null.deviance - nb_gal$deviance, nb_gal$df.null - nb_gal$df.residual)`, which is pretty darn small. So, yes, this model is better than nothing at all and at least some of our predictors are related to the response variable in a meaningful fashion.
 
-Finally, we’ll construct an analysis of deviance table to look at the individual
-predictors:
+Finally, we’ll construct an analysis of deviance table to look at the individual predictors:
 
 ::: {.panel-tabset group="language"}
 ## R
@@ -297,13 +299,12 @@ predictors:
 anova(nb_gal, test = "Chisq")
 ```
 
-You might get a warning message about theta not being recalculated but this isn’t
-something to worry about.
+You might get a warning message about theta not being recalculated but this isn’t something to worry about.
 
 ## Python
 :::
 
-We can now see that it looks like three of our predictor variables aren’t actually significant predictors at all, and that only the number of Endemic species on each island is a significant predictor of the number of plant species on each Galapagos island. We can check this further using backward stepwise elimination.
+We can now see that it looks like two of our predictor variables aren’t actually significant predictors at all, and that only the `area` and number of endemic species (`endemics`) on each island is a significant predictor of the number of plant species on each Galapagos island. We can check this further using backward stepwise elimination.
 
 ::: {.panel-tabset group="language"}
 ## R
@@ -315,10 +316,9 @@ step(nb_gal)
 ## Python
 :::
 
-This will confirm that only `endemics` is an appropriate predictor. (You may have to look back at the linear model handout to remember how the step function works.)
+This shows that only `endemics` is an appropriate predictor. See the Core statistics notes on [Backwards stepwise elimination](https://cambiotraining.github.io/corestats/materials/cs5_practical_model-comparisons.html#backwards-stepwise-elimination) for more information.
 
-Our new best model only contains `endemics` as a predictor, so we should fit this
-model and check that it still is an adequate model.
+Our new best model only contains `endemics` as a predictor, so we should fit this model and check that it still is an adequate model.
 
 ::: {.panel-tabset group="language"}
 ## R
@@ -337,8 +337,7 @@ If we look at the deviance residuals (`r round(nb_gal_min$deviance, 3)`) and the
 1 - pchisq(nb_gal_min$deviance, nb_gal_min$df.residual)
 ```
 
-And we get a probability of `r round(1 - pchisq(nb_gal_min$deviance, nb_gal_min$df.residual), 3)` which is better than before, not amazing, but
-adequate for what we have. Woohoo!
+And we get a probability of `r round(1 - pchisq(nb_gal_min$deviance, nb_gal_min$df.residual), 3)` which is better than before, not amazing, but it might be adequate for what we have. Woohoo!
 
 ## Python
 :::
@@ -346,9 +345,136 @@ adequate for what we have. Woohoo!
 The model equation for a negative binomial curve is the same as for a Poisson
 model and so, lifting the coefficients from the summary output we have the following relationship in our model:
 
-$E(species) = \exp(2.63 + 0.044 \times endemics$
+$E(species) = \exp(2.63 + 0.044 \times endemics)$
+
+### Model suitability
+
+As we saw above, the model we created was not terribly well-specified. We can visualise it as follows:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+#| message: false
+ggplot(galapagos, aes(endemics, species)) +
+  geom_point() +
+  geom_smooth(method = "glm.nb", se = FALSE, fullrange = TRUE)
+```
+
+## Python
+:::
+
+We can see that at the lower range of `endemics`, the model is predicting values that are a bit too high. In the mid-range it predicts values that are too low and at the higher end the model is, well, rubbish.
+
+Let's compare it directly to our original Poisson regression (setting the limits of the y-axes to match):
+
+::: {.callout-note collapse="true"}
+## Show code
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+p1 <- ggplot(galapagos, aes(endemics, species)) +
+  geom_point() +
+  geom_smooth(method = "glm", se = FALSE, fullrange = TRUE,
+              method.args = list(family = poisson)) +
+  ylim(0, 500) +
+  labs(title = "Poisson")
+
+p2 <- ggplot(galapagos, aes(endemics, species)) +
+  geom_point() +
+  geom_smooth(method = "glm.nb", se = FALSE, fullrange = TRUE) +
+  ylim(0, 500) +
+  labs(title = "Negative binomial")
+```
+
+## Python
+:::
+:::
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+p1 + p2
+```
+
+So. although we've dealt with the overdispersion we had in the original Poisson regression, we still have a pretty poor model. So, what is a poor researcher to do? We'll let you explore this in an exercise.
+
+:::{.callout-important}
+Complete [Exercise -@sec-exr_galapagos].
+:::
 
 ## Exercises
+
+### Galapagos models {#sec-exr_galapagos}
+
+:::{.callout-exercise}
+
+{{< level 2 >}}
+
+For this exercise we'll be using the data from `data/galapagos.csv`.
+
+The fit for both the Poisson and Negative binomial regressions is not very good, suggesting that the model is not well-specified. How could we improve this?
+
+::: {.callout-answer collapse="true"}
+
+There appears to be a power relationship between `species` and `endemics`. So, one thing we could do is log-transform the response (`species`) and predictor (`endemics`) variables.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+ggplot(data = galapagos,
+       aes(x = log(endemics),
+           y = log(species))) +
+  geom_point()
+```
+
+
+## Python
+:::
+
+We could add a regression line to this. Additionally, we could just log-transform `endemics` and fit a negative binomial model to this. Let's do all of this and plot them together with the original Poisson and Negative binomial models.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+p3 <- ggplot(galapagos, aes(log(endemics), log(species))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE,
+              method.args = list(family = poisson)) +
+  labs(title = "Linear model of log-log")
+
+
+p4 <- ggplot(galapagos, aes(log(endemics), species)) +
+  geom_point() +
+  geom_smooth(method = "glm.nb", se = FALSE, fullrange = TRUE) +
+  ylim(0, 500) +
+  labs(title = "Negative binomial of log(endemics)")
+```
+
+```{r}
+p1 + p2 + p3 + p4 +
+  plot_annotation(tag_levels = "A")
+```
+
+## Python
+
+:::
+
+From this it is clear that the negative binomial model fitted to `species ~ log(endemics)` in panel D produces a much better fit than the original fit in panel B.
+
+Equally, looking at the relationship between `log(species) ~ log(endemics)` in panel C it illustrates that this is pretty well-modelled using a linear line.
+
+There is a slight issue though. If you look carefully then you see that in both panels C and D there is a stray value left of zero. There is also a warning message, saying `Removed 1 row containing non-finite outside the scale range`. If you'd look at the data, you'd notice that there is one island where the number of `endemics` is equal to 0. If we take the `log(0)` we get minus infinity. Which has little biological relevance, of course.
+
+We could adjust for this by adding a "pseudo-count", or adding `1` to all of the counts. If that is acceptable or not is a matter of debate and I'll leave it to you to ponder over this. I would say that, whatever you do, make sure that you are transparent and clear on what you are doing and what the justification for it it.
+
+:::
+:::
 
 ## Summary
 
