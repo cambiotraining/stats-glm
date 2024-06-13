@@ -222,7 +222,7 @@ The dispersion parameter here is 0.922. That's pretty good - not far off 1 at al
 
 But how can we check whether it is *significantly* different from 1? 
 
-Well, you've actually already got the knowledge you need to do this, from the previous course section on significance testing. Specifically, the chi-squared goodness-of-fit test can be used to check whether the dispersion is within sensible limits.
+Well, you've actually already got the knowledge you need to do this, from the [previous course section](significance-testing.qmd) on significance testing. Specifically, the chi-squared goodness-of-fit test can be used to check whether the dispersion is within sensible limits.
 
 You may have noticed that the two values we're using for the dispersion parameter are the same two numbers that we used in those chi-squared tests. For this Poisson regression fitted to the `islands` dataset, that goodness-of-fit test would look like this:
 
@@ -251,8 +251,8 @@ While generalised linear models make fewer assumptions than standard linear mode
 ::: {.callout-tip}
 #### Key points
 
-- For a generalised linear model, we assume that we have chosen the correct link function, that our response variable follows a distribution from the exponential family, and that our data are independent
-- To assess these assumptions, we need to understand our dataset and variables
-- We can also use visualisation to determine whether we have overly influential (high leverage) datapoints
-- For Poisson regression, we should also investigate the dispersion parameter of our model, which we expect to be close to 1
+- For a generalised linear model, we assume that we have chosen the correct link function, that our response variable follows a distribution from the exponential family, and that our data are independent.
+- To assess these assumptions, we need to understand our dataset and variables.
+- We can also use visualisation to determine whether we have overly influential (high leverage) data points.
+- For Poisson regression, we should also investigate the dispersion parameter of our model, which we expect to be close to 1.
 :::

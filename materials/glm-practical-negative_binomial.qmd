@@ -1,5 +1,5 @@
 ---
-title: "Dealing with overdispersion"
+title: "Overdispersion"
 ---
 
 ```{r}
@@ -26,7 +26,7 @@ exec(open('setup_files/setup.py').read())
 
 **Objectives**
 
-- Be able to recognise overdispersion
+- Be able to recognise overdispersion.
 - Be able to perform a negative binomial regression on count data.
 - Understand the difference between it and Poisson regression.
 - Evaluate and interpret suitability of the model.
@@ -55,6 +55,8 @@ library(performance)
 #| eval: false
 # fits a negative binomial model
 MASS::glm.nb()
+
+# checks for overdispersion
 performance::check_overdispersion()
 ```
 
@@ -205,6 +207,27 @@ $$\theta = `r round(glm_gal$deviance, 2)` / `r glm_gal$df.residual` = `r round(g
 
 The Poisson regression is *assuming* the value is 1. But the actual $\theta$ is nowhere near close to 1, so that's is a bad idea.
 :::
+
+::: {.callout-note collapse="true"}
+## Other methods to calculate $\theta$
+
+It wouldn't be statistics if there weren't multiple ways to assess the same thing! 
+
+::: {.panel-tabset group="language"}
+## R
+
+We can use the `check_overdispersion()` function from the `performance` package. If we do this on our `glm_gal` model, we get the following:
+
+```{r}
+check_overdispersion(glm_gal)
+```
+
+You'll notice that the dispersion parameter is slightly different from the one we calculated. That's because it uses a slightly different method (see `?check_overdispersion` if you're *really* interested). It is, however, a nice quick-and-easy function to assess overdispersion.
+
+## Python
+:::
+:::
+
 
 So, with that conclusion, we won’t bother looking at the analysis of deviance table or asking whether the model is better than the null model. Instead we need to find a better fitting model...
 

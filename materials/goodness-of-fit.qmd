@@ -1,0 +1,195 @@
+---
+title: "Goodness-of-fit"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| results: hide
+source(file = "setup_files/setup.R")
+```
+
+```{python}
+#| echo: false
+#| message: false
+import shutup;shutup.please()
+exec(open('setup_files/setup.py').read())
+```
+
+
+## Libraries and functions
+
+::: {.callout-note collapse="true"}
+## Click to expand
+
+::: {.panel-tabset group="language"}
+## R
+```{r}
+#| eval: false
+install.packages("lmtest")
+library(lmtest)
+```
+## Python
+```{python}
+#| eval: false
+from scipy.stats import *
+```
+:::
+
+:::
+
+Goodness-of-fit is all about how well a model fits the data, and typically involves summarising the discrepancy between the actual data points, and the fitted/predicted values that the model produces.
+
+Though closely linked, it's important to realise that goodness-of-fit and significance don't come hand-in-hand automatically: we might find a model that is significantly better than the null, but is still overall pretty rubbish at matching the data. So, to understand the quality of our model better, we should ideally perform both types of test. 
+
+### Chi-square tests
+
+Once again, we can make use of deviance and chi-square tests, this time to assess goodness-of-fit.
+
+Previously, we used likelihood ratio tests to assess the null hypothesis that our candidate fitted model and the null model had the same deviance.
+
+Now, however, we will test the null hypothesis that the fitted model and the saturated (perfect) model have the same deviance, i.e., that they both fit the data equally well. In most hypothesis tests, we want to reject the null hypothesis, but in this case, we'd like it to be true.
+
+### Data and model
+
+We'll continue using the data and model from the [significance testing](significance-testing.qmd) section, which were defined as follows:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+diabetes <- read_csv("data/diabetes.csv")
+```
+
+```{r}
+glm_dia <- glm(test_result ~ glucose * diastolic,
+                  family = "binomial",
+                  data = diabetes)
+
+glm_null <- glm(test_result ~ 1, 
+                family = binomial, 
+                data = diabetes)
+```
+
+## Python
+
+```{python}
+diabetes_py = pd.read_csv("data/diabetes.csv")
+```
+
+```{python}
+model = smf.glm(formula = "test_result ~ glucose * diastolic", 
+                family = sm.families.Binomial(), 
+                data = diabetes_py)
+                
+glm_dia_py = model.fit()
+
+model = smf.glm(formula = "test_result ~ 1",
+                family = sm.families.Binomial(),
+                data = diabetes_py)
+
+glm_null_py = model.fit()
+```
+:::
+
+::: {.panel-tabset group="language"}
+## R
+
+Running a goodness-of-fit chi-square test in R can be done using the `pchisq` function. We need to include two arguments: 1) the residual deviance, and 2) the residual degrees of freedom. Both of these can be found in the `summary` output, but you can use the `$` syntax to call these properties directly like so:
+
+```{r}
+1 - pchisq(glm_dia$deviance, glm_dia$df.residual)
+```
+
+## Python
+
+The syntax is very similar to the LRT we ran above, but now instead of including information about both our candidate model and the null, we instead just need 1) the residual deviance, and 2) the residual degrees of freedom:
+
+```{python}
+pvalue = chi2.sf(glm_dia_py.deviance, glm_dia_py.df_resid)
+
+print(pvalue)
+```
+:::
+
+You can think about this p-value, roughly, as "the probability that this model is good". We're not below our significance threshold, which means that we're not rejecting our null hypothesis (which is a good thing) - but it's also not a huge probability. This suggests that there's probably other variables we could measure and include in a future experiment, to give a better overall model.
+
+### AIC values
+
+You might remember AIC values from standard linear modelling. AIC values are useful, because they tell us about overall model quality, factoring in both goodness-of-fit and model complexity.
+
+One of the best things about the Akaike information criterion (AIC) is that it isn't specific to linear models - it works for models fitted with maximum likelihood estimation.
+
+In fact, if you look at the formula for AIC, you'll see why:
+
+$$
+AIC = 2k - 2ln(\hat{L})
+$$
+
+where $k$ represents the number of parameters in the model, and $\hat{L}$ is the maximised likelihood function. In other words, the two parts of the equation represent the complexity of the model, versus the log-likelihood.
+
+This means that AIC can be used for model comparison for GLMs in precisely the same way as it's used for linear models: lower AIC indicates a better-quality model.
+
+::: {.panel-tabset group="language"}
+## R
+
+The AIC value is given as standard, near the bottom of the `summary` output (just below the deviance values). You can also print it directly using the `$` syntax:
+
+```{r}
+summary(glm_dia)
+
+glm_dia$aic
+```
+
+In even better news for R users, the `step` function works for GLMs just as it does for linear models, so long as you include the `test = LRT` argument.
+
+```{r}
+step(glm_dia, test = "LRT")
+```
+
+## Python
+
+The AIC value isn't printed as standard with the model summary, but you can access it easily like so:
+
+```{python}
+print(glm_dia_py.aic)
+```
+:::
+
+### Pseudo r-squared
+
+We can't use $R^2$ values to represent the amount of variance explained in a GLM. This is primarily because, while linear models are fitted by minimising the squared residuals, GLMs are fitted by maximising the likelihood - an entirely different procedure.
+
+However, because $R^2$ values are so useful in linear modelling, statisticians have developed something called a "pseudo $R^2$" for GLMs.
+
+::: {.callout-note}
+#### Debate about pseudo $R^2$ values
+
+There are two main areas of debate:
+
+1. Which version of pseudo $R^2$ to use? 
+
+There are many. Some of the most popular are McFadden's, Nagelkerke's, Cox & Snell's, and Tjur's. They all have slightly different formulae and in some cases can give quite different results. [This post](https://stats.oarc.ucla.edu/other/mult-pkg/faq/general/faq-what-are-pseudo-r-squareds/) does a nice job of discussing some of them and providing some comparisons.
+
+2. Should pseudo $R^2$ values be calculated at all? 
+
+Well, it depends what you want them for. Most statisticians tend to advise that pseudo $R^2$ values are only really useful for model comparisons (i.e., comparing different GLMs fitted to the same dataset). This is in contrast to the way that we use $R^2$ values in linear models, as a measure of effect size that is generalisable across studies.
+
+So, if you choose to use pseudo $R^2$ values, try to be thoughtful about it; and avoid the temptation to over-interpret! 
+:::
+
+## Summary
+
+Likelihood and deviance are very important in generalised linear models - not just for fitting the model via maximum likelihood estimation, but for assessing significance and goodness-of-fit. To determine the quality of a model and draw conclusions from it, it's important to assess both of these things.
+
+::: {.callout-tip}
+#### Key points
+- A chi-square goodness-of-fit test can also be performed using likelihood/deviance.
+- The Akaike information criterion is also based on likelihood, and can be used to compare the quality of GLMs fitted to the same dataset.
+- Other metrics that may be of use are Wald test p-values and pseudo $R^2$ values.
+:::

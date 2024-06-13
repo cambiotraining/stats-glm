@@ -4,15 +4,16 @@ book:
       chapters:
         - materials/glm-intro-lm.qmd
         - materials/glm-intro-glm.qmd
-    - part: "Binary outcomes"
+    - part: "Binary responses"
       chapters:
         - materials/glm-practical-logistic-binary.qmd
         - materials/glm-practical-logistic-proportion.qmd
     - part: "Model assessment"
       chapters:
         - materials/significance-testing.qmd
+        - materials/goodness-of-fit.qmd
         - materials/checking-assumptions.qmd
-    - part: "Count outcomes"
+    - part: "Count responses"
       chapters:
         - materials/glm-practical-poisson.qmd
         - materials/glm-practical-negative_binomial.qmd

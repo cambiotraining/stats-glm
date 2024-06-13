@@ -188,7 +188,7 @@ The intercept coefficient, `4.24`, is related to the number of species we would 
 
 The coefficient of `area` is the fun bit. For starters we can see that it is a positive number which does mean that increasing `area` leads to increasing numbers of `species`. Good so far.
 
-But what does the value `0.036` actually mean? Well, if we exponentiate it as well, we get `exp(0.036) ≈ 1.04`. This means that for every increase in `area` of 1 km^2 (the original units of the area variable), the number of species on the island is multiplied by `1.04`. So, an island of area 1 km^2 will have `1.04 x 70 ≈ 72` species.
+But what does the value `0.036` actually mean? Well, if we exponentiate it as well, we get `exp(0.036) ≈ 1.04`. This means that for every increase in `area` of 1 km<sup>2</sup> (the original units of the area variable), the number of species on the island is multiplied by `1.04`. So, an island of area km<sup>2</sup> will have $1.04 \times 70 \approx 72$ species.
 
 So, in order to interpret Poisson coefficients, you have to exponentiate them.
 
@@ -316,7 +316,7 @@ chi2.sf(856.899 - 30.437, 34 - 33)
 ```
 :::
 
-This gives a reported p-value of pretty much zero, which is pretty damn small. So, yes, this model is better than nothing at all and species does appear to change with some of our predictors
+This gives a reported p-value of pretty much zero, which is rather small. So, yes, this model is better than nothing at all and `species` does appear to change with some of our predictors
 
 Finally, we’ll construct an analysis of deviance table to look at the individual terms:
 
