@@ -37,7 +37,20 @@ exec(open('setup_files/setup.py').read())
 ## R
 
 ### Libraries
+
+```{r}
+#| eval: false
+library(ggResidpanel)
+library(tidyverse)
+```
+
 ### Functions
+
+```{r}
+#| eval: false
+# create diagnostic plots
+ggResidpanel::resid_panel()
+```
 
 ## Python
 
@@ -122,6 +135,8 @@ We can plot the data:
 ## R
 
 ```{r}
+#| label: fig-scatter_isl
+#| fig-cap: Scatterplot of area and species
 ggplot(islands, aes(x = area, y = species)) +
   geom_point()
 ```
@@ -130,6 +145,8 @@ ggplot(islands, aes(x = area, y = species)) +
 
 ```{python}
 #| results: hide
+#| label: fig-scatter_isl_py
+#| fig-cap: Scatterplot of area and species
 (ggplot(islands_py, aes(x = "area", y = "species")) +
   geom_point())
 ```
@@ -198,10 +215,12 @@ So, in order to interpret Poisson coefficients, you have to exponentiate them.
 ## R
 
 ```{r}
+#| label: fig-poisson_isl
+#| fig-cap: Poisson regression on species ~ area
 ggplot(islands, aes(area, species)) +
   geom_point() +
   geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
-              method.args = list(family = poisson)) +
+              method.args = list(family = "poisson")) +
   xlim(10,50)
 ```
 
@@ -217,6 +236,8 @@ model.head()
 
 ```{python}
 #| results: hide
+#| label: fig-poisson_isl_py
+#| fig-cap: Poisson regression on species ~ area
 (ggplot(islands_py,
          aes(x = "area",
              y = "species")) +
@@ -235,7 +256,7 @@ We can look for influential points using the Cook’s distance plot:
 ## R
 
 ```{r}
-plot(glm_isl , which = 4)
+resid_panel(glm_isl, plots = c("cookd"))
 ```
 
 ## Python
@@ -391,6 +412,8 @@ First we have a look at the data comparing no law vs law:
 We have to convert the `law` column to a factor, otherwise R will see it as numerical.
 
 ```{r}
+#| label: fig-boxplot_seatbelt
+#| fig-cap: Boxplot of driver casualties before and after seatbelt introduction
 seatbelts %>% 
   ggplot(aes(as_factor(law), casualties)) +
    geom_boxplot()
@@ -399,6 +422,8 @@ seatbelts %>%
 The data are recorded by month and year, so we can also display the number of drivers killed by year:
 
 ```{r}
+#| label: fig-scatter_seatbelt
+#| fig-cap: Scatterplot of driver casualties across years
 seatbelts %>% 
   ggplot(aes(year, casualties)) +
   geom_point()
@@ -410,6 +435,8 @@ We have to convert the `law` column to a factor, otherwise R will see it as nume
 
 ```{python}
 #| results: hide
+#| label: fig-boxplot_seatbelt_py
+#| fig-cap: Boxplot of driver casualties before and after seatbelt introduction
 (ggplot(seatbelts_py,
          aes(x = seatbelts_py.law.astype(object),
              y = "casualties")) +
@@ -420,6 +447,8 @@ The data are recorded by month and year, so we can also display the number of ca
 
 ```{python}
 #| results: hide
+#| label: fig-scatter_seatbelt_py
+#| fig-cap: Scatterplot of driver casualties across years
 (ggplot(seatbelts_py,
          aes(x = "year",
              y = "casualties")) +
@@ -541,6 +570,8 @@ Again, this indicates that the model is markedly better than the null model.
 ```{r}
 #| message: false
 #| warning: false
+#| label: fig-poisson_seatbelt
+#| fig-cap: Poisson regression of driver casualties across years
 ggplot(seatbelts, aes(year, casualties)) +
   geom_point() +
   geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
@@ -560,6 +591,8 @@ model.head()
 
 ```{python}
 #| results: hide
+#| label: fig-poisson_seatbelt_py
+#| fig-cap: Poisson regression of driver casualties across years
 (ggplot(seatbelts_py,
          aes(x = "year",
              y = "casualties")) +
@@ -571,9 +604,22 @@ model.head()
 
 #### Conclusions
 
-The model we constructed appears to be a decent predictor for the number of fatalities.
+The model we constructed appears to be a decent predictor for the number of fatalities for the year range we investigated.
 
 :::
+:::
+
+### Seat belts {#sec-exr_seatbelts_extended}
+
+:::{.callout-exercise}
+
+{{< level 3 >}}
+
+Revisit [Exercise -@sec-exr_seatbelts], exploring how well the model fits across a wider range of years. Try and answer the following:
+
+1. Is the model still a good fit?
+2. Do we need to adjust our conclusions?
+3. What improvements to the model can you think of?
 :::
 
 ## Summary

@@ -2,6 +2,10 @@
 title: "Goodness-of-fit"
 ---
 
+Goodness-of-fit is all about how well a model fits the data, and typically involves summarising the discrepancy between the actual data points, and the fitted/predicted values that the model produces.
+
+Though closely linked, it's important to realise that goodness-of-fit and significance don't come hand-in-hand automatically: we might find a model that is significantly better than the null, but is still overall pretty rubbish at matching the data. So, to understand the quality of our model better, we should ideally perform both types of test. 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -43,19 +47,7 @@ from scipy.stats import *
 
 :::
 
-Goodness-of-fit is all about how well a model fits the data, and typically involves summarising the discrepancy between the actual data points, and the fitted/predicted values that the model produces.
-
-Though closely linked, it's important to realise that goodness-of-fit and significance don't come hand-in-hand automatically: we might find a model that is significantly better than the null, but is still overall pretty rubbish at matching the data. So, to understand the quality of our model better, we should ideally perform both types of test. 
-
-### Chi-square tests
-
-Once again, we can make use of deviance and chi-square tests, this time to assess goodness-of-fit.
-
-Previously, we used likelihood ratio tests to assess the null hypothesis that our candidate fitted model and the null model had the same deviance.
-
-Now, however, we will test the null hypothesis that the fitted model and the saturated (perfect) model have the same deviance, i.e., that they both fit the data equally well. In most hypothesis tests, we want to reject the null hypothesis, but in this case, we'd like it to be true.
-
-### Data and model
+## Data and model
 
 We'll continue using the data and model from the [significance testing](significance-testing.qmd) section, which were defined as follows:
 
@@ -97,6 +89,14 @@ glm_null_py = model.fit()
 ```
 :::
 
+## Chi-square tests
+
+Once again, we can make use of deviance and chi-square tests, this time to assess goodness-of-fit.
+
+Previously, we used likelihood ratio tests to assess the null hypothesis that our candidate fitted model and the null model had the same deviance.
+
+Now, however, we will test the null hypothesis that the fitted model and the saturated (perfect) model have the same deviance, i.e., that they both fit the data equally well. In most hypothesis tests, we want to reject the null hypothesis, but in this case, we'd like it to be true.
+
 ::: {.panel-tabset group="language"}
 ## R
 
@@ -119,7 +119,7 @@ print(pvalue)
 
 You can think about this p-value, roughly, as "the probability that this model is good". We're not below our significance threshold, which means that we're not rejecting our null hypothesis (which is a good thing) - but it's also not a huge probability. This suggests that there's probably other variables we could measure and include in a future experiment, to give a better overall model.
 
-### AIC values
+## AIC values
 
 You might remember AIC values from standard linear modelling. AIC values are useful, because they tell us about overall model quality, factoring in both goodness-of-fit and model complexity.
 
@@ -161,7 +161,7 @@ print(glm_dia_py.aic)
 ```
 :::
 
-### Pseudo r-squared
+## Pseudo r-squared
 
 We can't use $R^2$ values to represent the amount of variance explained in a GLM. This is primarily because, while linear models are fitted by minimising the squared residuals, GLMs are fitted by maximising the likelihood - an entirely different procedure.
 

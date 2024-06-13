@@ -47,6 +47,7 @@ exec(open('setup_files/setup.py').read())
 #| eval: false
 library(MASS)
 library(performance)
+library(tidyverse)
 ```
 
 ### Functions
@@ -433,6 +434,8 @@ As we saw above, the model we created was not terribly well-specified. We can vi
 
 ```{r}
 #| message: false
+#| label: fig-nb_endemics_vs_species
+#| fig-cap: Negative binomial regression of `species ~ endemics`
 ggplot(galapagos, aes(endemics, species)) +
   geom_point() +
   geom_smooth(method = "glm.nb", se = FALSE, fullrange = TRUE)

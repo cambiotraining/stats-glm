@@ -1,14 +1,14 @@
 ---
 title: "Course overview"
-author: ["Vicki Hodgson, Matt Castle, Rob Nicholls, Martin van Rongen"]
+author: ["Vicki Hodgson, Matt Castle, Rob Nicholls, Martin van Rongen<sup>*</sup>"]
 number-sections: false
 ---
 
 Welcome to the wonderful world of generalised linear models!
 
-These sessions are intended to enable you to construct and use generalised linear models confidently.
+These sessions are intended to enable you to construct and use generalised linear models confidently. These models allow you to analyse non-continuous responses, such as binary (yes/no) or count (1, 2, 3 ...) data.
 
-As with all of our statistics courses our focus is not on mathematical derivations, but on developing an intuitive understanding of the underlying statistical concepts.
+As with all of our statistics courses our primary focus is not on mathematical derivations, but on developing an intuitive understanding of the underlying statistical concepts. We use programming languages to help us with this.
 
 At the same time this is also *not* a "how to mindlessly use a stats program" course! We hope that at the end of this course you feel like you have a better grasp on what it is we're trying to do, and gained sufficient confidence in your coding skills to implement these statistical concepts in your own research!
 
@@ -21,14 +21,15 @@ To introduce sufficient understanding and coding experience for analysing data w
 
 To know what to do when presented with an arbitrary data set e.g.
 
-1.  Construct
+1. Construct
     a.  a logistic model for binary response variables
     b.  a logistic model for proportion response variables
     c.  a Poisson model for count response variables
-    d.  ~~a Negative Binomial model for count response variables~~ (to be added later)
-2.  Plot the data and the fitted curve in each case for both continuous and categorical predictors
-3.  Assess the significance of fit
-4.  Assess assumption of the model
+    d.  a Negative binomial model for count response variables
+2. Plot the data and the fitted curve in each case for both continuous and categorical predictors
+3. Assess the significance of fit
+4. Assess the goodness-of-fit
+5. Assess assumption of the model
 :::
 
 ## Authors
@@ -36,26 +37,27 @@ To know what to do when presented with an arbitrary data set e.g.
 About the author(s):
 
 - **Vicki Hodgson**
-  <a href="https://orcid.org/0000-0001-5619-2118" target="_blank"><i class="fa-brands fa-orcid" style="color:#a6ce39"></i></a> 
-  <a href="https://github.com/Vicki-H" target="_blank"><i class="fa-brands fa-github" style="color:#4078c0"></i></a>  
+  <a href="https://orcid.org/0000-0001-5619-2118" target="_blank"><i class="fa-brands fa-orcid" style="color:#a6ce39"></i></a>
+  <a href="https://github.com/Vicki-H" target="_blank"><i class="fa-brands fa-github" style="color:#4078c0"></i></a> \
   _Affiliation_: Bioinformatics Training Facility, University of Cambridge  
   _Roles_: writing - review & editing; conceptualisation; coding
 
 - **Matt Castle**
-  <a href="https://orcid.org/0000-0002-9439-552X" target="_blank"><i class="fa-brands fa-orcid" style="color:#a6ce39"></i></a>
+  <a href="https://orcid.org/0000-0002-9439-552X" target="_blank"><i class="fa-brands fa-orcid" style="color:#a6ce39"></i></a> \
   _Affiliation_: Bioinformatics Training Facility, University of Cambridge  
   _Roles_: conceptualisation; writing
 
 - **Rob Nicholls**
   <a href="https://orcid.org/0000-0002-8577-8617" target="_blank"><i class="fa-brands fa-orcid" style="color:#a6ce39"></i></a> 
-  <a href="" target="_blank"><i class="fa-brands fa-github" style="color:#4078c0"></i></a>  
-  _Affiliation_: Bioinformatics Training Facility, University of Cambridge  
+  <a href="" target="_blank"><i class="fa-brands fa-github" style="color:#4078c0"></i></a> \
+  _Affiliation_: Science and Technology Facilities Council, Rutherford Appleton Laboratory, Didcot  
   _Roles_: conceptualisation
 
   
 - **Martin van Rongen**
   <a href="https://orcid.org/0000-0002-1441-367X" target="_blank"><i class="fa-brands fa-orcid" style="color:#a6ce39"></i></a> 
-  <a href="https://github.com/mvanrongen" target="_blank"><i class="fa-brands fa-github" style="color:#4078c0"></i></a>  
+  <a href="https://github.com/mvanrongen" target="_blank"><i class="fa-brands fa-github" style="color:#4078c0"></i></a>
+  <a href="mailto:mv372[at]cam.ac.uk" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i></a> \
   _Affiliation_: Bioinformatics Training Facility, University of Cambridge  
   _Roles_: writing - review & editing; conceptualisation; coding
 
