@@ -348,6 +348,12 @@ step(nb_gal)
 
 This shows that only `endemics` is an appropriate predictor. See the Core statistics notes on [Backwards stepwise elimination](https://cambiotraining.github.io/corestats/materials/cs5_practical_model-comparisons.html#backwards-stepwise-elimination) for more information.
 
+::: {.callout-note}
+## Spot the difference
+
+You might have noticed that, using backwards step-wise elimination based on the AIC
+:::
+
 Our new best model only contains `endemics` as a predictor, so we should fit this model and check that it still is an adequate model.
 
 ::: {.panel-tabset group="language"}
