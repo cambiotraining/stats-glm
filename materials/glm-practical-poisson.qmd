@@ -1,5 +1,5 @@
 ---
-title: "Count data"
+title: "Analysing count data"
 ---
 
 ```{r}

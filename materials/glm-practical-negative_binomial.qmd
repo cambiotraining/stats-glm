@@ -1,5 +1,5 @@
 ---
-title: "Negative binomial"
+title: "Dealing with overdispersion"
 ---
 
 ```{r}
@@ -21,11 +21,16 @@ exec(open('setup_files/setup.py').read())
 
 **Questions**
 
-- 
+- What is overdispersion and why is it important?
+- How do we deal with overdispersion?
 
 **Objectives**
 
-- 
+- Be able to recognise overdispersion
+- Be able to perform a negative binomial regression on count data.
+- Understand the difference between it and Poisson regression.
+- Evaluate and interpret suitability of the model.
+
 :::
 
 ## Libraries and functions
@@ -41,6 +46,7 @@ exec(open('setup_files/setup.py').read())
 ```{r}
 #| eval: false
 library(MASS)
+library(performance)
 ```
 
 ### Functions
@@ -49,6 +55,7 @@ library(MASS)
 #| eval: false
 # fits a negative binomial model
 MASS::glm.nb()
+performance::check_overdispersion()
 ```
 
 
@@ -81,10 +88,15 @@ from scipy.stats import *
 :::
 :::
 
-Negative Binomial Models are also used for count data, but these models don’t
-require that the variance of the data exactly matches the mean of the data, and so they can be used in situations where your data exhibit overdispersion.
+In the previous chapter we looked at how to analyse count data. We used a Poisson regression to do this. A key assumption in a Poisson regression is that the mean of the count data is equal to the variance.
 
-The example in this section use the following data set:
+That's great - until the observed variance isn't equal to the mean. If, instead, the observed variance in your data exceeds the mean of the counts we have **overdispersion**. Similarly, if it's lower we have **underdispersion**.
+
+Queue negative binomial models.
+
+Negative binomial models are also used for count data, but these models don’t require that the variance of the data exactly matches the mean of the data, and so they can be used in situations where your data exhibit overdispersion.
+
+We'll explore this with the `galapagos` example. You can find the data in:
 
 `data/galapagos.csv`
 
@@ -169,11 +181,7 @@ summary(glm_gal)
 
 Now, this time, before we start looking at interpreting the model coefficients were going to jump straight into assessing whether the model is well-specified (spoiler alert: we do this because I already know that it isn't...).
 
-The residual deviance is `r round(glm_gal$deviance, 2)`, but we only have `r glm_gal$df.residual` degrees of freedom in the model. This means that we are dealing with a lot of overdispersion. The estimated amount of overdispersion, $\theta$, is given by dividing these two numbers together, so we
-have $\theta$ = `r round(glm_gal$deviance, 2)` / `r glm_gal$df.residual` = `r round(glm_gal$deviance / glm_gal$df.residual, 2)`. This is definitely nowhere near close to 1.
-
-We can formally check this with our trusty "Is the model well-posed" probability
-value:
+We can formally check this with our trusty "Is the model well-posed" probability value:
 
 ::: {.panel-tabset group="language"}
 ## R
@@ -185,7 +193,19 @@ value:
 ## Python
 :::
 
-This gives a big fat 0, so no, there are definitely things wrong with our model and we can’t really trust anything that’s being spat out at this stage.
+This gives a big fat 0, so no, there are definitely things wrong with our model and we can’t really trust anything that’s being spat out at this stage. The issue in this case lies with overdispersion.
+
+::: {.callout-note}
+## Dispersion parameter
+One way of assessing dispersion is by calculating the dispersion parameter, $\theta$. This takes the residual deviance and divides it by the number of degrees of freedom.
+
+The residual deviance is `r round(glm_gal$deviance, 2)`, but we only have `r glm_gal$df.residual` degrees of freedom in the model. The number of degrees of freedom are low because we only have 30 data points but have 4 parameters in our model, leading to $30 - 4 - 1 = 25$ degrees of freedom. So we have:
+
+$$\theta = `r round(glm_gal$deviance, 2)` / `r glm_gal$df.residual` = `r round(glm_gal$deviance / glm_gal$df.residual, 2)`$$
+
+The Poisson regression is *assuming* the value is 1. But the actual $\theta$ is nowhere near close to 1, so that's is a bad idea.
+:::
+
 So, with that conclusion, we won’t bother looking at the analysis of deviance table or asking whether the model is better than the null model. Instead we need to find a better fitting model...
 
 For count response data options are limited, but the main alternative to a Poisson model is something called a negative binomial model. 
@@ -209,14 +229,10 @@ nb_gal <- glm.nb(species ~ area + endemics + elevation + nearest,
 ```
 
 ```{r}
-class(nb_gal)
-```
-
-```{r}
 summary(nb_gal)
 ```
 
-This output is very similar to the other GLM outputs that we’ve seen but with some additional information at the bottom regarding the dispersion parameter that the negative binomial model has used, which it calls Theta (`r round(nb_gal$theta, 3)`). This is just for information rather than anything to worry about.
+This output is very similar to the other GLM outputs that we’ve seen but with some additional information at the bottom regarding the dispersion parameter that the negative binomial model has used, which it calls Theta (`r round(nb_gal$theta, 3)`). It is estimated from the data.
 
 As before, the main numbers to extract from the output are the numbers underneath `Estimate` in the `Coefficients` table:
 
@@ -231,13 +247,25 @@ nearest      0.0040316
 ```
 
 ## Python
+
 :::
 
 These are the coefficients of the Negative Binomial model equation and need to be placed in the following formula in order to estimate the expected number of species as a function of the other variables.:
 
-$E(species) = \exp(2.49 - 0.0003 \times area + 0.046 \times endemics  + 0.0003 \times elevation + 0.004 \times nearest)$
+$$
+\begin{split}
+  E(species) = \exp(2.49 - 0.0003 \times area + 0.046 \times endemics\\
+  + \ 0.0003 \times elevation + 0.004 \times nearest)
+\end{split}
+$$
 
-The Negative Binomial model has the same form for its line of best fit as the Poisson model, but the underlying probability distribution is different.
+::: {.callout-important}
+## Key concept
+
+The main difference between a Poisson regression and a negative binomial regression: in the former the dispersion parameter is assumed to be 1, whereas in the latter it is estimated from the data.
+
+As such, the negative binomial model has the same form for its line of best fit as the Poisson model, but the underlying probability distribution is different.
+:::
 
 ### Assessing significance
 
@@ -247,8 +275,7 @@ We can ask the same three questions we asked before.
 2. Is the overall model better than the null model?
 3. Are any of the individual predictors significant?
 
-To assess whether the model is any good we’ll use the residual deviance and the
-residual degrees of freedom.
+To assess whether the model is any good we’ll use the residual deviance and the residual degrees of freedom.
 
 ::: {.panel-tabset group="language"}
 ## R
@@ -256,6 +283,7 @@ residual degrees of freedom.
 ```{r}
 1 - pchisq(33.395, 25)
 ```
+
 Instead of manually typing in the values, which is of course prone to errors, we can also extract them directly from the model object:
 
 ```{r}
@@ -266,10 +294,10 @@ Instead of manually typing in the values, which is of course prone to errors, we
 :::
 
 This gives a probability of `r round(1 - pchisq(nb_gal$deviance, nb_gal$df.residual), 3)`. Whilst this isn’t brilliant, it is still much better than the model we had before, and now that we’ve taken account of the overdispersion issue, the fact that this probability is a bit small is probably down to the fact that the predictor variables we have in the model might not be enough to fully explain the number of `species` on each of the Galapagos islands. 
+
 However, since we don’t have any other data to play with there’s nothing we can do about that right now.
 
-
-Secondly, to assess whether the overall model, with all four terms, is better than the null model we’ll look at the difference in deviances and the difference in degrees of freedom:
+To assess if the overall model, with all four terms, is better than the null model we’ll look at the difference in deviances and the difference in degrees of freedom:
 
 ::: {.panel-tabset group="language"}
 ## R
@@ -303,6 +331,8 @@ You might get a warning message about theta not being recalculated but this isn�
 
 ## Python
 :::
+
+For more detail on the deviance table, refer to the chapter on [Significance testing & goodness-of-fit](significance-testing.qmd).
 
 We can now see that it looks like two of our predictor variables aren’t actually significant predictors at all, and that only the `area` and number of endemic species (`endemics`) on each island is a significant predictor of the number of plant species on each Galapagos island. We can check this further using backward stepwise elimination.
 
@@ -481,5 +511,6 @@ We could adjust for this by adding a "pseudo-count", or adding `1` to all of the
 ::: {.callout-tip}
 #### Key points
 
--   Negative binomial regression relaxes the assumption made by Poisson regressions that the variance is equal to the mean.
+- Negative binomial regression relaxes the assumption made by Poisson regressions that the variance is equal to the mean.
+- In a negative binomial regression the dispersion parameter $\theta$ is estimated from the data, whereas in a regular Poisson regression it is assumed to be $1$.
 :::
