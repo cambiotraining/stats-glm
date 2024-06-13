@@ -374,7 +374,25 @@ This shows that only `endemics` is an appropriate predictor. See the Core statis
 ::: {.callout-note}
 ## Spot the difference
 
-You might have noticed that, using backwards step-wise elimination based on the AIC
+This minimal model is a bit surprising, because in the analysis of deviance table output the `area` variable was also highly significant. As such, we would have expected this variable to be retained during the BSE.
+
+This is partly to do with the *order* in which the different terms are tested. In the analysis of deviance table there is a hint: `Terms added sequentially (first to last)`. Our model is `species ~ area + endemics + elevation + nearest` and when the individual p-values are calculated, it makes comparisons between the different terms in a sequential order. Or, `species ~ area + endemics + ...` will not give the same results as `species ~ endemics + area + ...`. We can check this:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+m1 <- glm.nb(species ~ endemics + area + elevation + nearest, data = galapagos)
+
+anova(m1, test = "Chisq")
+```
+
+## Python
+:::
+
+If we order the predictor variables like this, the `area` variable no longer comes back as statistically significant.
+
+In the [significance testing](significance-testing.qmd) section we go through this in more detail and show you how you can make individual comparisons.
 :::
 
 Our new best model only contains `endemics` as a predictor, so we should fit this model and check that it still is an adequate model.
@@ -404,7 +422,7 @@ And we get a probability of `r round(1 - pchisq(nb_gal_min$deviance, nb_gal_min$
 The model equation for a negative binomial curve is the same as for a Poisson
 model and so, lifting the coefficients from the summary output we have the following relationship in our model:
 
-$E(species) = \exp(2.63 + 0.044 \times endemics)$
+$$E(species) = \exp(2.63 + 0.044 \times endemics)$$
 
 ### Model suitability
 
@@ -427,6 +445,32 @@ We can see that at the lower range of `endemics`, the model is predicting values
 
 Let's compare it directly to our original Poisson regression (setting the limits of the y-axes to match):
 
+```{r}
+#| echo: false
+p1 <- ggplot(galapagos, aes(endemics, species)) +
+  geom_point() +
+  geom_smooth(method = "glm", se = FALSE, fullrange = TRUE,
+              method.args = list(family = poisson)) +
+  ylim(0, 500) +
+  labs(title = "Poisson")
+
+p2 <- ggplot(galapagos, aes(endemics, species)) +
+  geom_point() +
+  geom_smooth(method = "glm.nb", se = FALSE, fullrange = TRUE) +
+  ylim(0, 500) +
+  labs(title = "Negative binomial")
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-poisson_vs_nb
+#| fig-cap: Comparing Poisson and negative binomial regression
+p1 + p2 +
+  plot_annotation(tag_levels = "A")
+```
+
 ::: {.callout-note collapse="true"}
 ## Show code
 
@@ -434,6 +478,7 @@ Let's compare it directly to our original Poisson regression (setting the limits
 ## R
 
 ```{r}
+#| eval: false
 p1 <- ggplot(galapagos, aes(endemics, species)) +
   geom_point() +
   geom_smooth(method = "glm", se = FALSE, fullrange = TRUE,
@@ -452,14 +497,7 @@ p2 <- ggplot(galapagos, aes(endemics, species)) +
 :::
 :::
 
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-p1 + p2
-```
-
-So. although we've dealt with the overdispersion we had in the original Poisson regression, we still have a pretty poor model. So, what is a poor researcher to do? We'll let you explore this in an exercise.
+So, @fig-poisson_vs_nb shows that, although we've dealt with the overdispersion we had in the original Poisson regression, we still have a pretty poor fitting model. So, what is a sad researcher to do? We'll let you explore this in an exercise.
 
 :::{.callout-important}
 Complete [Exercise -@sec-exr_galapagos].
