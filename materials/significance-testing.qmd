@@ -152,7 +152,7 @@ We can't use these F-tests for GLMs, but we can use LRTs in a really similar way
 
 These tests are all built on the idea of deviance, or the likelihood ratio, as discussed above on this page. We can compare any two models fitted to the same dataset by looking at the difference in their deviances, also known as the difference in their log-likelihoods, or more simply as a likelihood ratio.
 
-Helpfully, this likelihood ratio approximately follows a chi-square distribution, which we can capitalise on that to calculate a p-value. All we need is the number of degrees of freedom, which is equal to the difference in the number of parameters of the two models you're comparing.
+Helpfully, this likelihood ratio approximately follows a chi-square distribution, which we can capitalise on to calculate a p-value. All we need is the number of degrees of freedom, which is equal to the difference in the number of parameters of the two models you're comparing.
 
 ::: {.callout-warning}
 Importantly, we are only able to use this sort of test when one of the two models that we are comparing is a "simpler" version of the other, i.e., one model has a subset of the parameters of the other model. 
