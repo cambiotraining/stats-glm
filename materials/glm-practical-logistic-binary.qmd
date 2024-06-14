@@ -42,7 +42,21 @@ exec(open('setup_files/setup.py').read())
 ## R
 
 ### Libraries
+
+```{r}
+#| eval: false
+library(broom)
+library(tidyverse)
+library(ggResidpanel)
+```
+
 ### Functions
+
+```{r}
+#| eval: false
+# create diagnostic plots
+ggResidpanel::resid_panel()
+```
 
 ## Python
 
@@ -509,19 +523,6 @@ The graph shows us that, based on the data that we have and the model we used to
 
 Short beaks are more closely associated with the bluntly shaped beaks, whereas long beaks are more closely associated with the pointed shape. It's also clear that there is a range of beak lengths (around 13 mm) where the probability of getting one shape or another is much more even.
 
-<!-- ## Parameter estimation explained -->
-
-<!-- Now that we know how to interpret the coefficients or parameters, let's have a look at how they're actually determined. To understand this, we need to take a step back. -->
-
-<!-- * Sum of squares (OLS) -->
-<!-- * MLE -->
-<!-- * Deviance -->
-
-<!-- ## Assumptions -->
-
-<!-- * GAMLSS -->
-
-
 ## Assumptions
 
 As explained in the background chapter, we can't really use the standard diagnostic plots to assess assumptions. We're not going to go into a lot of detail for now, but there is one thing that we can do: look for influential points using the Cook’s distance plot.
@@ -530,24 +531,8 @@ As explained in the background chapter, we can't really use the standard diagnos
 ## R
 
 ```{r}
-plot(glm_bks , which = 4)
+resid_panel(glm_bks, plots = "cookd")
 ```
-
-:::{.callout-note collapse=true}
-## Extracting the Cook's distances from the `glm` object
-
-Instead of using the `plot()` function, we can also extract the values directly from the `glm` object. We can use the `augment()` function to do this and create a lollipop or stem plot:
-
-```{r}
-glm_bks %>% 
-  augment() %>%            # get underlying data
-  select(.cooksd) %>%      # select the Cook's d
-  mutate(obs = 1:n()) %>%  # create an index column
-  ggplot(aes(x = obs, y = .cooksd)) +
-  geom_point() +
-  geom_segment(aes(x = obs, y = .cooksd, xend = obs, yend = 0))
-```
-:::
 
 ## Python
 

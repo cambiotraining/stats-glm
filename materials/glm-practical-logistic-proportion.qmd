@@ -34,7 +34,21 @@ exec(open('setup_files/setup.py').read())
 ## R
 
 ### Libraries
+
+```{r}
+#| eval: false
+library(broom)
+library(tidyverse)
+library(ggResidpanel)
+```
+
 ### Functions
+
+```{r}
+#| eval: false
+# create diagnostic plots
+ggResidpanel::resid_panel()
+```
 
 ## Python
 
