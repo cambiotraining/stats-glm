@@ -529,9 +529,9 @@ chi2.sf(850.41, 190)
 ```
 :::
 
-This value indicates that the model is actually pretty good. Remember, it is between $[0, 1]$ and the closer to zero, the better the model.
+This value indicates that the model is actually pretty bad. Remember that this value gives you a measure for "the probability that this model is good". In this case, that's a very low probability.
 
-How about the overall fit?
+How about the overall fit, compared to the null model?
 
 ::: {.panel-tabset group="language"}
 ## R
@@ -560,7 +560,7 @@ chi2.sf(984.50 - 850.41, 191 - 190)
 ```
 :::
 
-Again, this indicates that the model is markedly better than the null model.
+This indicates that the model is at least markedly better than the null model.
 
 #### Plotting the regression
 
@@ -604,12 +604,12 @@ model.head()
 
 #### Conclusions
 
-The model we constructed appears to be a decent predictor for the number of fatalities for the year range we investigated.
+Overall, the model we constructed doesn't seem to be a decent predictor for the number of fatalities.
 
 :::
 :::
 
-### Seat belts {#sec-exr_seatbelts_extended}
+### Seat belts extended {#sec-exr_seatbelts_extended}
 
 :::{.callout-exercise}
 

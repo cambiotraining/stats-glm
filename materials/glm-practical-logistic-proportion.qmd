@@ -197,6 +197,10 @@ glm_chl_py = model.fit()
 
 :::
 
+If we're using the original observations, we need to supply both the number of damaged o-rings *and* the number of intact ones.
+
+Remember, in a proportional response we're looking for the number of "successes" in a given number of trials. Here, the function determines the number of "successes" (`damaged`) out of the number of trials (`damaged + intact`) for each observation (the 23 shuttle missions).
+
 ## Model output
 
 That's the easy part done! The trickier part is interpreting the output. First of all, we'll get some summary information.
@@ -353,20 +357,20 @@ The prediction proportion of damaged o-rings is markedly less than what was obse
 Before we can make any firm conclusions, though, we need to check our model:
 
 ```{r}
-1- pchisq(12.633,20)
+1- pchisq(12.633, 20)
 ```
 
-We get quite a high score (around 0.9) for this, which tells us that our goodness of fit is pretty rubbish – our points are not very close to our curve, overall.
+We get quite a high score (around 0.9) for this, which tells us that our goodness of fit is pretty good. This is because the probability is giving us a measure for, roughly, "the probability that this model is good".
 
-Is the model any better than the null though?
+More detail on this in the [goodness-of-fit](goodness-of-fit.qmd) section.
+
+The next question we can ask is: Is our model any better than the null model?
 
 ```{r}
 1 - pchisq(16.375 - 12.633, 21 - 20)
-
-anova(glm_chl_new, test = 'Chisq')
 ```
 
-However, the model is not significantly better than the null in this case, with a p-value here of just over 0.05 for both of these tests (they give a similar result since, yet again, we have just the one predictor variable).
+However, the model is not significantly better than the null in this case, with a p-value here of just over 0.05.
 
 ## Python
 
@@ -423,10 +427,11 @@ Before we can make any firm conclusions, though, we need to check our model:
 ```{python}
 chi2.sf(12.633, 20)
 ```
+We get quite a high score (around 0.9) for this, which tells us that our goodness of fit is pretty good. This is because the probability is giving us a measure for, roughly, "the probability that this model is good".
 
-We get quite a high score (around 0.9) for this, which tells us that our goodness of fit is pretty rubbish – our points are not very close to our curve, overall.
+More detail on this in the [goodness-of-fit](goodness-of-fit.qmd) section.
 
-Is the model any better than the null though?
+The next question we can ask is: Is our model any better than the null model?
 
 First we need to define the null model:
 
@@ -445,12 +450,12 @@ print(glm_chl_new_null_py.summary())
 chi2.sf(16.375 - 12.633, 21 - 20)
 ```
 
-However, the model is not significantly better than the null in this case, with a p-value here of just over 0.05 for both of these tests (they give a similar result since, yet again, we have just the one predictor variable).
+However, the model is not significantly better than the null in this case, with a p-value here of just over 0.05.
 :::
 
 So, could NASA have predicted what happened? This model is not significantly different from the null, i.e., temperature is not a significant predictor. Note that it’s only marginally non-significant, and we do have a high goodness-of-fit value.
 
-It is possible that if more data points were available that followed a similar trend, the story might be different). Even if we did use our non-significant model to make a prediction, it doesn’t give us a value anywhere near 5 failures for a temperature of 53 degrees Fahrenheit. So overall, based on the model we’ve fitted with these data, there was no indication that a temperature just a few degrees cooler than previous missions could have been so disastrous for the Challenger.
+It is possible that if more data points were available that followed a similar trend, the story might be different). Even if we did use our non-significant model to make a prediction, it doesn’t give us a value anywhere near 5 failures for a temperature of 53 degrees Fahrenheit. So overall, based on the model we’ve fitted with these data, there was no clear indication that a temperature just a few degrees cooler than previous missions could have been so disastrous for the Challenger.
 :::
 :::
 
