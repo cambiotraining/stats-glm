@@ -1,0 +1,15 @@
+{
+  "hash": "c24588af9a06787b43dc20623e689721",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Odds ratios\"\nlightbox: true\n---\n\n::: {.cell}\n\n:::\n\n::: {.cell}\n\n:::\n\n\n\n\n::: {.callout-tip}\n## Learning outcomes\n\n-   Understand that odds ratios and risk ratios are effect sizes in the context of binomial response variables\n-   Know the difference between odds ratios, risk ratios and relative risk\n-   Be able to calculate and interpret appropriate effect sizes for logistic regression\n:::\n\n## Libraries and functions\n\n::: {.callout-note collapse=\"true\"}\n## Click to expand\n\n::: {.panel-tabset group=\"language\"}\n## R\n\n### Libraries\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(performance)\nlibrary(tidyverse)\nlibrary(broom)\n```\n:::\n\n\n\n\n## Python\n\n### Libraries\n\n\n\n\n::: {.cell}\n\n```{.python .cell-code}\n# A maths library\nimport math\nimport pandas as pd\nfrom plotnine import *\nimport statsmodels.api as sm\nimport statsmodels.formula.api as smf\nfrom scipy.stats import *\nimport numpy as np\n```\n:::\n\n\n\n:::\n:::",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

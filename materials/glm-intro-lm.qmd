@@ -1,5 +1,6 @@
 ---
 title: "Linear models"
+lightbox: true
 ---
 ```{r}
 #| echo: false

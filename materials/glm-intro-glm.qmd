@@ -1,5 +1,6 @@
 ---
 title: "Generalise your model"
+lightbox: true
 ---
 ```{r}
 #| echo: false

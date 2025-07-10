@@ -1,5 +1,6 @@
 ---
 title: "Proportional response"
+lightbox: true
 ---
 
 ```{r}
@@ -19,10 +20,9 @@ exec(open('setup_files/setup.py').read())
 ::: {.callout-tip}
 ## Learning outcomes
 
--   How do I analyse proportion responses?
--   Be able to create a logistic model to test proportion response variables
+-   Be able to analyse proportional response variables
+-   Be able to create a logistic model to test proportional response variables
 -   Be able to plot the data and fitted curve
--   Assess the significance of the fit
 :::
 
 ## Libraries and functions
@@ -56,27 +56,17 @@ ggResidpanel::resid_panel()
 
 ```{python}
 #| eval: false
-# A maths library
 import math
-# A Python data analysis and manipulation tool
 import pandas as pd
-
-# Python equivalent of `ggplot2`
 from plotnine import *
-
-# Statistical models, conducting tests and statistical data exploration
 import statsmodels.api as sm
-
-# Convenience interface for specifying models using formula strings and DataFrames
 import statsmodels.formula.api as smf
-
-# Needed for additional probability functionality
 from scipy.stats import *
 ```
+:::
+:::
 
-### Functions
-:::
-:::
+## The Challenger dataset
 
 The example in this section uses the following data set:
 
@@ -104,7 +94,6 @@ challenger <- read_csv("data/challenger.csv")
 ```{python}
 challenger_py = pd.read_csv("data/challenger.csv")
 ```
-
 :::
 
 The data set contains several columns:
@@ -199,7 +188,21 @@ glm_chl_py = model.fit()
 
 If we're using the original observations, we need to supply both the number of damaged o-rings *and* the number of intact ones.
 
-Remember, in a proportional response we're looking for the number of "successes" in a given number of trials. Here, the function determines the number of "successes" (`damaged`) out of the number of trials (`damaged + intact`) for each observation (the 23 shuttle missions).
+::: {.callout-warning}
+### Why don't we use `prop_damaged` as our response variable?
+
+You might have noticed that when we write our model formula, we are specifically writing `cbind(damage, intact)` (R) or `damage + intact` (Python), instead of the `prop_damaged` variable we used for plotting.
+
+This is very deliberate - it's **absolutely essential** we do this, in order to fit the correct model.
+
+When modelling our data, we need to provide the function with both the number of successes (damaged o-rings) and the number of failures (intact o-rings) - and therefore, implicitly, the total number of o-rings - in order to properly model our proportional variable.
+
+If we provide it with just the `prop_damaged`, then R/Python will incorrectly think our response variable is **fractional**.
+
+A fractional variable is not constructed from a series of trials with successes/failures. It doesn't have trials - there's just a single value somewhere between 0 and 1 (or a percentage). An example of a fractional response variable might be what percentage of rocket fuel was used on a launch. We would not model this response variable with a logistic regression.
+
+![Fractional vs proportional variables](images/fractional-vs-proportional.png){width=40%}
+:::
 
 ## Model output
 
@@ -308,155 +311,301 @@ We already did this above, since this is the most straightforward way of plottin
 
 ## Exercises
 
-### Predicting failure {#sec-exr_failure}
+### Rats and levers {#sec-exr_levers}
 
-:::{.callout-exercise}
-
+::: {.callout-exercise}
 {{< level 2 >}}
 
-The data point at 53 degrees Fahrenheit is quite influential for the analysis. Remove this data point and repeat the analysis. Is there still a predicted link between launch temperature and o-ring failure?
+This exercises uses the dataset `levers.csv`.
 
-::: {.callout-answer collapse="true"}
+These data are from a simple animal behavioural experiment. Prior to testing, rats were trained to press levers for food rewards. On each trial, there were two levers, and the "correct" lever is determined by an audio cue.
+
+The rats could vary in three different ways, which may impact their task performance at testing:
+
+-   The `sex` of the rat
+-   The `age` of the rat (in weeks)
+-   Whether the rat experienced `stress` during the training phase (being exposed to the smell of a predator)
+
+The researcher thinks that the effect of stress may differ between male and female rats.
+
+In this exercise:
+
+1. Visualise these data
+2. Fit a model that captures the researcher's hypotheses
+
+:::: {.callout-answer collapse="true"}
+#### Load and visualise
 
 ::: {.panel-tabset group="language"}
 ## R
 
-First, we need to remove the influential data point:
-
-```{r}
-challenger_new <- challenger %>% filter(temp != 53)
-```
-
-We can create a new generalised linear model, based on these data:
-
-```{r}
-glm_chl_new <- glm(cbind(damage, intact) ~ temp,
-               family = binomial,
-               data = challenger_new)
-```
-
-We can get the model parameters as follows:
-
-```{r}
-summary(glm_chl_new)
-```
-
 ```{r}
 #| message: false
-ggplot(challenger_new, aes(temp, prop_damaged)) +
-  geom_point() +
-  geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
-              method.args = list(family = binomial)) +
-  xlim(25,85) +
-  # add a vertical line at 53 F temperature
-  geom_vline(xintercept = 53, linetype = "dashed")
+#| warning: false
+levers <- read_csv("data/levers.csv")
+
+head(levers)
 ```
-
-The prediction proportion of damaged o-rings is markedly less than what was observed.
-
-Before we can make any firm conclusions, though, we need to check our model:
-
-```{r}
-1- pchisq(12.633, 20)
-```
-
-We get quite a high score (around 0.9) for this, which tells us that our goodness of fit is pretty good. This is because the probability is giving us a measure for, roughly, "the probability that this model is good".
-
-More detail on this in the [goodness-of-fit](goodness-of-fit.qmd) section.
-
-The next question we can ask is: Is our model any better than the null model?
-
-```{r}
-1 - pchisq(16.375 - 12.633, 21 - 20)
-```
-
-However, the model is not significantly better than the null in this case, with a p-value here of just over 0.05.
 
 ## Python
 
-First, we need to remove the influential data point:
-
-
 ```{python}
-challenger_new_py = challenger_py.query("temp != 53")
+levers = pd.read_csv("data/levers.csv")
+
+levers.head()
+```
+:::
+
+We can see that this dataset contains quite a few columns. Key ones to pay attention to:
+
+-   `trials`; the total number of trials per rat - we're going to need this when fitting our model
+-   `correct_presses`; the number of successes (out of the total number of trials) - again, we'll need this for model fitting
+-   `prop_correct`; this is $successes/total$, which we'll use for plotting but not model fitting
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+ggplot(levers, aes(x = rat_age, 
+                   y = prop_correct,
+                   colour = sex)) +
+  facet_wrap(~ stress_type) +
+  geom_point()
 ```
 
-We can create a new generalised linear model, based on these data:
+## Python
 
 ```{python}
-# create a generalised linear model
-model = smf.glm(formula = "damage + intact ~ temp",
+(
+  ggplot(levers, aes(x='rat_age', y='prop_correct', colour='sex')) +
+  geom_point() +
+  facet_wrap('~stress_type')
+)
+```
+:::
+
+There's some visual evidence of an interaction here. In the `control` group, it seems like older rats perform a little better on the task, but there's not much effect of `sex`.
+
+Meanwhile, in the `stressed` group, the female rats seem to be performing better than the male ones.
+
+#### Fit a model
+
+Let's assess those relationships by fitting a logistic model.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+# Create a new variable for the number of incorrect presses
+levers <- levers %>%
+  mutate(incorrect_presses = trials - correct_presses)
+
+# Fit the model
+glm_lev <- glm(cbind(correct_presses, incorrect_presses) ~ stress_type * sex + rat_age,
+               family = binomial,
+               data = levers)
+```
+
+## Python
+
+```{python}
+# Create a new variable for the number of incorrect presses
+levers['incorrect_presses'] = levers['trials'] - levers['correct_presses']
+
+model = smf.glm(formula = "correct_presses + incorrect_presses ~ stress_type * sex + rat_age",
                 family = sm.families.Binomial(),
-                data = challenger_new_py)
-# and get the fitted parameters of the model
-glm_chl_new_py = model.fit()
+                data = levers)
+
+glm_lev = model.fit()
+```
+:::
+
+#### Make model predictions
+
+Using this model, let's make a prediction of the expected proportion of correct lever presses for:
+
+- a male rat
+- 8 weeks old
+- in the stressed condition
+
+First, we look at a summary of the model to extract the beta coefficients we need.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+summary(glm_lev)
 ```
 
-We can get the model parameters as follows:
+## Python
 
 ```{python}
-print(glm_chl_new_py.summary())
+glm_lev.summary()
+```
+:::
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+lin_pred <- -2.519 + 
+            0.937 * 1 +     # 1 for stressed
+            0.506 * 1 +     # 1 for male
+            -1.438 * 1 +    # 1 for stressed:male
+            0.135 * 8       # 8 weeks old
+
+# these will give identical results
+exp(lin_pred) / (1 + exp(lin_pred))
+1 / (1 + exp(-lin_pred))
 ```
 
-Generate new model data:
+## Python
 
 ```{python}
-model = pd.DataFrame({'temp': list(range(25, 86))})
+lin_pred = (-2.519 + 
+           0.937 * 1 +     # 1 for stressed
+           0.506 * 1 +     # 1 for male
+           -1.438 * 1 +    # 1 for stressed:male
+           0.135 * 8)       # 8 weeks old
 
-model["pred"] = glm_chl_new_py.predict(model)
+# these will give identical results
+math.exp(lin_pred) / (1 + math.exp(lin_pred))
+1 / (1 + math.exp(-lin_pred))
+```
+:::
 
-model.head()
+This means we would expect an 8 week old stressed male rat to make approximately 19% correct button presses, on average.
+::::
+
+:::: {.callout-tip collapse="true"}
+### Visualising glm_lev
+
+This is not part of the exercise - it involves quite a bit of new code - but it's something you might want to do with your own data, so we'll show it here.
+
+With multiple predictors, you will have multiple logistic curves. What do they look like, and how can you produce them?
+
+::: {.panel-tabset group="language"}
+## R
+
+The first thing we do is create a grid covering all the levels of our categorical predictor, and the full range of available values we have for the continuous predictor. 
+
+```{r}
+# Create prediction grid
+new_data <- expand.grid(stress_type = levels(factor(levers$stress_type)),
+                        sex = levels(factor(levers$sex)),
+                        rat_age = seq(min(levers$rat_age), max(levers$rat_age), length.out = 100))
+
+head(new_data)
 ```
 
-```{python}
-#| results: hide
+Then, we use the `predict` function to figure out the expected proportion of correct responses at each combination of predictors that exists in that grid.
+
+```{r}
+# Predict proportion of correct responses
+new_data$predicted_prob <- predict(glm_lev, newdata = new_data, type = "response")
+```
+
+We can now use this grid of predictions to produce some nice lines, on top of the actual data points.
+
+```{r}
+ggplot(levers, aes(x = rat_age, y = prop_correct,
+                     color = stress_type, linetype = sex)) +
+  geom_point() +
+  geom_line(data = new_data, aes(y = predicted_prob), linewidth = 1)
+```
+
+You could facet this plot further if you wanted to, but all the lines together help make the picture quite clear - we can see the interaction between `stress:sex` quite clearly!
+
+## Python
+
+The code to achieve this in Python very quickly becomes long, ugly and unwieldy.
+
+If you're absolutely determined to produce plots like this, you might want to use an IDE that lets you use both R and Python, and switch briefly into R for this!
+:::
+::::
+:::
+
+
+### Stem cells {#sec-exr_stemcells}
+
+::: {.callout-exercise}
+{{< level 3 >}}
+
+For this exercise, you will need the dataset `stemcells.csv`.
+
+There's no worked answer for this dataset - we recommend that you compare and discuss your answer with a neighbour.
+
+In this dataset, each row represents a unique culture or population of stem cells (a plate). Each plate is exposed to one of three different `growth_factor_conc` concentration levels (low, medium or high). 
+
+The researcher wanted to record how much of a particular bio-marker was being expressed in the plate, to quantify cell differentiation.
+
+She measured this outcome in multiple ways:
+
+-   `marker_positive_cells`, the number of cells expressing the marker
+-   `prop_positive_cells`, the proportion of the `total_cells` count that have the marker
+-   `mean_marker_intensity`, the normalised average fluorescence intensity across the plate, measured on a scale between 0 and 1
+
+Between plates, there was also variation in the `time` (days) before observation. This variable should be included as a control/covariate of no interest.
+
+You should:
+
+1. Produce a scatterplot of the data
+2. Decide which outcome measurement is appropriate for a logistic regression
+3. Fit an appropriate logistic model (with two predictor variables)
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
 #| message: false
-(ggplot(challenger_new_py,
-         aes(x = "temp",
-             y = "prop_damaged")) +
-     geom_point() +
-     geom_line(model, aes(x = "temp", y = "pred"), colour = "blue", size = 1) +
-     # add a vertical line at 53 F temperature
-     geom_vline(xintercept = 53, linetype = "dashed"))
+#| warning: false
+stemcells <- read_csv("data/stemcells.csv")
 ```
 
-The prediction proportion of damaged o-rings is markedly less than what was observed.
-
-Before we can make any firm conclusions, though, we need to check our model:
+## Python
 
 ```{python}
-chi2.sf(12.633, 20)
+stemcells = pd.read_csv("data/stemcells.csv")
 ```
-We get quite a high score (around 0.9) for this, which tells us that our goodness of fit is pretty good. This is because the probability is giving us a measure for, roughly, "the probability that this model is good".
+:::
 
-More detail on this in the [goodness-of-fit](goodness-of-fit.qmd) section.
+:::: {.callout-tip collapse="true"}
+#### Hint #1
 
-The next question we can ask is: Is our model any better than the null model?
+Remember, you'll need to input & combine two values to make up your response variable.
 
-First we need to define the null model:
+We won't give away what those variables are (that defeats the point a bit!) but the appropriate code for fitting your logistic regression should look something like this:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+#| eval: false
+glm_cells <- glm(cbind(var, var) ~ growth_factor_conc + time, 
+                 family = binomial,
+                 data = stemcells)
+```
+
+## Python
 
 ```{python}
-# create a linear model
-model = smf.glm(formula = "damage + intact ~ 1",
+#| eval: false
+model = smf.glm(formula = "var + var ~ growth_factor_conc + time",
                 family = sm.families.Binomial(),
-                data = challenger_new_py)
-# and get the fitted parameters of the model
-glm_chl_new_null_py = model.fit()
+                data = stemcells)
 
-print(glm_chl_new_null_py.summary())
+glm_cells = model.fit()
 ```
-
-```{python}
-chi2.sf(16.375 - 12.633, 21 - 20)
-```
-
-However, the model is not significantly better than the null in this case, with a p-value here of just over 0.05.
 :::
+::::
 
-So, could NASA have predicted what happened? This model is not significantly different from the null, i.e., temperature is not a significant predictor. Note that it’s only marginally non-significant, and we do have a high goodness-of-fit value.
+:::: {.callout-tip collapse="true"}
+#### Hint #2
 
-It is possible that if more data points were available that followed a similar trend, the story might be different). Even if we did use our non-significant model to make a prediction, it doesn’t give us a value anywhere near 5 failures for a temperature of 53 degrees Fahrenheit. So overall, based on the model we’ve fitted with these data, there was no clear indication that a temperature just a few degrees cooler than previous missions could have been so disastrous for the Challenger.
-:::
+If you're struggling to figure out which of the outcome measures capture which information, here's a little visualisation:
+
+![Measuring markers of differentiation in stem cells](images/stem-cells.png){width=50%}
+::::
 :::
 
 ## Summary
@@ -464,6 +613,7 @@ It is possible that if more data points were available that followed a similar t
 ::: {.callout-tip}
 #### Key points
 
--   We can use a logistic model for proportion response variables
-
+-   We can use a logistic model for proportional response variables, just as we did with binary variables
+-   Proportional response variables are made up of a number of trials (success/failure), and should not be confused with fractions/percentages
+-   Using the equation of a logistic model, we can predict the expected proportion of "successful" trials
 :::

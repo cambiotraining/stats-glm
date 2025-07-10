@@ -8,12 +8,13 @@ book:
       chapters:
         - materials/glm-practical-logistic-binary.qmd
         - materials/glm-practical-logistic-proportion.qmd
+        #- materials/glm-practical-odds-ratios.qmd
     - part: "Model assessment"
       chapters:
-        - materials/significance-testing.qmd
-        - materials/goodness-of-fit.qmd
-        - materials/checking-assumptions.qmd
+        - materials/glm-practical-significance-testing.qmd
+        - materials/glm-practical-goodness-of-fit.qmd
+        - materials/glm-practical-checking-assumptions.qmd
     - part: "Count responses"
       chapters:
         - materials/glm-practical-poisson.qmd
-        - materials/glm-practical-negative_binomial.qmd
+        - materials/glm-practical-negative-binomial.qmd

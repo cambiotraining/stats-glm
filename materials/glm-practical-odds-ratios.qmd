@@ -1,0 +1,61 @@
+---
+title: "Odds ratios"
+lightbox: true
+---
+```{r}
+#| echo: false
+#| message: false
+#| results: hide
+source(file = "setup_files/setup.R")
+```
+
+```{python}
+#| echo: false
+#| message: false
+import shutup;shutup.please()
+exec(open('setup_files/setup.py').read())
+```
+
+::: {.callout-tip}
+## Learning outcomes
+
+-   Understand that odds ratios and risk ratios are effect sizes in the context of binomial response variables
+-   Know the difference between odds ratios, risk ratios and relative risk
+-   Be able to calculate and interpret appropriate effect sizes for logistic regression
+:::
+
+## Libraries and functions
+
+::: {.callout-note collapse="true"}
+## Click to expand
+
+::: {.panel-tabset group="language"}
+## R
+
+### Libraries
+
+```{r}
+#| eval: false
+library(performance)
+library(tidyverse)
+library(broom)
+```
+
+## Python
+
+### Libraries
+
+```{python}
+#| eval: false
+# A maths library
+import math
+import pandas as pd
+from plotnine import *
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from scipy.stats import *
+import numpy as np
+```
+:::
+:::
+

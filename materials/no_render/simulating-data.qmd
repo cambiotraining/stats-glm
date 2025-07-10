@@ -1,0 +1,431 @@
+## Aphids
+
+```{r}
+set.seed(45)  # For reproducibility
+
+# Number of samples
+n <- 54
+
+# Betas
+b0 <- -0.5
+b1 <- 0.2 # positive coefficient - more aphids with more buds
+b2 <- -1.9 # negative coefficient - "1" less likely to have aphids than "0"
+
+# Simulate predictor variables
+buds <- runif(n, 0, 10)  # number of new/fresh buds on the plant
+cultivar <- rbinom(n, size = 1, prob = 0.5)  # 50% chance of each variety are present
+
+# Define true relationship using a logistic model
+# Coefficients: intercept, temperature effect, cultivar effect
+log_odds <- b0 + b1 * buds + b2 * cultivar
+prob_aphids <- 1 / (1 + exp(-log_odds))
+
+# Simulate binary outcome based on the probabilities
+aphids_present <- rbinom(n, size = 1, prob = prob_aphids)
+
+# Create a data frame
+df <- data.frame(
+  buds = round(buds),
+  cultivar = case_when(cultivar == "1" ~ "harmonie",
+                       cultivar == "0" ~ "mozart"),
+  aphids_present = aphids_present
+)
+
+# Preview the dataset
+head(df)
+
+# Optional: fit logistic regression to verify
+model <- glm(aphids_present ~ buds + cultivar, data = df, family = "binomial")
+summary(model)
+```
+
+```{r}
+write_csv(df, "data/aphids.csv")
+```
+
+## Rats and levers
+
+```{r}
+set.seed(42)
+
+# Number of rats
+n <- 62
+
+# Predictors
+stress_type <- sample(c("control", "stressed"), n, replace = TRUE)
+sex <- sample(c("male", "female"), n, replace = TRUE)
+rat_age <- rnorm(n, mean = 12, sd = 2)  # e.g., age in weeks
+trials <- rep(20, n)
+
+# Encode categorical predictors for model calculation
+stress_binary <- ifelse(stress_type == "stressed", 1, 0)
+sex_binary <- ifelse(sex == "male", 1, 0)
+
+# Define logit model with interaction
+# Baseline: female-control
+logit_p <- -0.8 + 
+           0.7 * stress_binary +         # stress effect
+           0.4 * sex_binary +            # sex effect
+           -1.0 * stress_binary * sex_binary +  # interaction: stressed males do worse
+           0.1 * (rat_age - mean(rat_age))      # age effect (centered)
+
+# Convert to probability
+prob_correct <- 1 / (1 + exp(-logit_p))
+
+# Simulate binomial outcomes
+correct_presses <- rbinom(n, size = trials, prob = prob_correct)
+
+# Data frame
+df <- data.frame(
+  rat_id = 1:n,
+  stress_type = factor(stress_type, levels = c("control", "stressed")),
+  sex = factor(sex, levels = c("female", "male")),
+  rat_age = round(rat_age),
+  trials = trials,
+  correct_presses = correct_presses,
+  prop_correct = correct_presses / trials
+)
+
+# View
+head(df)
+
+# Fit binomial model with interaction
+model <- glm(cbind(correct_presses, trials - correct_presses) ~ 
+               stress_type * sex + rat_age,
+             data = df, family = binomial)
+summary(model)
+
+```
+
+```{r}
+write_csv(df, "data/levers.csv")
+```
+
+## Stem cell differentiation
+
+```{r}
+set.seed(303)
+
+# Number of plates
+n <- 90
+
+# Categorical growth factor levels
+growth_factor_levels <- c("low", "medium", "high")
+growth_factor_conc <- rep(growth_factor_levels, each=n/3)
+
+# Time in culture (continuous)
+time_in_culture <- runif(n, 2, 10)  # days
+
+# Total number of cells per plate (simulate from normal, rounded & clipped)
+total_cells <- round(pmax(rnorm(n, mean = 100, sd = 15), 20))  # min 20 cells
+
+# Assign numeric effects for growth factor levels
+growth_factor_effect <- ifelse(growth_factor_conc == "low", 0,
+                         ifelse(growth_factor_conc == "medium", 0.5, 1.0))
+
+# Logit model for marker-positive probability
+logit_p <- -2 +
+           growth_factor_effect +
+           0.2 * time_in_culture
+
+# Convert to probabilities
+prob_marker_positive <- 1 / (1 + exp(-logit_p))
+
+# Simulate number of marker-positive cells
+marker_positive_cells <- rbinom(n, size = total_cells, prob = prob_marker_positive)
+
+# Simulate mean fluorescence intensity (fractional response)
+raw_intensity <- prob_marker_positive + rnorm(n, 0, 0.05)
+mean_marker_intensity <- pmin(pmax(raw_intensity, 0.01), 0.99)
+
+# Create dataset
+df <- data.frame(
+  plate_id = paste0("plate_", 1:n),
+  growth_factor_conc = factor(growth_factor_conc, levels = growth_factor_levels),
+  time_in_culture = round(time_in_culture),
+  total_cells = total_cells,
+  marker_positive_cells = marker_positive_cells,
+  prop_marker_positive = marker_positive_cells / total_cells,
+  mean_marker_intensity = round(mean_marker_intensity,4)
+)
+
+# Preview
+head(df)
+
+# Fit binomial GLM
+binom_model <- glm(cbind(marker_positive_cells, total_cells - marker_positive_cells) ~ 
+                     growth_factor_conc + time_in_culture,
+                   data = df, family = binomial)
+
+# Fit fractional GLM (quasibinomial for continuous proportions)
+frac_model <- glm(mean_marker_intensity ~ 
+                    growth_factor_conc + time_in_culture,
+                  data = df, family = quasibinomial(link = "logit"))
+
+# Summaries
+summary(binom_model)
+summary(frac_model)
+```
+
+```{r}
+write_csv(df, "data/stemcells.csv")
+```
+
+## Seed germination
+
+This dataset has some deliberate issues introduced:
+
+- Hierarchy. The seed trays are grouped within greenhouses, making the data non-independent
+- Two influential points (two influential seed trays)
+- An unexpected interaction between the two predictors
+
+```{r}
+set.seed(42)
+
+# Parameters
+n_greenhouses <- 4
+trays_per_greenhouse <- 12
+n <- n_greenhouses * trays_per_greenhouse
+
+# Greenhouse random effects
+greenhouse <- factor(rep(1:n_greenhouses, each = trays_per_greenhouse))
+greenhouse_re <- rnorm(n_greenhouses, mean = 0, sd = 0.5)
+greenhouse_effect <- greenhouse_re[as.numeric(greenhouse)]
+
+# Predictor variables
+light_condition <- rep(c("sun", "shade"), times = n/2)
+watering_freq <- rep(rep(c("low", "medium", "high"), each = trays_per_greenhouse/3), times = n_greenhouses)
+watering_freq <- factor(watering_freq, levels = c("low", "medium", "high"))
+
+# Encode predictors for simulation
+light_num <- ifelse(light_condition == "sun", 1, 0)
+watering_num <- ifelse(watering_freq == "low", -1,
+                            ifelse(watering_freq == "medium", 0, -1))  # 0, 1, 2
+
+# Logistic model parameters
+intercept <- -0.75
+b_light <- 1.2
+b_water <- 0.8       # size of watering effect per level increase
+b_interaction <- 0.6 # interaction effect
+
+# Linear predictor
+linpred <- intercept +
+  b_light * light_num +
+  b_water * watering_num +
+  b_interaction * light_num * watering_num +
+  greenhouse_effect
+
+# Convert to probability
+prob <- plogis(linpred)
+
+# Binomial outcome
+total_seeds <- 25
+germinated <- rbinom(n, size = total_seeds, prob = prob)
+
+# Add 2 influential points
+germinated[16] <- 25
+germinated[21] <- 0
+#light_condition[1:2] <- c("shade", "sun")
+#watering_freq[1:2] <- c("high", "low")
+#greenhouse[1:2] <- "1"
+
+# Assemble data frame
+seeds <- data.frame(
+  light_condition = factor(light_condition),
+  watering_freq = watering_freq,
+  germinated = germinated,
+  not_germinated = total_seeds - germinated,
+  total_seeds = total_seeds,
+  greenhouse = greenhouse
+)
+
+# View a few rows
+head(seeds)
+```
+
+```{r}
+lm_seeds <- glm(cbind(germinated, not_germinated) ~ light_condition * watering_freq,
+                family = "binomial", data = seeds)
+```
+
+```{r}
+check_model(lm_seeds)
+
+check_outliers(lm_seeds, method = "cook", threshold = 0.5)
+
+seeds %>%
+  mutate(prop_germ = germinated/total_seeds) %>%
+  ggplot(aes(y = prop_germ, x = watering_freq, colour = light_condition)) +
+  facet_wrap(~ greenhouse) +
+  geom_point()
+```
+
+
+```{r}
+write_csv(seeds, "data/seeds.csv")
+```
+
+
+## Fish parasites
+
+Negative binomial dataset.
+
+```{r}
+set.seed(123)
+
+# Sample size
+n <- 64
+
+# Predictor variables
+lake <- sample(c("A", "B", "C"), size = n, replace = TRUE)
+fish_length <- rnorm(n, mean = 25, sd = 5)  # cm
+
+# Encode lake as numeric for simulation
+lake_num <- ifelse(lake == "A", 1, ifelse(lake == "B", 0, 2))
+
+# Linear predictor (on log scale)
+intercept <- 1.5
+b_lake <- 0.4          # effect per step up from lake A to B to C
+b_length <- 0.08       # longer fish have more parasites
+
+linpred <- intercept + b_lake * lake_num + b_length * fish_length
+mu <- exp(linpred)  # expected counts
+
+# Simulate parasite counts using Negative Binomial
+library(MASS)
+theta <- 3  # dispersion parameter; lower = more overdispersion
+parasite_count <- rnegbin(n, mu = mu, theta = theta)
+
+# Assemble into dataframe
+parasites <- data.frame(
+  parasite_count = parasite_count,
+  lake = factor(lake),
+  fish_length = round(fish_length,1)
+)
+
+head(parasites)
+```
+
+```{r}
+write_csv(parasites, "C:/Users/vicki/Documents/BTF_repos/stats-glm/materials/data/parasites.csv")
+```
+
+
+```{r}
+nb_para <- glm.nb(parasite_count ~ lake + fish_length, parasites)
+
+summary(nb_para)
+
+anova(nb_para, test = "Chisq")
+
+step(nb_para)
+```
+
+```{python}
+#| warning: false
+parasites = pd.read_csv("data/parasites.csv")
+
+from statsmodels.genmod.generalized_linear_model import NegativeBinomial
+```
+
+```{python}
+from statsmodels.discrete.discrete_model import NegativeBinomial
+
+parasites['lake'] = pd.Categorical(parasites['lake'])
+Y = parasites['parasite_count']
+X = pd.get_dummies(parasites[['lake', 'fish_length']], drop_first=True)
+X = sm.add_constant(X).astype(float)
+
+model = NegativeBinomialP(Y, X)
+
+nb_para = model.fit()
+
+print(nb_para.summary())
+
+print(1/nb_para.params['alpha']) # gives the dispersion parameter as we expect it to look (theta)
+```
+
+## Bacterial colonies
+
+```{r}
+set.seed(12)
+
+# Parameters
+n <- 90  # Number of plates
+
+# Simulate predictors
+treatment <- factor(rep(c("control", "low", "high"), each = n/3),
+                    levels = c("control", "low", "high"))
+incubation_time <- runif(n, min = 12, max = 24)  # Hours
+
+# Non-linear treatment effects:
+# - Low dose = slight stimulation (e.g., stress-induced resistance)
+# - High dose = strong inhibition
+treatment_effects <- c(control = 1, low = 1.3, high = 0.4)
+
+intercept <- 30
+incubationbeta <- 0.03
+
+# Linear predictor (log-scale)
+eta <- log(intercept) +                                # base colony count
+       log(treatment_effects[treatment]) +             # treatment effects
+       incubationbeta * incubation_time                # positive incubation time effect
+
+# Mean colony counts
+mu <- exp(eta)
+
+theta <- 1.5
+
+# Simulate from Negative Binomial
+colony_count <- rnbinom(n, mu = mu, size = theta)
+
+# Final data frame
+bacteria <- data.frame(colony_count, treatment, incubation_time = round(incubation_time))
+
+head(bacteria)
+```
+
+
+```{r}
+write_csv(bacteria, "C:/Users/vicki/Documents/BTF_repos/stats-glm/materials/data/bacteria.csv")
+```
+
+
+
+```{r}
+nb_petri <- glm.nb(colony_count ~ treatment + incubation_time, bacteria)
+```
+
+```{r}
+ggplot(bacteria, aes(y = colony_count, x = incubation_time, colour = treatment)) +
+  geom_point() +
+  geom_smooth(method = "glm.nb")
+```
+
+```{r}
+check_model(nb_petri, check = c('pp_check', 'outliers', 'vif'))
+
+check_collinearity(nb_petri)
+check_outliers(nb_petri, threshold = list('cook'=0.5))
+```
+
+```{r}
+nb_petri_null <- glm.nb(colony_count ~ 1, bacteria)
+
+anova(nb_petri, nb_petri_null)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

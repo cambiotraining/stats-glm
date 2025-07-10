@@ -1,5 +1,6 @@
 ---
 title: "Binary response"
+lightbox: true
 ---
 
 ```{r}
@@ -16,26 +17,16 @@ import shutup;shutup.please()
 exec(open('setup_files/setup.py').read())
 ```
 
-::: {.callout-tip}
+::: callout-tip
 ## Learning outcomes
 
-**Questions**
-
--   How do we analyse data with a binary outcome?
--   Can we test if our model is any good?
--   Be able to perform a logistic regression with a binary outcome
--   Predict outcomes of new data, based on a defined model
-
-**Objectives**
-
-- Be able to analyse binary outcome data
-- Understand different methods of testing model fit
-- Be able to make model predictions
+-   Be able to fit an appropriate GLM binary outcome data
+-   Be able to make model predictions
 :::
 
 ## Libraries and functions
 
-::: {.callout-note collapse="true"}
+:::: {.callout-note collapse="true"}
 ## Click to expand
 
 ::: {.panel-tabset group="language"}
@@ -66,6 +57,7 @@ ggResidpanel::resid_panel()
 #| eval: false
 # A maths library
 import math
+
 # A Python data analysis and manipulation tool
 import pandas as pd
 
@@ -81,10 +73,8 @@ import statsmodels.formula.api as smf
 # Needed for additional probability functionality
 from scipy.stats import *
 ```
-
-### Functions
 :::
-:::
+::::
 
 The example in this section uses the following data set:
 
@@ -92,7 +82,7 @@ The example in this section uses the following data set:
 
 These data come from an analysis of gene flow across two finch species [@lamichhaney2020]. They are slightly adapted here for illustrative purposes.
 
-The data focus on two species, _Geospiza fortis_ and _G. scandens_. The original measurements are split by a uniquely timed event: a particularly strong El Niño event in 1983. This event changed the vegetation and food supply of the finches, allowing F1 hybrids of the two species to survive, whereas before 1983 they could not. The measurements are classed as `early` (pre-1983) and `late` (1983 onwards).
+The data focus on two species, *Geospiza fortis* and *G. scandens*. The original measurements are split by a uniquely timed event: a particularly strong El Niño event in 1983. This event changed the vegetation and food supply of the finches, allowing F1 hybrids of the two species to survive, whereas before 1983 they could not. The measurements are classed as `early` (pre-1983) and `late` (1983 onwards).
 
 Here we are looking only at the `early` data. We are specifically focussing on the beak shape classification, which we saw earlier in @fig-beak_shape_glm.
 
@@ -114,7 +104,6 @@ early_finches <- read_csv("data/finches_early.csv")
 ```{python}
 early_finches_py = pd.read_csv("data/finches_early.csv")
 ```
-
 :::
 
 Looking at the data, we can see that the `pointed_beak` column contains zeros and ones. These are actually yes/no classification outcomes and not numeric representations.
@@ -168,7 +157,6 @@ ggplot(early_finches,
              y = "pointed_beak")) +
      geom_point())
 ```
-
 :::
 
 This presents us with a bit of an issue. We could fit a linear regression model to these data, although we already know that this is a bad idea...
@@ -196,7 +184,6 @@ ggplot(early_finches,
                  colour = "blue",
                  se = False))
 ```
-
 :::
 
 Of course this is rubbish - we can't have a beak classification outside the range of $[0, 1]$. It's either blunt (`0`) or pointed (`1`).
@@ -229,6 +216,7 @@ lm_bks_py = model.fit()
 ```
 
 Next, we can create the diagnostic plots:
+
 ```{python}
 #| eval: false
 #| results: hide
@@ -252,7 +240,6 @@ library(reticulate)
 # display image
 knitr::include_graphics(py$dgplot)
 ```
-
 :::
 
 They're ~~pretty~~ extremely bad.
@@ -264,7 +251,7 @@ They're ~~pretty~~ extremely bad.
 
 ## Creating a suitable model
 
-So far we've established that using a simple linear model to describe a potential relationship between beak length and the probability of having a pointed beak is not a good idea. So, what _can_ we do?
+So far we've established that using a simple linear model to describe a potential relationship between beak length and the probability of having a pointed beak is not a good idea. So, what *can* we do?
 
 One of the ways we can deal with binary outcome data is by performing a logistic regression. Instead of fitting a straight line to our data, and performing a regression on that, we fit a line that has an S shape. This avoids the model making predictions outside the $[0, 1]$ range.
 
@@ -278,15 +265,15 @@ $Y = \frac{\exp(\beta_0 + \beta_1X)}{1 + \exp(\beta_0 + \beta_1X)}$
 
 Note that the $\beta_0 + \beta_1X$ part is identical to the formula of a straight line.
 
-The rest of the function is what makes the straight line curve into its characteristic S shape. 
+The rest of the function is what makes the straight line curve into its characteristic S shape.
 
-:::{.callout-note collapse=true}
+::: {.callout-note collapse="true"}
 ## Euler's number ($\exp$): would you like to know more?
 
 In mathematics, $\rm e$ represents a constant of around 2.718. Another notation is $\exp$, which is often used when notations become a bit cumbersome. Here, I exclusively use the $\exp$ notation for consistency.
 :::
 
-::: {.callout-important}
+::: callout-important
 ## The logistic function
 
 The shape of the logistic function is hugely influenced by the different parameters, in particular $\beta_1$. The plots below show different situations, where $\beta_0 = 0$ in all cases, but $\beta_1$ varies.
@@ -319,11 +306,10 @@ df %>%
   facet_wrap(vars(keys))
 ```
 
-* when $\beta_1 = 1$, this gives the simplest logistic function
-* when $\beta_1 = 0$ gives a horizontal line, with $Y = \frac{\exp(\beta_0)}{1+\exp(\beta_0)}$
-* when $\beta_1$ is negative flips the curve around, so it slopes down
-* when $\beta_1$ is very large then the curve becomes extremely steep
-
+-   when $\beta_1 = 1$, this gives the simplest logistic function
+-   when $\beta_1 = 0$ gives a horizontal line, with $Y = \frac{\exp(\beta_0)}{1+\exp(\beta_0)}$
+-   when $\beta_1$ is negative flips the curve around, so it slopes down
+-   when $\beta_1$ is very large then the curve becomes extremely steep
 :::
 
 We can fit such an S-shaped curve to our `early_finches` data set, by creating a generalised linear model.
@@ -339,7 +325,7 @@ glm_bks <- glm(pointed_beak ~ blength,
                data = early_finches)
 ```
 
-The format of this function is similar to that used by the `lm()` function for linear models. The important difference is that we must specify the _family_ of error distribution to use. For logistic regression we must set the family to **binomial**.
+The format of this function is similar to that used by the `lm()` function for linear models. The important difference is that we must specify the *family* of error distribution to use. For logistic regression we must set the family to **binomial**.
 
 If you forget to set the `family` argument, then the `glm()` function will perform a standard linear model fit, identical to what the `lm()` function would do.
 
@@ -356,8 +342,7 @@ model = smf.glm(formula = "pointed_beak ~ blength",
 glm_bks_py = model.fit()
 ```
 
-The format of this function is similar to that used by the `ols()` function for linear models. The important difference is that we must specify the _family_ of error distribution to use. For logistic regression we must set the family to **binomial**. This is buried deep inside the `statsmodels` package and needs to be defined as `sm.families.Binomial()`.
-
+The format of this function is similar to that used by the `ols()` function for linear models. The important difference is that we must specify the *family* of error distribution to use. For logistic regression we must set the family to **binomial**. This is buried deep inside the `statsmodels` package and needs to be defined as `sm.families.Binomial()`.
 :::
 
 ## Model output
@@ -371,13 +356,11 @@ That's the easy part done! The trickier part is interpreting the output. First o
 summary(glm_bks)
 ```
 
-
 ## Python
 
 ```{python}
 print(glm_bks_py.summary())
 ```
-
 :::
 
 There’s a lot to unpack here, but let's start with what we're familiar with: coefficients!
@@ -389,7 +372,7 @@ There’s a lot to unpack here, but let's start with what we're familiar with: c
 
 The coefficients or parameters can be found in the `Coefficients` block. The main numbers to extract from the output are the two numbers underneath `Estimate.Std`:
 
-```
+```         
 Coefficients:
             Estimate Std.
 (Intercept)  -43.410
@@ -400,7 +383,7 @@ blength        3.387
 
 Right at the bottom is a table showing the model coefficients. The main numbers to extract from the output are the two numbers in the `coef` column:
 
-```
+```         
 ======================
                  coef
 ----------------------
@@ -408,7 +391,6 @@ Intercept    -43.4096
 blength        3.3866
 ======================
 ```
-
 :::
 
 These are the coefficients of the logistic model equation and need to be placed in the correct equation if we want to be able to calculate the probability of having a pointed beak for a given beak length.
@@ -419,10 +401,9 @@ We can use the coefficients to calculate the probability of having a pointed bea
 
 $$ P(pointed \ beak) = \frac{\exp(-43.41 + 3.39 \times blength)}{1 + \exp(-43.41 + 3.39 \times blength)} $$
 
-Having this formula means that we can calculate the probability of having a pointed beak for any beak length. How do we work this out in practice? 
+Having this formula means that we can calculate the probability of having a pointed beak for any beak length. How do we work this out in practice?
 
 ::: {.panel-tabset group="language"}
-
 ## R
 
 Well, the probability of having a pointed beak if the beak length is large (for example 15 mm) can be calculated as follows:
@@ -446,7 +427,6 @@ Well, the probability of having a pointed beak if the beak length is large (for 
 import math
 ```
 
-
 ```{python}
 math.exp(-43.41 + 3.39 * 15) / (1 + math.exp(-43.41 + 3.39 * 15))
 ```
@@ -460,7 +440,7 @@ math.exp(-43.41 + 3.39 * 10) / (1 + math.exp(-43.41 + 3.39 * 10))
 
 We can calculate the the probabilities for all our observed values and if we do that then we can see that the larger the beak length is, the higher the probability that a beak shape would be pointed. I'm visualising this together with the logistic curve, where the blue points are the calculated probabilities:
 
-::: {.callout-note collapse=true}
+:::: {.callout-note collapse="true"}
 ## Code available here
 
 ::: {.panel-tabset group="language"}
@@ -499,7 +479,7 @@ glm_bks %>%
        y = "Probability"))
 ```
 :::
-:::
+::::
 
 ```{r}
 #| echo: false
@@ -523,9 +503,15 @@ The graph shows us that, based on the data that we have and the model we used to
 
 Short beaks are more closely associated with the bluntly shaped beaks, whereas long beaks are more closely associated with the pointed shape. It's also clear that there is a range of beak lengths (around 13 mm) where the probability of getting one shape or another is much more even.
 
-## Assumptions
+## Influential observations
 
-As explained in the background chapter, we can't really use the standard diagnostic plots to assess assumptions. We're not going to go into a lot of detail for now, but there is one thing that we can do: look for influential points using the Cook’s distance plot.
+By this point, if we were fitting a linear model, we would want to check whether the statistical assumptions have been met.
+
+The same is true for a generalised linear model. However, as explained in the background chapter, we can't really use the standard diagnostic plots to assess assumptions. (And the assumptions of a GLM are not the same as a linear model.)
+
+There will be a whole chapter later on that focuses on assumptions and how to check them.
+
+For now, there is one thing that we can do that might be familiar: look for influential points using the Cook’s distance plot.
 
 ::: {.panel-tabset group="language"}
 ## R
@@ -564,128 +550,30 @@ We can use these to create the plot:
      geom_segment(aes(x = "obs", y = "cooks_d", xend = "obs", yend = 0)) +
      geom_point())
 ```
-
 :::
 
 This shows that there are no very obvious influential points. You could regard point `34` as potentially influential (it's got a Cook's distance of around `0.8`), but I'm not overly worried.
 
 If we were worried, we'd remove the troublesome data point, re-run the analysis and see if that changes the statistical outcome. If so, then our entire (statistical) conclusion hinges on one data point, which is not a very robust bit of research. If it *doesn't* change our significance, then all is well, even though that data point is influential.
 
-## Assessing significance
-
-We can ask several questions.
-
-**Is the model well-specified?**
-
-Roughly speaking this asks "can our model predict our data reasonably well?"
-
-::: {.panel-tabset group="language"}
-## R
-
-Unfortunately, there isn’t a single command that does this for us, and we have to lift some of the numbers from the summary output ourselves. 
-
-```{r}
-pchisq(9.1879, 59, lower.tail = FALSE)
-```
-
-
-Here, we’ve used the `pchisq` function (which calculates the correct probability for us – ask if you want a hand-wavy explanation). The first argument to it is the residual deviance value from the summary table, the second argument to is the residual degrees of freedom argument from the same table.
-
-## Python
-
-```{python}
-from scipy.stats import chi2
-
-chi2.sf(9.1879, 59)
-```
-
-:::
-
-This gives us a probability of `1`. We can interpret this as the probability that the model is actually good. There aren’t any strict conventions on how to interpret this value but, for me, a tiny value would indicate a rubbish model.
-
-**Is the overall model better than the null model?**
-
-::: {.panel-tabset group="language"}
-## R
-
-```{r}
-pchisq(84.5476 - 9.1879, 60 - 59, lower.tail = FALSE)
-```
-
-Here we’ve used the `pchisq` function again (if you didn’t ask before, you probably aren’t going to ask now).
-
-## Python
-
-First we need to define the null model:
-
-```{python}
-# create a linear model
-model = smf.glm(formula = "pointed_beak ~ 1",
-                family = sm.families.Binomial(),
-                data = early_finches_py)
-# and get the fitted parameters of the model
-glm_bks_null_py = model.fit()
-
-print(glm_bks_null_py.summary())
-```
-
-In order to compare our original fitted model to the null model we need to know the deviances of both models and the residual degrees of freedom of both models, which we could get from the summary method.
-
-```{python}
-chi2.sf(84.5476 - 9.1879, 60 - 59)
-```
-
-:::
-
-The first argument is the difference between the null and residual deviances and the second argument is the difference in degrees of freedom between the null and residual models. All of these values can be lifted from the summary table.
-
-This gives us a probability of pretty much zero. This value is doing a formal test to see whether our fitted model is significantly different from the null model. Here we can treat this a classical hypothesis test and since this p-value is less than 0.05 then we can say that our fitted model (with `blength` as a predictor variable) is definitely better than the null model (which has no predictor variables). Woohoo!
-
-**Are any of the individual predictors significant?**
-
-Finally, we’ll use the anova function from before to determine which predictor variables are important, and specifically in this case whether the beak length predictor is significant.
-
-::: {.panel-tabset group="language"}
-## R
-
-```{r}
-anova(glm_bks, test = "Chisq")
-```
-
-The `anova()` function is a true workhorse within R! This time we’ve used it to create an Analysis of Deviance table. This is exactly equivalent to an ordinary ANOVA table where we have rows corresponding to each predictor variable and a p-value telling us whether that variable is significant or not.
-
-The p-value for the `blength` predictor is written under then Pr(>Chi) column and we can see that it is less than `< 2.2e-16`. So, beak length is a significant predictor.
-
-This shouldn’t be surprising since we already saw that our overall model was better than the null model, which in this case is exactly the same as asking whether the beak length term is significant. However, in more complicated models with multiple predictors these two comparisons (and p-values) won’t be the same.
-
-## Python
-
-Alas, for some inexplicable reason this is not (yet?) possible to do in Python. At least, unbeknownst to me...
-
-:::
-
-
 ## Exercises
 
 ### Diabetes {#sec-exr_diabetes}
 
-:::{.callout-exercise}
-
+:::::::::: callout-exercise
 {{< level 2 >}}
 
 For this exercise we'll be using the data from `data/diabetes.csv`.
 
 This is a data set comprising 768 observations of three variables (one dependent and two predictor variables). This records the results of a diabetes test result as a binary variable (1 is a positive result, 0 is a negative result), along with the result of a glucose tolerance test and the diastolic blood pressure for each of 768 women. The variables are called `test_result`, `glucose` and `diastolic`.
 
-We want to see if the `glucose` tolerance is a meaningful predictor for predictions on a diabetes test. To investigate this, do the following:
+We want to look at the relationship between `glucose` tolerance and diabetes test results. To investigate this, do the following:
 
-1. Load and visualise the data
-2. Create a suitable model
-3. Determine if there are any statistically significant predictors
-4. Calculate the probability of a positive diabetes test result for a glucose tolerance test value of `glucose = 150`
+1.  Load and visualise the data
+2.  Create a suitable model
+3.  Calculate the probability of a positive diabetes test result for a glucose tolerance test value of `glucose = 150`
 
-::: {.callout-answer collapse="true"}
-
+::::::::: {.callout-answer collapse="true"}
 #### Load and visualise the data
 
 First we load the data, then we visualise it.
@@ -704,7 +592,6 @@ diabetes <- read_csv("data/diabetes.csv")
 ```{python}
 diabetes_py = pd.read_csv("data/diabetes.csv")
 ```
-
 :::
 
 Looking at the data, we can see that the `test_result` column contains zeros and ones. These are yes/no test result outcomes and not actually numeric representations.
@@ -759,7 +646,6 @@ ggplot(diabetes,
              y = "test_result")) +
      geom_point())
 ```
-
 :::
 
 #### Create a suitable model
@@ -775,7 +661,7 @@ glm_dia <- glm(test_result ~ glucose,
                data = diabetes)
 ```
 
-The format of this function is similar to that used by the `lm()` function for linear models. The important difference is that we must specify the _family_ of error distribution to use. For logistic regression we must set the family to **binomial**.
+The format of this function is similar to that used by the `lm()` function for linear models. The important difference is that we must specify the *family* of error distribution to use. For logistic regression we must set the family to **binomial**.
 
 ## Python
 
@@ -787,7 +673,6 @@ model = smf.glm(formula = "test_result ~ glucose",
 # and get the fitted parameters of the model
 glm_dia_py = model.fit()
 ```
-
 :::
 
 Let's look at the model parameters:
@@ -799,7 +684,6 @@ Let's look at the model parameters:
 summary(glm_dia)
 ```
 
-
 ## Python
 
 ```{python}
@@ -807,9 +691,9 @@ print(glm_dia_py.summary())
 ```
 :::
 
-We can see that `glucose` is a significant predictor for the `test_result` (the $p$ value is much smaller than 0.05).
+Right now, we're interested in the coefficients (we'll look at significance more in subsequent chapters).
 
-Knowing this, we're interested in the coefficients. We have an intercept of `-5.61` and `0.0395` for `glucose`. We can use these coefficients to write a formula that describes the potential relationship between the probability of having a positive test result, dependent on the glucose tolerance level value:
+We have an intercept of `-5.61` and `0.0395` for `glucose`. We can use these coefficients to write a formula that describes the potential relationship between the probability of having a positive test result, dependent on the glucose tolerance level value:
 
 $$ P(positive \ test\ result) = \frac{\exp(-5.61 + 0.04 \times glucose)}{1 + \exp(-5.61 + 0.04 \times glucose)} $$
 
@@ -832,15 +716,184 @@ math.exp(-5.61 + 0.04 * 150) / (1 + math.exp(-5.61 + 0.04 * 150))
 :::
 
 This tells us that the probability of having a positive diabetes test result, given a glucose tolerance level of 150 is around `r round(exp(-5.61 + 0.04 * 150) / (1 + exp(-5.61 + 0.04 * 150)) * 100)` %.
+:::::::::
+::::::::::
 
+### Aphids {#sec-exr_aphids}
+
+::::::::: callout-exercise
+{{< level 2 >}}
+
+In this exercise we'll use the `data/aphids.csv` dataset.
+
+Each row of this dataset represents a unique rose plant. For each plant, the researcher recorded:
+
+-   The number of unbloomed `buds`
+-   Which type of cultivated variety (`cultivar`) the rose was (`mozart` or `harmonie`)
+-   Whether or not aphids were present
+
+You should:
+
+1.  Load and visualise the dataset
+2.  Fit an appropriate model
+3.  Calculate the probability of aphids being present on a `harmonie` rose with 5 unbloomed `buds`
+
+:::::::: {.callout-answer collapse="true"}
+#### Load and visualise
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+#| message: false
+#| warning: false
+aphids <- read_csv("data/aphids.csv")
+```
+
+## Python
+
+```{python}
+aphids = pd.read_csv("data/aphids.csv")
+```
 :::
+
+There are multiple ways we could visualise these data, but let's try a scatterplot here:
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+ggplot(aphids,
+       aes(x = factor(aphids_present),
+           y = factor(buds),
+           colour = cultivar)) +
+  geom_jitter(width = 0.3)
+```
+
+## Python
+
+```{python}
+(
+  ggplot(aphids,
+         aes(x = aphids.aphids_present.astype(object),
+             y = aphids.buds.astype(object),
+             colour = "cultivar")) +
+     geom_jitter(width = 0.3)
+)
+```
 :::
+
+The plot gives the impression that the `mozart` roses have aphids present more often than the `harmonie` roses, but it's hard to tell whether there's an effect of `buds` from this graph.
+
+#### Fit a logistic model
+
+To quantify the relationship(s), let's fit a logistic model.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+glm_aphids <- glm(aphids_present ~ buds + cultivar,
+                  family = binomial,
+                  data = aphids)
+
+summary(glm_aphids)
+```
+
+## Python
+
+```{python}
+# create the model
+model = smf.glm(formula = "aphids_present ~ buds + cultivar",
+                family = sm.families.Binomial(),
+                data = aphids)
+                
+# extract fitted parameters
+glm_aphids = model.fit()
+
+# print summary of model
+glm_aphids.summary()
+```
+:::
+
+If you were paying close attention when you were learning about regular linear modelling, you might be thinking - isn't it possible that there's an interaction between our two predictors?
+
+Yes, it is!
+
+We can adapt our logistic model to include a third predictor, the `buds:cultivar` interaction. This works exactly like it would in a regular linear model - the syntax should be familiar already.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+glm_aphids2 <- glm(aphids_present ~ buds * cultivar,
+                  family = binomial,
+                  data = aphids)
+
+summary(glm_aphids2)
+```
+
+## Python
+
+```{python}
+# create the model
+model = smf.glm(formula = "aphids_present ~ buds * cultivar",
+                family = sm.families.Binomial(),
+                data = aphids)
+                
+# extract fitted parameters
+glm_aphids2 = model.fit()
+
+# print summary of model
+glm_aphids2.summary()
+```
+:::
+
+The question of which of these models is **better** is something we'll tackle in one of the later chapters.
+
+#### Calculate the probability
+
+Finally, let's use the coefficients from our model to calculate the probability of aphids being present under specific values of our predictors, specifically:
+
+-   `buds` = 8
+-   `cultivar` = `harmonie`
+
+To keep things simple, we'll use the coefficients from our additive model, but you can easily adapt this code to include the interaction with little effort.
+
+Since we've got two predictors, we're going to be efficient and do this in two stages. First, we'll build the "linear predictor" (the linear bit of our equation), and then we'll embed it inside the inverse link function.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+lin_pred <- -2.069 + 0.267 * 8 + 1.962 * 0
+
+# these will give identical results
+exp(lin_pred) / (1 + exp(lin_pred))
+1 / (1 + exp(-lin_pred))
+```
+
+## Python
+
+```{python}
+lin_pred = -2.069 + 0.267 * 8 + 1.962 * 0
+
+# these will give identical results
+math.exp(lin_pred) / (1 + math.exp(lin_pred))
+1 / (1 + math.exp(-lin_pred))
+```
+:::
+
+We write a `0` for the `cultivar` variable, because `harmonie` is the reference group (and therefore no adjustment is needed). If we had been making a prediction for the `mozart` rose, we would write a `1` here instead.
+::::::::
+:::::::::
 
 ## Summary
 
-::: {.callout-tip}
+::: callout-tip
 #### Key points
 
 -   We use a logistic regression to model a binary response
--   We can feed new observations into the model and get probabilities for the outcome
+-   This uses a logit link function
+-   We can feed new observations into the model and make predictions about the expected likelihood of "success", given certain values of the predictor variable(s)
 :::
