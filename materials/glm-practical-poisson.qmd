@@ -396,8 +396,6 @@ This leaves us with two things to check:
 1.  Is the overall model better than the null model?
 2.  Are any of the individual predictors significant?
 
-and in this case, questions 2 and 3 are effectively asking the same thing because we only have a single predictor variable.
-
 ### Comparing against the null
 
 We need to fit the null model, and then we can extract the null deviance and degrees of freedom to compare against our model.
@@ -454,6 +452,8 @@ Therefore, this model is significant over the null, and `species` does appear to
 ### Seat belts {#sec-exr_seatbelts}
 
 ::::::::::: {.callout-exercise #ex-seatbelts}
+#### Seat belts
+
 {{< level 2 >}}
 
 For this exercise we'll be using the data from `data/seatbelts.csv`.
@@ -505,7 +505,7 @@ We have to convert the `law` column to a factor, otherwise R will see it as nume
 seatbelts |> 
   ggplot(aes(as_factor(law), casualties)) +
    geom_boxplot() +
-   geom_jitter()
+   geom_jitter(width = 0.2)
 ```
 
 The data are recorded by month and year, so we can also display the number of drivers killed by year:
@@ -529,7 +529,7 @@ We have to convert the `law` column to a factor, otherwise R will see it as nume
 p = (ggplot(seatbelts, aes(x = seatbelts.law.astype(object),
                        y = "casualties")) +
    geom_boxplot() +
-   geom_jitter())
+   geom_jitter(width = 0.2))
 
 p.show()
 ```

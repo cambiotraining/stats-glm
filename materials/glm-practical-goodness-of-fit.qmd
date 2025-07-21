@@ -219,6 +219,8 @@ The main reason we've mentioned it here is because you are likely to come across
 ### Revisiting aphids {#sec-exr_aphids-revisited}
 
 ::: {.callout-exercise #ex-aphids_revisited}
+#### Revisiting aphids
+
 {{< level 2 >}}
 
 Back in [Exercise @sec-exr_aphids], we fitted a logistic model to the `aphids` dataset - the code is included below in case you need to run it again.

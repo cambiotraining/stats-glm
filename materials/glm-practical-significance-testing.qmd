@@ -340,6 +340,8 @@ This tells us that our interaction `glucose:diastolic` isn't significant - our m
 ### Predicting failure {#sec-exr_failure}
 
 ::::: {.callout-exercise #ex-predict_failure}
+#### Predicting failure
+
 {{< level 2 >}}
 
 In the [previous chapter](glm-practical-logistic-proportion.qmd), we used the `challenger.csv` dataset as a worked example.
@@ -502,6 +504,7 @@ Probably, yes. They certainly should have listened to the engineers who were rai
 ### Predicting failure (with a tweak) {#sec-exr_failure-tweak}
 
 ::::: {.callout-exercise #ex-failure_tweak}
+#### Predicting failure (with a tweak)
 {{< level 3 >}}
 
 In the `challenger` dataset, the data point at 53 degrees Fahrenheit is quite influential.
@@ -660,6 +663,7 @@ It is possible that if more data points were available that followed a similar t
 ### Revisiting rats and levers {#sec-exr_levers-again}
 
 :::::::: {.callout-exercise #ex-levers_again}
+#### Revisiting rats and levers
 {{< level 2 >}}
 
 Last chapter, we fitted a model to the `levers.csv` dataset in [Exercise @sec-exr_levers].

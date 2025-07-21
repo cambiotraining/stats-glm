@@ -318,6 +318,8 @@ We already did this above, since this is the most straightforward way of plottin
 ### Rats and levers {#sec-exr_levers}
 
 ::: {.callout-exercise #ex-levers}
+#### Rats and levers
+
 {{< level 2 >}}
 
 This exercises uses the dataset `levers.csv`.
@@ -533,6 +535,8 @@ If you're absolutely determined to produce plots like this, you might want to us
 ### Stem cells {#sec-exr_stemcells}
 
 ::: {.callout-exercise #ex-stemcells}
+#### Stem cells
+
 {{< level 3 >}}
 
 For this exercise, you will need the dataset `stemcells.csv`.

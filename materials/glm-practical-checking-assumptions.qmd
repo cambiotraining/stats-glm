@@ -231,7 +231,7 @@ glm_dia_py_resid['obs'] = glm_dia_py_resid.reset_index().index
 We now have two columns:
 
 ```{python}
-glm_dia_py_resid.head()
+glm_dia_py_resid.head
 ```
 
 We can use these to create the plot:
@@ -396,7 +396,9 @@ Much better!
 
 ### Revisiting rats and levers (again) {#sec-exr_levers-again-again}
 
-::: {.callout-exercise #ex-levers_again_again}
+::: {.callout-exercise}
+####Revisiting rats and levers (again)
+
 {{< level 2 >}}
 
 In [Exercise @sec-exr_levers] and [Exercise @sec-exr_levers-again], you worked through the `levers` dataset, fitting an appropriate model and then assessing its significance.
@@ -555,7 +557,7 @@ Collectively, it would seem that our model does indeed meet the assumptions, and
 ### Seed germination {#sec-exr_seed-germination}
 
 ::: {.callout-exercise #ex-seed_germination}
-
+#### Seed germination
 
 {{< level 3 >}}
 

@@ -652,6 +652,7 @@ Excellent. Seems we have found a well-fitting model for our `parasites` data!
 ### Bacteria colonies {#sec-exr_bacteria}
 
 ::: {.callout-exercise #ex-bacteria}
+#### Bacteria colonies
 {{< level 3 >}}
 
 In this exercise, we'll use the `bacteria` dataset.
