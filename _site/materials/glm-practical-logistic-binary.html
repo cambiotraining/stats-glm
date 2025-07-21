@@ -797,7 +797,7 @@ Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -4.5939
 Date:                Mon, 21 Jul 2025   Deviance:                       9.1879
-Time:                        17:15:20   Pearson chi2:                     15.1
+Time:                        17:27:13   Pearson chi2:                     15.1
 No. Iterations:                     8   Pseudo R-squ. (CS):             0.7093
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1244,7 +1244,7 @@ Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
 Date:                Mon, 21 Jul 2025   Deviance:                       752.20
-Time:                        17:15:22   Pearson chi2:                     713.
+Time:                        17:27:15   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1384,15 +1384,17 @@ Answer
 </div>
 <div id="tabset-20-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-20-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  ggplot(aphids,</span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> aphids.aphids_present.astype(<span class="bu">object</span>),</span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> aphids.buds.astype(<span class="bu">object</span>),</span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>             colour <span class="op">=</span> <span class="st">"cultivar"</span>)) <span class="op">+</span></span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>     geom_jitter(width <span class="op">=</span> <span class="fl">0.3</span>)</span>
-<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>&lt;plotnine.ggplot.ggplot object at 0x30824f450&gt;</code></pre>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(aphids, aes(x <span class="op">=</span> aphids.aphids_present.astype(<span class="bu">object</span>),</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>                    y <span class="op">=</span> aphids.buds.astype(<span class="bu">object</span>),</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>                    colour <span class="op">=</span> <span class="st">"cultivar"</span>)) <span class="op">+</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>   geom_jitter(width <span class="op">=</span> <span class="fl">0.3</span>))</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-51-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-51-1.png" class="img-fluid figure-img" width="614"></a></p>
+</figure>
+</div>
 </div>
 </div>
 </div>
@@ -1409,7 +1411,7 @@ Answer
 <div class="tab-content" data-group="language">
 <div id="tabset-21-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-21-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_aphids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">aphids_present</span> <span class="op">~</span> <span class="va">buds</span> <span class="op">+</span> <span class="va">cultivar</span>,</span>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_aphids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">aphids_present</span> <span class="op">~</span> <span class="va">buds</span> <span class="op">+</span> <span class="va">cultivar</span>,</span>
 <span>                  family <span class="op">=</span> <span class="va">binomial</span>,</span>
 <span>                  data <span class="op">=</span> <span class="va">aphids</span><span class="op">)</span></span>
 <span></span>
@@ -1440,114 +1442,35 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 <div id="tabset-21-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-21-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the model</span></span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"aphids_present ~ buds + cultivar"</span>,</span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
-<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> aphids)</span>
-<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a><span class="co"># extract fitted parameters</span></span>
-<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>glm_aphids <span class="op">=</span> model.fit()</span>
-<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a><span class="co"># print summary of model</span></span>
-<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>glm_aphids.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Generalized Linear Model Regression Results</caption>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">Dep. Variable:</td>
-<td>aphids_present</td>
-<td data-quarto-table-cell-role="th">No. Observations:</td>
-<td>54</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">Model:</td>
-<td>GLM</td>
-<td data-quarto-table-cell-role="th">Df Residuals:</td>
-<td>51</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">Model Family:</td>
-<td>Binomial</td>
-<td data-quarto-table-cell-role="th">Df Model:</td>
-<td>2</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">Link Function:</td>
-<td>Logit</td>
-<td data-quarto-table-cell-role="th">Scale:</td>
-<td>1.0000</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">Method:</td>
-<td>IRLS</td>
-<td data-quarto-table-cell-role="th">Log-Likelihood:</td>
-<td>-30.333</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">Date:</td>
-<td>Mon, 21 Jul 2025</td>
-<td data-quarto-table-cell-role="th">Deviance:</td>
-<td>60.666</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">Time:</td>
-<td>17:15:22</td>
-<td data-quarto-table-cell-role="th">Pearson chi2:</td>
-<td>54.8</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">No. Iterations:</td>
-<td>4</td>
-<td data-quarto-table-cell-role="th">Pseudo R-squ. (CS):</td>
-<td>0.2140</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">Covariance Type:</td>
-<td>nonrobust</td>
-<td data-quarto-table-cell-role="th"></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true"><tbody>
-<tr class="odd">
-<td></td>
-<td data-quarto-table-cell-role="th">coef</td>
-<td data-quarto-table-cell-role="th">std err</td>
-<td data-quarto-table-cell-role="th">z</td>
-<td data-quarto-table-cell-role="th">P&gt;|z|</td>
-<td data-quarto-table-cell-role="th">[0.025</td>
-<td data-quarto-table-cell-role="th">0.975]</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">Intercept</td>
-<td>-2.0687</td>
-<td>0.748</td>
-<td>-2.765</td>
-<td>0.006</td>
-<td>-3.535</td>
-<td>-0.602</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">cultivar[T.mozart]</td>
-<td>1.9621</td>
-<td>0.644</td>
-<td>3.047</td>
-<td>0.002</td>
-<td>0.700</td>
-<td>3.224</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">buds</td>
-<td>0.2067</td>
-<td>0.126</td>
-<td>1.638</td>
-<td>0.101</td>
-<td>-0.041</td>
-<td>0.454</td>
-</tr>
-</tbody></table>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the model</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"aphids_present ~ buds + cultivar"</span>,</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> aphids)</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="co"># extract fitted parameters</span></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>glm_aphids <span class="op">=</span> model.fit()</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a><span class="co"># print summary of model</span></span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_aphids.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:         aphids_present   No. Observations:                   54
+Model:                            GLM   Df Residuals:                       51
+Model Family:                Binomial   Df Model:                            2
+Link Function:                  Logit   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -30.333
+Date:                Mon, 21 Jul 2025   Deviance:                       60.666
+Time:                        17:27:15   Pearson chi2:                     54.8
+No. Iterations:                     4   Pseudo R-squ. (CS):             0.2140
+Covariance Type:            nonrobust                                         
+======================================================================================
+                         coef    std err          z      P&gt;|z|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+Intercept             -2.0687      0.748     -2.765      0.006      -3.535      -0.602
+cultivar[T.mozart]     1.9621      0.644      3.047      0.002       0.700       3.224
+buds                   0.2067      0.126      1.638      0.101      -0.041       0.454
+======================================================================================</code></pre>
 </div>
 </div>
 </div>
@@ -1605,114 +1528,27 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>glm_aphids2 <span class="op">=</span> model.fit()</span>
 <span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a><span class="co"># print summary of model</span></span>
-<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>glm_aphids2.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Generalized Linear Model Regression Results</caption>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">Dep. Variable:</td>
-<td>aphids_present</td>
-<td data-quarto-table-cell-role="th">No. Observations:</td>
-<td>54</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">Model:</td>
-<td>GLM</td>
-<td data-quarto-table-cell-role="th">Df Residuals:</td>
-<td>50</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">Model Family:</td>
-<td>Binomial</td>
-<td data-quarto-table-cell-role="th">Df Model:</td>
-<td>3</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">Link Function:</td>
-<td>Logit</td>
-<td data-quarto-table-cell-role="th">Scale:</td>
-<td>1.0000</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">Method:</td>
-<td>IRLS</td>
-<td data-quarto-table-cell-role="th">Log-Likelihood:</td>
-<td>-30.274</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">Date:</td>
-<td>Mon, 21 Jul 2025</td>
-<td data-quarto-table-cell-role="th">Deviance:</td>
-<td>60.548</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">Time:</td>
-<td>17:15:22</td>
-<td data-quarto-table-cell-role="th">Pearson chi2:</td>
-<td>54.3</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">No. Iterations:</td>
-<td>4</td>
-<td data-quarto-table-cell-role="th">Pseudo R-squ. (CS):</td>
-<td>0.2157</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">Covariance Type:</td>
-<td>nonrobust</td>
-<td data-quarto-table-cell-role="th"></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true"><tbody>
-<tr class="odd">
-<td></td>
-<td data-quarto-table-cell-role="th">coef</td>
-<td data-quarto-table-cell-role="th">std err</td>
-<td data-quarto-table-cell-role="th">z</td>
-<td data-quarto-table-cell-role="th">P&gt;|z|</td>
-<td data-quarto-table-cell-role="th">[0.025</td>
-<td data-quarto-table-cell-role="th">0.975]</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">Intercept</td>
-<td>-1.8670</td>
-<td>0.937</td>
-<td>-1.992</td>
-<td>0.046</td>
-<td>-3.704</td>
-<td>-0.030</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">cultivar[T.mozart]</td>
-<td>1.5825</td>
-<td>1.272</td>
-<td>1.244</td>
-<td>0.214</td>
-<td>-0.911</td>
-<td>4.076</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">buds</td>
-<td>0.1653</td>
-<td>0.174</td>
-<td>0.952</td>
-<td>0.341</td>
-<td>-0.175</td>
-<td>0.506</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">buds:cultivar[T.mozart]</td>
-<td>0.0876</td>
-<td>0.256</td>
-<td>0.342</td>
-<td>0.733</td>
-<td>-0.415</td>
-<td>0.590</td>
-</tr>
-</tbody></table>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_aphids2.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:         aphids_present   No. Observations:                   54
+Model:                            GLM   Df Residuals:                       50
+Model Family:                Binomial   Df Model:                            3
+Link Function:                  Logit   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -30.274
+Date:                Mon, 21 Jul 2025   Deviance:                       60.548
+Time:                        17:27:15   Pearson chi2:                     54.3
+No. Iterations:                     4   Pseudo R-squ. (CS):             0.2157
+Covariance Type:            nonrobust                                         
+===========================================================================================
+                              coef    std err          z      P&gt;|z|      [0.025      0.975]
+-------------------------------------------------------------------------------------------
+Intercept                  -1.8670      0.937     -1.992      0.046      -3.704      -0.030
+cultivar[T.mozart]          1.5825      1.272      1.244      0.214      -0.911       4.076
+buds                        0.1653      0.174      0.952      0.341      -0.175       0.506
+buds:cultivar[T.mozart]     0.0876      0.256      0.342      0.733      -0.415       0.590
+===========================================================================================</code></pre>
 </div>
 </div>
 </div>
@@ -1738,14 +1574,14 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <div class="tab-content" data-group="language">
 <div id="tabset-23-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-23-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lin_pred</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">2.069</span> <span class="op">+</span> <span class="fl">0.267</span> <span class="op">*</span> <span class="fl">8</span> <span class="op">+</span> <span class="fl">1.962</span> <span class="op">*</span> <span class="fl">0</span></span>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lin_pred</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">2.069</span> <span class="op">+</span> <span class="fl">0.267</span> <span class="op">*</span> <span class="fl">8</span> <span class="op">+</span> <span class="fl">1.962</span> <span class="op">*</span> <span class="fl">0</span></span>
 <span></span>
 <span><span class="co"># these will give identical results</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">lin_pred</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">lin_pred</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5167437</code></pre>
 </div>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">lin_pred</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">lin_pred</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5167437</code></pre>
 </div>
@@ -1753,14 +1589,14 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 <div id="tabset-23-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-23-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>lin_pred <span class="op">=</span> <span class="op">-</span><span class="fl">2.069</span> <span class="op">+</span> <span class="fl">0.267</span> <span class="op">*</span> <span class="dv">8</span> <span class="op">+</span> <span class="fl">1.962</span> <span class="op">*</span> <span class="dv">0</span></span>
-<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="co"># these will give identical results</span></span>
-<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>math.exp(lin_pred) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> math.exp(lin_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>lin_pred <span class="op">=</span> <span class="op">-</span><span class="fl">2.069</span> <span class="op">+</span> <span class="fl">0.267</span> <span class="op">*</span> <span class="dv">8</span> <span class="op">+</span> <span class="fl">1.962</span> <span class="op">*</span> <span class="dv">0</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="co"># these will give identical results</span></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>math.exp(lin_pred) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> math.exp(lin_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.5167437369156502</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> math.exp(<span class="op">-</span>lin_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> math.exp(<span class="op">-</span>lin_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.5167437369156502</code></pre>
 </div>
