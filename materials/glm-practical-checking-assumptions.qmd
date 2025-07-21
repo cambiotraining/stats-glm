@@ -218,6 +218,39 @@ check_outliers(glm_dia, threshold = list('cook' = 0.5))
 We can use the `get_influence` function to extract information like leverage, Cook's distance etc. about all of our data points:
 
 ```{python}
+# extract the Cook's distances
+glm_dia_py_resid = pd.DataFrame(glm_dia_py.
+                                get_influence().
+                                summary_frame()["cooks_d"])
+
+# add row index 
+glm_dia_py_resid['obs'] = glm_dia_py_resid.reset_index().index
+```
+
+
+We now have two columns:
+
+```{python}
+glm_dia_py_resid.head()
+```
+
+We can use these to create the plot:
+
+```{python}
+#| results: hide
+p = (ggplot(glm_dia_py_resid,
+         aes(x = "obs",
+             y = "cooks_d")) +
+     geom_segment(aes(x = "obs", y = "cooks_d", xend = "obs", yend = 0)) +
+     geom_point())
+
+p.show()
+```
+
+::: {.callout-tip collapse=true}
+## Alternative method using `matplotlib`
+
+```{python}
 influence = glm_dia_py.get_influence()
 ```
 
@@ -246,6 +279,18 @@ print("Influential points:", influential_points)
 ```
 
 The list is empty, indicating no high leverage points that we need to worry about.
+:::
+
+We can check which points may be influential, for example by setting a threshold of > 0.5:
+
+```{python}
+influential_points = glm_dia_py_resid[glm_dia_py_resid["cooks_d"] > 0.5]
+
+print("Influential points:", influential_points)
+```
+
+The DataFrame is empty, indicating no high leverage points that we need to worry about.
+
 :::
 
 ::: callout-warning

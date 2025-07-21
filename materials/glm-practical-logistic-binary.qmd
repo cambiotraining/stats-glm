@@ -545,7 +545,7 @@ glm_bks_py_resid['obs'] = glm_bks_py_resid.reset_index().index
 We now have two columns:
 
 ```{python}
-glm_bks_py_resid
+glm_bks_py_resid.head()
 ```
 
 We can use these to create the plot:
