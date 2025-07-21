@@ -454,7 +454,7 @@ Therefore, this model is significant over the null, and `species` does appear to
 
 ### Seat belts {#sec-exr_seatbelts}
 
-::::::::::: callout-exercise
+::::::::::: {.callout-exercise #ex-seatbelts}
 {{< level 2 >}}
 
 For this exercise we'll be using the data from `data/seatbelts.csv`.

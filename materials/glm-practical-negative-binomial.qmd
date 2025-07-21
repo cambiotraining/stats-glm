@@ -649,7 +649,7 @@ Excellent. Seems we have found a well-fitting model for our `parasites` data!
 
 ### Bacteria colonies {#sec-exr_bacteria}
 
-::: {.callout-exercise}
+::: {.callout-exercise #ex-bacteria}
 {{< level 3 >}}
 
 In this exercise, we'll use the `bacteria` dataset.
@@ -950,7 +950,7 @@ Or, it might be an indication of a stress-induced growth response in those dishe
 
 ### Galapagos models {#sec-exr_galapagos}
 
-::: {.callout-exercise}
+::: {.callout-exercise #ex-galapagos}
 
 {{< level 3 >}}
 

@@ -339,7 +339,7 @@ This tells us that our interaction `glucose:diastolic` isn't significant - our m
 
 ### Predicting failure {#sec-exr_failure}
 
-::::: callout-exercise
+::::: {.callout-exercise #ex-predict_failure}
 {{< level 2 >}}
 
 In the [previous chapter](glm-practical-logistic-proportion.qmd), we used the `challenger.csv` dataset as a worked example.
@@ -356,6 +356,7 @@ You should:
 4.  Decide what you think the answer is to the research question
 
 :::: {.callout-answer collapse="true"}
+
 ::: {.panel-tabset group="language"}
 ## R
 
@@ -500,7 +501,7 @@ Probably, yes. They certainly should have listened to the engineers who were rai
 
 ### Predicting failure (with a tweak) {#sec-exr_failure-tweak}
 
-::::: callout-exercise
+::::: {.callout-exercise #ex-failure_tweak}
 {{< level 3 >}}
 
 In the `challenger` dataset, the data point at 53 degrees Fahrenheit is quite influential.
@@ -514,6 +515,7 @@ You should:
 3.  Determine whether there is a significant link between launch temperature and o-ring failure in the new model
 
 :::: {.callout-answer collapse="true"}
+
 ::: {.panel-tabset group="language"}
 ## R
 
@@ -657,7 +659,7 @@ It is possible that if more data points were available that followed a similar t
 
 ### Revisiting rats and levers {#sec-exr_levers-again}
 
-:::::::: callout-exercise
+:::::::: {.callout-exercise #ex-levers_again}
 {{< level 2 >}}
 
 Last chapter, we fitted a model to the `levers.csv` dataset in [Exercise @sec-exr_levers].
