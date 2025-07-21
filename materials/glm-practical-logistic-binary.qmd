@@ -558,8 +558,9 @@ If we were worried, we'd remove the troublesome data point, re-run the analysis 
 
 ## Exercises
 
-::: {.callout-exercise #ex-diabetes}
 ### Diabetes {#sec-exr_diabetes}
+
+::: {.callout-exercise #ex-diabetes}
 {{< level 2 >}}
 
 For this exercise we'll be using the data from `data/diabetes.csv`.
@@ -718,8 +719,9 @@ This tells us that the probability of having a positive diabetes test result, gi
 :::::::::
 ::::::::::
 
-::::::::: {.callout-exercise #ex-aphids}
 ### Aphids {#sec-exr_aphids}
+
+::::::::: {.callout-exercise #ex-aphids}
 {{< level 2 >}}
 
 In this exercise we'll use the `data/aphids.csv` dataset.

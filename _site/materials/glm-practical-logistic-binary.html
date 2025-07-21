@@ -347,7 +347,13 @@ window.Quarto = {
   <li><a href="#model-output" id="toc-model-output" class="nav-link" data-scroll-target="#model-output"><span class="header-section-number">7.4</span> Model output</a></li>
   <li><a href="#parameter-interpretation" id="toc-parameter-interpretation" class="nav-link" data-scroll-target="#parameter-interpretation"><span class="header-section-number">7.5</span> Parameter interpretation</a></li>
   <li><a href="#influential-observations" id="toc-influential-observations" class="nav-link" data-scroll-target="#influential-observations"><span class="header-section-number">7.6</span> Influential observations</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">7.7</span> Exercises</a></li>
+  <li>
+<a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">7.7</span> Exercises</a>
+  <ul class="collapse">
+<li><a href="#sec-exr_diabetes" id="toc-sec-exr_diabetes" class="nav-link" data-scroll-target="#sec-exr_diabetes"><span class="header-section-number">7.7.1</span> Diabetes</a></li>
+  <li><a href="#sec-exr_aphids" id="toc-sec-exr_aphids" class="nav-link" data-scroll-target="#sec-exr_aphids"><span class="header-section-number">7.7.2</span> Aphids</a></li>
+  </ul>
+</li>
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">7.8</span> Summary</a></li>
   </ul></nav>
     </div>
@@ -767,7 +773,7 @@ Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -4.5939
 Date:                Mon, 21 Jul 2025   Deviance:                       9.1879
-Time:                        15:59:49   Pearson chi2:                     15.1
+Time:                        16:05:34   Pearson chi2:                     15.1
 No. Iterations:                     8   Pseudo R-squ. (CS):             0.7093
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -992,13 +998,15 @@ Figure&nbsp;7.1: Predicted probabilities for beak classification
 <p>If we were worried, we’d remove the troublesome data point, re-run the analysis and see if that changes the statistical outcome. If so, then our entire (statistical) conclusion hinges on one data point, which is not a very robust bit of research. If it <em>doesn’t</em> change our significance, then all is well, even though that data point is influential.</p>
 </section><section id="exercises" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="exercises">
 <span class="header-section-number">7.7</span> Exercises</h2>
+<section id="sec-exr_diabetes" class="level3" data-number="7.7.1"><h3 data-number="7.7.1" class="anchored" data-anchor-id="sec-exr_diabetes">
+<span class="header-section-number">7.7.1</span> Diabetes</h3>
 <div class="callout callout-style-default callout-exercise no-icon callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Exercise 1 - Diabetes
+Exercise 1
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1186,7 +1194,7 @@ Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
 Date:                Mon, 21 Jul 2025   Deviance:                       752.20
-Time:                        15:59:50   Pearson chi2:                     713.
+Time:                        16:05:35   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1239,13 +1247,15 @@ glucose        0.0395      0.003     11.628      0.000       0.033       0.046
 </div>
 </div>
 </div>
+</section><section id="sec-exr_aphids" class="level3" data-number="7.7.2"><h3 data-number="7.7.2" class="anchored" data-anchor-id="sec-exr_aphids">
+<span class="header-section-number">7.7.2</span> Aphids</h3>
 <div class="callout callout-style-default callout-exercise no-icon callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="true" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Exercise 2 - Aphids
+Exercise 2
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1332,7 +1342,7 @@ Answer
 <span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>     geom_jitter(width <span class="op">=</span> <span class="fl">0.3</span>)</span>
 <span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;plotnine.ggplot.ggplot object at 0x1769c6c90&gt;</code></pre>
+<pre><code>&lt;plotnine.ggplot.ggplot object at 0x17dac6c90&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -1432,7 +1442,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>15:59:51</td>
+<td>16:05:35</td>
 <td data-quarto-table-cell-role="th">Pearson chi2:</td>
 <td>54.8</td>
 </tr>
@@ -1588,7 +1598,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>15:59:51</td>
+<td>16:05:35</td>
 <td data-quarto-table-cell-role="th">Pearson chi2:</td>
 <td>54.3</td>
 </tr>
@@ -1718,7 +1728,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
 </div>
-</section><section id="summary" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="summary">
+</section></section><section id="summary" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="summary">
 <span class="header-section-number">7.8</span> Summary</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
