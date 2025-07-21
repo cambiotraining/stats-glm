@@ -221,7 +221,7 @@ The main reason we've mentioned it here is because you are likely to come across
 ::: callout-exercise
 {{< level 2 >}}
 
-Back in [Exercise @sec-exr_aphids], we fitted a logistic model to the `aphids` dataset - the code is included below in case you need to run it again.
+Back in the [aphids exercise](@sec-exr_aphids), we fitted a logistic model to the `aphids` dataset - the code is included below in case you need to run it again.
 
 Now, let's assess the goodness-of-fit of that model.
 

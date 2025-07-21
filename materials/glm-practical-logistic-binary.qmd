@@ -72,7 +72,13 @@ import statsmodels.formula.api as smf
 
 # Needed for additional probability functionality
 from scipy.stats import *
+
+# Custom function to create diagnostic plots
+# if in your main working directory:
+from dgplots import *
 ```
+
+Note: you can download the `dgplots` script [here](setup_files/dgplots.py).
 :::
 ::::
 
@@ -218,28 +224,22 @@ lm_bks_py = model.fit()
 Next, we can create the diagnostic plots:
 
 ```{python}
-#| eval: false
-#| results: hide
-dgplots(lm_bks_py)
+#| echo: false
+#| message: false
+import shutup;shutup.please()
+exec(open('setup_files/dgplots.py').read())
 ```
 
 ```{python}
-#| echo: false
-#| fig-keep: none
-#| fig-show: hide
-# load dgplots function for knitr
-exec(open('setup_files/dgplots_knitr.py').read())
-# create rendered diagnostic plots image
-# and save the file link
-dgplot = dgplotsknitr(lm_bks_py)
+#| eval: false
+from dgplots import *
 ```
 
-```{r}
-#| echo: false
-library(reticulate)
-# display image
-knitr::include_graphics(py$dgplot)
+
+```{python}
+dgplots(lm_bks_py)
 ```
+
 :::
 
 They're ~~pretty~~ extremely bad.
@@ -558,9 +558,8 @@ If we were worried, we'd remove the troublesome data point, re-run the analysis 
 
 ## Exercises
 
+::: {.callout-exercise #ex-diabetes}
 ### Diabetes {#sec-exr_diabetes}
-
-:::::::::: callout-exercise
 {{< level 2 >}}
 
 For this exercise we'll be using the data from `data/diabetes.csv`.
@@ -573,7 +572,7 @@ We want to look at the relationship between `glucose` tolerance and diabetes tes
 2.  Create a suitable model
 3.  Calculate the probability of a positive diabetes test result for a glucose tolerance test value of `glucose = 150`
 
-::::::::: {.callout-answer collapse="true"}
+::: {.callout-answer collapse="true"}
 #### Load and visualise the data
 
 First we load the data, then we visualise it.
@@ -719,14 +718,13 @@ This tells us that the probability of having a positive diabetes test result, gi
 :::::::::
 ::::::::::
 
+::::::::: {.callout-exercise #ex-aphids}
 ### Aphids {#sec-exr_aphids}
-
-::::::::: callout-exercise
 {{< level 2 >}}
 
 In this exercise we'll use the `data/aphids.csv` dataset.
 
-Each row of this dataset represents a unique rose plant. For each plant, the researcher recorded:
+Each row of these data represents a unique rose plant. For each plant, the researcher recorded:
 
 -   The number of unbloomed `buds`
 -   Which type of cultivated variety (`cultivar`) the rose was (`mozart` or `harmonie`)
@@ -734,7 +732,7 @@ Each row of this dataset represents a unique rose plant. For each plant, the res
 
 You should:
 
-1.  Load and visualise the dataset
+1.  Load and visualise the data
 2.  Fit an appropriate model
 3.  Calculate the probability of aphids being present on a `harmonie` rose with 5 unbloomed `buds`
 

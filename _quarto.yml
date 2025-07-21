@@ -16,6 +16,10 @@ project:
 
 format: courseformat-html
 
+exercises:
+  number: true
+  hide-answers: false
+
 filters:
   - courseformat
 

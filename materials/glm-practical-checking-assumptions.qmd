@@ -59,7 +59,7 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 from patsy import dmatrix
 ```
 :::
-::::
+:::
 
 ## Assumptions
 
@@ -349,9 +349,8 @@ Much better!
 
 ## Exercises
 
-### Revisiting rats and levers (again) {#sec-exr_levers-again-again}
-
-:::::::: callout-exercise
+::: {.callout-exercise #ex-exr_levers-again-again}
+#### Revisiting rats and levers (again) {#sec-exr_levers-again-again}
 {{< level 2 >}}
 
 In [Exercise @sec-exr_levers] and [Exercise @sec-exr_levers-again], you worked through the `levers` dataset, fitting an appropriate model and then assessing its significance.
@@ -388,7 +387,7 @@ glm_lev = model.fit()
 ```
 :::
 
-:::: {.callout-answer collapse="true"}
+::: {.callout-answer collapse="true"}
 #### Consider the response variable
 
 Is a logistic regression, with a logit link function, appropriate?
@@ -396,8 +395,8 @@ Is a logistic regression, with a logit link function, appropriate?
 For the answer to be "yes", then our response variable needs to be either a binary or a proportional variable (binomially distributed). We're looking for those success/fail trials.
 
 Sometimes, it can help to visualise the design:
-
-![Experimental design for rat lever experiment](images/rats-levers-design.png){width=70%}
+  
+  ![Experimental design for rat lever experiment](images/rats-levers-design.png){width=70%}
 
 We can see that for each rat, the proportion score is made up of a series of trials, each of which can either be correct (+) or incorrect (-). 
 
@@ -406,7 +405,7 @@ We can see that for each rat, the proportion score is made up of a series of tri
 Again, we need to think about the design.
 
 It might initially seem as if we have multiple observations per animal - since each rat pressed a whole bunch of levers - but actually if we look at each row of our dataset:
-
+  
 ::: {.panel-tabset group="language"}
 ## R
 
@@ -420,8 +419,8 @@ head(levers)
 levers.head()
 ```
 :::
-
-it becomes clear that each row of the dataset represents a rat, rather than each row representing a separate trial/button press.
+  
+  it becomes clear that each row of the dataset represents a rat, rather than each row representing a separate trial/button press.
 
 In other words: by collecting the proportion of correct trials, we have averaged across the rat, and so it only appears once in our dataset.
 
@@ -504,12 +503,12 @@ print(vif_data)
 Again, all good - none of our predictors have a concerning VIF.
 
 Collectively, it would seem that our model does indeed meet the assumptions, and there are no glaring obstacles to us proceeding with a significance test and an interpretation.
-::::
-::::::::
+:::
+:::
 
+::: {.callout-exercise #ex-seed_germination}
 ### Seed germination
 
-::: callout.exercise
 {{< level 3 >}}
 
 This exercise uses a new dataset, `seeds`, which is all about a seed germination experiment.
@@ -543,7 +542,6 @@ seeds = pd.read_csv("data/seeds.csv")
 There is no formal worked answer provided. However, all of the code you will need can be adapted from the `diabetes` and `aphids` examples worked through in the chapter.
 
 You are also strongly encouraged to work with, or share your answer with, a neighbour.
-:::
 
 :::: {.callout-tip collapse="true"}
 #### Hints
@@ -555,7 +553,7 @@ You are also strongly encouraged to work with, or share your answer with, a neig
 It may help to visualise the experimental design (the number of trays has been simplified so that the figure fits on the page):
 
 ![Seed germination experiment](images/seeds-design.png){width=70%}
-::::
+:::
 
 :::
 
@@ -563,7 +561,7 @@ It may help to visualise the experimental design (the number of trays has been s
 
 While generalised linear models make fewer assumptions than standard linear models, we do still expect certain things to be true about the model and our variables for GLMs to be valid.
 
-::: callout-tip
+::: {.callout-tip}
 #### Key points
 
 -   For a generalised linear model, we assume that we have chosen the correct link function, that our response variable follows a distribution from the exponential family, and that our data are independent
