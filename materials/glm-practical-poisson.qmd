@@ -101,10 +101,10 @@ ggplot(islands, aes(x = area, y = species)) +
 #| results: hide
 #| label: fig-scatter_isl_py
 #| fig-cap: Scatterplot of area and species
-(
-  ggplot(islands, aes(x = "area", y = "species")) +
-  geom_point()
-)
+p = (ggplot(islands, aes(x = "area", y = "species")) +
+   geom_point())
+
+p.show()
 ```
 :::
 
@@ -228,13 +228,12 @@ model.head()
 #| results: hide
 #| label: fig-poisson_isl_py
 #| fig-cap: Poisson regression on species ~ area
-(
-  ggplot(islands,
-         aes(x = "area",
-             y = "species")) +
-     geom_point() +
-     geom_line(model, aes(x = "area", y = "pred"), colour = "blue", size = 1)
-)
+p = (ggplot(islands, aes(x = "area", y = "species")) +
+   geom_point() +
+   geom_line(model, aes(x = "area", y = "pred"),
+                        colour = "blue", size = 1))
+
+p.show()
 ```
 :::
 
@@ -503,7 +502,7 @@ We have to convert the `law` column to a factor, otherwise R will see it as nume
 ```{r}
 #| label: fig-boxplot_seatbelt
 #| fig-cap: Boxplot of driver casualties before and after seatbelt introduction
-seatbelts %>% 
+seatbelts |> 
   ggplot(aes(as_factor(law), casualties)) +
    geom_boxplot() +
    geom_jitter()
@@ -514,7 +513,7 @@ The data are recorded by month and year, so we can also display the number of dr
 ```{r}
 #| label: fig-scatter_seatbelt
 #| fig-cap: Scatterplot of driver casualties across years
-seatbelts %>% 
+seatbelts |> 
   ggplot(aes(year, casualties)) +
   geom_point()
 ```
@@ -527,13 +526,12 @@ We have to convert the `law` column to a factor, otherwise R will see it as nume
 #| results: hide
 #| label: fig-boxplot_seatbelt_py
 #| fig-cap: Boxplot of driver casualties before and after seatbelt introduction
-(
-  ggplot(seatbelts,
-         aes(x = seatbelts.law.astype(object),
-             y = "casualties")) +
-     geom_boxplot() +
-     geom_jitter()
-)
+p = (ggplot(seatbelts, aes(x = seatbelts.law.astype(object),
+                       y = "casualties")) +
+   geom_boxplot() +
+   geom_jitter())
+
+p.show()
 ```
 
 The data are recorded by month and year, so we can also display the number of casualties by year:
@@ -542,10 +540,12 @@ The data are recorded by month and year, so we can also display the number of ca
 #| results: hide
 #| label: fig-scatter_seatbelt_py
 #| fig-cap: Scatterplot of driver casualties across years
-(ggplot(seatbelts,
+p = (ggplot(seatbelts,
          aes(x = "year",
              y = "casualties")) +
      geom_point())
+
+p.show()
 ```
 :::
 
@@ -625,13 +625,13 @@ model.head()
 #| results: hide
 #| label: fig-poisson_seatbelt_py
 #| fig-cap: Poisson regression of driver casualties across years
-(
-  ggplot(seatbelts,
-         aes(x = "year",
-             y = "casualties")) +
-     geom_point() +
-     geom_line(model, aes(x = "year", y = "pred"), colour = "blue", size = 1)
-)
+p = (ggplot(seatbelts, aes(x = "year",
+                       y = "casualties")) +
+   geom_point() +
+   geom_line(model, aes(x = "year", y = "pred"),
+                        colour = "blue", size = 1))
+
+p.show()
 ```
 :::
 

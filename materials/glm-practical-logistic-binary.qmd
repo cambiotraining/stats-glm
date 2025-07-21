@@ -134,10 +134,12 @@ We can force Python to temporarily covert the data to a factor, by making the `p
 
 ```{python}
 #| results: hide
-(ggplot(early_finches_py,
+p = (ggplot(early_finches_py,
          aes(x = early_finches_py.pointed_beak.astype(object),
              y = "blength")) +
      geom_boxplot())
+
+p.show()
 ```
 :::
 
@@ -158,10 +160,12 @@ ggplot(early_finches,
 
 ```{python}
 #| results: hide
-(ggplot(early_finches_py,
+p = (ggplot(early_finches_py,
          aes(x = "blength",
              y = "pointed_beak")) +
      geom_point())
+
+p.show()
 ```
 :::
 
@@ -182,13 +186,15 @@ ggplot(early_finches,
 
 ```{python}
 #| results: hide
-(ggplot(early_finches_py,
+p = (ggplot(early_finches_py,
          aes(x = "blength",
              y = "pointed_beak")) +
      geom_point() +
      geom_smooth(method = "lm",
                  colour = "blue",
                  se = False))
+
+p.show()
 ```
 :::
 
@@ -468,7 +474,7 @@ glm_bks %>%
 ```{python}
 #| results: hide
 #| fig-show: hide
-(ggplot(early_finches_py) +
+p = (ggplot(early_finches_py) +
   geom_point(aes(x = "blength", y = "pointed_beak")) +
   geom_line(aes(x = "blength", y = glm_bks_py.fittedvalues),
             linetype = "dashed",
@@ -477,6 +483,8 @@ glm_bks %>%
              colour = "blue", alpha = 0.5) +
   labs(x = "beak length (mm)",
        y = "Probability"))
+
+p.show()
 ```
 :::
 ::::
@@ -544,11 +552,13 @@ We can use these to create the plot:
 
 ```{python}
 #| results: hide
-(ggplot(glm_bks_py_resid,
+p = (ggplot(glm_bks_py_resid,
          aes(x = "obs",
              y = "cooks_d")) +
      geom_segment(aes(x = "obs", y = "cooks_d", xend = "obs", yend = 0)) +
      geom_point())
+
+p.show()
 ```
 :::
 
@@ -616,10 +626,12 @@ We can force Python to temporarily covert the data to a factor, by making the `t
 
 ```{python}
 #| results: hide
-(ggplot(diabetes_py,
+p = (ggplot(diabetes_py,
          aes(x = diabetes_py.test_result.astype(object),
              y = "glucose")) +
      geom_boxplot())
+
+p.show()
 ```
 :::
 
@@ -641,10 +653,12 @@ ggplot(diabetes,
 
 ```{python}
 #| results: hide
-(ggplot(diabetes_py,
+p = (ggplot(diabetes_py,
          aes(x = "glucose",
              y = "test_result")) +
      geom_point())
+
+p.show()
 ```
 :::
 

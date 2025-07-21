@@ -513,10 +513,18 @@ Click to expand
 <p>We could just give Python the <code>pointed_beak</code> data directly, but then it would view the values as numeric. Which doesn’t really work, because we have two groups as such: those with a pointed beak (<code>1</code>), and those with a blunt one (<code>0</code>).</p>
 <p>We can force Python to temporarily covert the data to a factor, by making the <code>pointed_beak</code> column an <code>object</code> type. We can do this directly inside the <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot()</a></code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(ggplot(early_finches_py,</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(early_finches_py,</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> early_finches_py.pointed_beak.astype(<span class="bu">object</span>),</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"blength"</span>)) <span class="op">+</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>     geom_boxplot())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>     geom_boxplot())</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-9-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="614"></a></p>
+</figure>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -536,7 +544,7 @@ Click to expand
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-10-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-10-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-10-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -544,10 +552,18 @@ Click to expand
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(ggplot(early_finches_py,</span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(early_finches_py,</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"blength"</span>,</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"pointed_beak"</span>)) <span class="op">+</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>     geom_point())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>     geom_point())</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-11-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="614"></a></p>
+</figure>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -567,7 +583,7 @@ Click to expand
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span>, se <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-12-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-12-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -575,13 +591,21 @@ Click to expand
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(ggplot(early_finches_py,</span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(early_finches_py,</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"blength"</span>,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"pointed_beak"</span>)) <span class="op">+</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>     geom_point() <span class="op">+</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>     geom_smooth(method <span class="op">=</span> <span class="st">"lm"</span>,</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                 colour <span class="op">=</span> <span class="st">"blue"</span>,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                 se <span class="op">=</span> <span class="va">False</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                 se <span class="op">=</span> <span class="va">False</span>))</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-13-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="614"></a></p>
+</figure>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -604,7 +628,7 @@ Click to expand
 <span>            smoother <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-14-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-14-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-14-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -627,7 +651,7 @@ Click to expand
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dgplots(lm_bks_py)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-18-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="1152"></a></p>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-18-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="1152"></a></p>
 </figure>
 </div>
 </div>
@@ -682,7 +706,7 @@ The logistic function
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-19-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-19-3.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-19-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-19-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -773,7 +797,7 @@ Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -4.5939
 Date:                Mon, 21 Jul 2025   Deviance:                       9.1879
-Time:                        16:05:34   Pearson chi2:                     15.1
+Time:                        17:15:20   Pearson chi2:                     15.1
 No. Iterations:                     8   Pseudo R-squ. (CS):             0.7093
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -899,7 +923,7 @@ Code available here
 </div>
 <div id="tabset-11-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-11-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>(ggplot(early_finches_py) <span class="op">+</span></span>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(early_finches_py) <span class="op">+</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  geom_point(aes(x <span class="op">=</span> <span class="st">"blength"</span>, y <span class="op">=</span> <span class="st">"pointed_beak"</span>)) <span class="op">+</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  geom_line(aes(x <span class="op">=</span> <span class="st">"blength"</span>, y <span class="op">=</span> glm_bks_py.fittedvalues),</span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>            linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
@@ -907,7 +931,9 @@ Code available here
 <span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  geom_point(aes(x <span class="op">=</span> <span class="st">"blength"</span>, y <span class="op">=</span> glm_bks_py.fittedvalues),</span>
 <span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>             colour <span class="op">=</span> <span class="st">"blue"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  labs(x <span class="op">=</span> <span class="st">"beak length (mm)"</span>,</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>       y <span class="op">=</span> <span class="st">"Probability"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>       y <span class="op">=</span> <span class="st">"Probability"</span>))</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -919,7 +945,7 @@ Code available here
 <div class="cell-output-display">
 <div id="fig-beak_class_glm_probs" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-beak_class_glm_probs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="glm-practical-logistic-binary_files/figure-html/fig-beak_class_glm_probs-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;7.1: Predicted probabilities for beak classification"><img src="glm-practical-logistic-binary_files/figure-html/fig-beak_class_glm_probs-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="glm-practical-logistic-binary_files/figure-html/fig-beak_class_glm_probs-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figure&nbsp;7.1: Predicted probabilities for beak classification"><img src="glm-practical-logistic-binary_files/figure-html/fig-beak_class_glm_probs-2.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-beak_class_glm_probs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7.1: Predicted probabilities for beak classification
@@ -946,7 +972,7 @@ Figure&nbsp;7.1: Predicted probabilities for beak classification
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://goodekat.github.io/ggResidpanel/reference/resid_panel.html">resid_panel</a></span><span class="op">(</span><span class="va">glm_bks</span>, plots <span class="op">=</span> <span class="st">"cookd"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-32-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-32-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -985,11 +1011,19 @@ Figure&nbsp;7.1: Predicted probabilities for beak classification
 </div>
 <p>We can use these to create the plot:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>(ggplot(glm_bks_py_resid,</span>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(glm_bks_py_resid,</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"obs"</span>,</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"cooks_d"</span>)) <span class="op">+</span></span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>     geom_segment(aes(x <span class="op">=</span> <span class="st">"obs"</span>, y <span class="op">=</span> <span class="st">"cooks_d"</span>, xend <span class="op">=</span> <span class="st">"obs"</span>, yend <span class="op">=</span> <span class="dv">0</span>)) <span class="op">+</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>     geom_point())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>     geom_point())</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-35-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="614"></a></p>
+</figure>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1072,7 +1106,7 @@ Answer
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-38-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-38-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1082,10 +1116,18 @@ Answer
 <p>We could just give Python the <code>test_result</code> data directly, but then it would view the values as numeric. Which doesn’t really work, because we have two groups as such: those with a negative diabetes test result, and those with a positive one.</p>
 <p>We can force Python to temporarily covert the data to a factor, by making the <code>test_result</code> column an <code>object</code> type. We can do this directly inside the <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot()</a></code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(diabetes_py,</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> diabetes_py.test_result.astype(<span class="bu">object</span>),</span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"glucose"</span>)) <span class="op">+</span></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>     geom_boxplot())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>     geom_boxplot())</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-39-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="614"></a></p>
+</figure>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1106,7 +1148,7 @@ Answer
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-40-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-40-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-40-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1114,10 +1156,18 @@ Answer
 </div>
 <div id="tabset-15-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-15-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>(ggplot(diabetes_py,</span>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(diabetes_py,</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"glucose"</span>,</span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"test_result"</span>)) <span class="op">+</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>     geom_point())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>     geom_point())</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-41-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="614"></a></p>
+</figure>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1194,7 +1244,7 @@ Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
 Date:                Mon, 21 Jul 2025   Deviance:                       752.20
-Time:                        16:05:35   Pearson chi2:                     713.
+Time:                        17:15:22   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1326,7 +1376,7 @@ Answer
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-50-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-50-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="glm-practical-logistic-binary_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1342,7 +1392,7 @@ Answer
 <span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>     geom_jitter(width <span class="op">=</span> <span class="fl">0.3</span>)</span>
 <span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;plotnine.ggplot.ggplot object at 0x17dac6c90&gt;</code></pre>
+<pre><code>&lt;plotnine.ggplot.ggplot object at 0x30824f450&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -1442,7 +1492,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>16:05:35</td>
+<td>17:15:22</td>
 <td data-quarto-table-cell-role="th">Pearson chi2:</td>
 <td>54.8</td>
 </tr>
@@ -1598,7 +1648,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>16:05:35</td>
+<td>17:15:22</td>
 <td data-quarto-table-cell-role="th">Pearson chi2:</td>
 <td>54.3</td>
 </tr>

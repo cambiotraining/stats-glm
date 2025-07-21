@@ -140,10 +140,12 @@ ggplot(challenger, aes(x = temp, y = prop_damaged)) +
 
 ```{python}
 #| results: hide
-(ggplot(challenger_py,
+p = (ggplot(challenger_py,
          aes(x = "temp",
              y = "prop_damaged")) +
      geom_point())
+     
+p.show()
 ```
 
 :::
@@ -264,11 +266,13 @@ model.head()
 
 ```{python}
 #| results: hide
-(ggplot(challenger_py,
+p = (ggplot(challenger_py,
          aes(x = "temp",
              y = "prop_damaged")) +
      geom_point() +
      geom_line(model, aes(x = "temp", y = "pred"), colour = "blue", size = 1))
+     
+p.show()
 ```
 
 

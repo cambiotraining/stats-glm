@@ -123,16 +123,18 @@ parasites.head()
 
 ```{python}
 #| warning: false
-(
-  ggplot(parasites, aes(y = "parasite_count", x = "fish_length", colour = "lake")) +
-  geom_point()
-)
+p = (ggplot(parasites, aes(x = "fish_length", y = "parasite_count",
+                           colour = "lake")) +
+       geom_point())
 
-(
-  ggplot(parasites, aes(y = "parasite_count", x = "lake", colour = "fish_length")) +
-  geom_violin() +
-  geom_jitter()
-)
+p.show()
+
+p = (ggplot(parasites, aes(x = "lake", y = "parasite_count",
+                       colour = "fish_length")) +
+   geom_violin() +
+   geom_jitter())
+
+p.show()
 ```
 :::
 
@@ -359,14 +361,14 @@ new_data.head()
 ```
 
 ```{python}
-(
-  ggplot(parasites,
-         aes(x = "fish_length",
-             y = "parasite_count",
-             colour = "lake")) +
-     geom_point() +
-     geom_line(new_data, aes(x = "fish_length", y = "pred", colour = "lake"), size = 1)
-)
+p = (ggplot(parasites, aes(x = "fish_length",
+                       y = "parasite_count",
+                       colour = "lake")) +
+   geom_point() +
+   geom_line(new_data, aes(x = "fish_length", y = "pred",
+                           colour = "lake"), size = 1))
+
+p.show()
 ```
 :::
 
@@ -414,14 +416,14 @@ new_data_nb.head()
 ```
 
 ```{python}
-(
-  ggplot(parasites,
-         aes(x = "fish_length",
-             y = "parasite_count",
-             colour = "lake")) +
-     geom_point() +
-     geom_line(new_data_nb, aes(x = "fish_length", y = "pred", colour = "lake"), size = 1)
-)
+p = (ggplot(parasites, aes(x = "fish_length",
+                       y = "parasite_count",
+                       colour = "lake")) +
+   geom_point() +
+   geom_line(new_data_nb, aes(x = "fish_length", y = "pred",
+                              colour = "lake"), size = 1))
+
+p.show()
 ```
 :::
 
@@ -807,14 +809,14 @@ new_data_nb.head()
 ```
 
 ```{python}
-(
-  ggplot(bacteria,
-         aes(x = "incubation_time",
-             y = "colony_count",
-             colour = "treatment")) +
-     geom_point() +
-     geom_line(new_data_nb, aes(x = "incubation_time", y = "pred", colour = "treatment"), size = 1)
-)
+p = (ggplot(bacteria, aes(x = "incubation_time",
+                      y = "colony_count",
+                      colour = "treatment")) +
+   geom_point() +
+   geom_line(new_data_nb, aes(x = "incubation_time", y = "pred",
+                              colour = "treatment"), size = 1))
+                              
+p.show()
 ```
 :::
 

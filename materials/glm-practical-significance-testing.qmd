@@ -456,11 +456,11 @@ And let's visualise the model:
 ```{python}
 #| results: hide
 #| message: false
-(
-  ggplot() +
-     geom_point(challenger_py, aes(x = "temp", y = "prop_damaged")) +
-     geom_line(model, aes(x = "temp", y = "pred"), colour = "blue", size = 1)
-)
+p = (ggplot() +
+   geom_point(challenger_py, aes(x = "temp", y = "prop_damaged")) +
+   geom_line(model, aes(x = "temp", y = "pred"), colour = "blue", size = 1))
+
+p.show()
 ```
 
 #### Comparing against the null
@@ -610,13 +610,13 @@ And let's visualise the model:
 ```{python}
 #| results: hide
 #| message: false
-(
-  ggplot() +
-     geom_point(challenger_new_py, aes(x = "temp", y = "prop_damaged")) +
-     geom_line(model, aes(x = "temp", y = "pred"), colour = "blue", size = 1) +
-     # add a vertical line at 53 F temperature
-     geom_vline(xintercept = 53, linetype = "dashed")
-)
+p = (ggplot() +
+   geom_point(challenger_new_py, aes(x = "temp", y = "prop_damaged")) +
+   geom_line(model, aes(x = "temp", y = "pred"), colour = "blue", size = 1) +
+   # add a vertical line at 53 F temperature
+   geom_vline(xintercept = 53, linetype = "dashed"))
+
+p.show()
 ```
 
 The prediction proportion of damaged o-rings is markedly less than what was observed.
