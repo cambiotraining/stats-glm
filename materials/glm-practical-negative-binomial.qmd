@@ -924,7 +924,7 @@ model = NegativeBinomial(Y, X)
 
 nb_petri_null = model.fit()
 
-nb_petri_null.summary()
+print(nb_petri_null.summary())
 ```
 
 We can see that the model, indeed, only contains a constant (intercept) with no predictors. That's what we wanted.

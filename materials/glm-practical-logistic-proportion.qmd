@@ -444,7 +444,7 @@ summary(glm_lev)
 ## Python
 
 ```{python}
-glm_lev.summary()
+print(glm_lev.summary())
 ```
 :::
 

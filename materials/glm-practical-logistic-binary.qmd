@@ -494,7 +494,7 @@ p.show()
 #| message: false
 #| label: fig-beak_class_glm_probs
 #| fig-cap: "Predicted probabilities for beak classification"
-glm_bks %>% 
+glm_bks |> 
   augment(type.predict = "response") %>% 
   ggplot() +
   geom_point(aes(x = blength, y = pointed_beak)) +
@@ -787,13 +787,12 @@ ggplot(aphids,
 ## Python
 
 ```{python}
-(
-  ggplot(aphids,
-         aes(x = aphids.aphids_present.astype(object),
-             y = aphids.buds.astype(object),
-             colour = "cultivar")) +
-     geom_jitter(width = 0.3)
-)
+p = (ggplot(aphids, aes(x = aphids.aphids_present.astype(object),
+                    y = aphids.buds.astype(object),
+                    colour = "cultivar")) +
+   geom_jitter(width = 0.3))
+
+p.show()
 ```
 :::
 
@@ -826,7 +825,7 @@ model = smf.glm(formula = "aphids_present ~ buds + cultivar",
 glm_aphids = model.fit()
 
 # print summary of model
-glm_aphids.summary()
+print(glm_aphids.summary())
 ```
 :::
 
@@ -859,7 +858,7 @@ model = smf.glm(formula = "aphids_present ~ buds * cultivar",
 glm_aphids2 = model.fit()
 
 # print summary of model
-glm_aphids2.summary()
+print(glm_aphids2.summary())
 ```
 :::
 
