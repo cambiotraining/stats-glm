@@ -19,9 +19,9 @@ exec(open('setup_files/setup.py').read())
 ::: {.callout-tip}
 ## Learning outcomes
 
--   Understand that odds ratios and risk ratios are effect sizes in the context of binomial response variables
--   Know the difference between odds ratios, risk ratios and relative risk
--   Be able to calculate and interpret appropriate effect sizes for logistic regression
+-   Understand how and when to use odds ratios to help interpret logistic regression
+-   Know the difference between odds ratios and risk ratios
+-   Be able to calculate and discuss/interpret odds ratios
 :::
 
 ## Libraries and functions
@@ -57,5 +57,52 @@ from scipy.stats import *
 import numpy as np
 ```
 :::
+:::
+
+Introduce & describe dataset
+
+## What is an odds ratio?
+
+## Calculating odds ratios
+
+## Interpretation
+
+The main effect of surgery_type refers to the difference in log-odds relative to the reference level.
+
+The surgery_duration coefficient represents the change in odds per additional minute of surgery (unless you rescale it).
+
+Interaction terms are multiplicative on the odds scale (e.g., modifying the slope of duration depending on surgery type).
+
+### Categorical predictor
+
+### Continuous predictor
+
+### Interaction effect
+
+## Visualising odds ratios
+
+
+
+## Risk ratios (relative risk)
+
+This is **not** the same as an odds ratio.
+
+You will sometimes see people using the two terms interchangeably, but this is wrong.
+
+## Exercises
+
+### Exercise 1
+
+How much more likely is Y outcome in A group vs B group?
+
+For each unit increase in X, how much more likely is Y outcome?
+
+
+## Summary
+
+::: callout-tip
+#### Key points
+
+-   When reporting the results of a logistic regression, it's often helpful to include odds ratios as a measure of effect size
 :::
 

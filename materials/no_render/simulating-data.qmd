@@ -415,12 +415,160 @@ nb_petri_null <- glm.nb(colony_count ~ 1, bacteria)
 anova(nb_petri, nb_petri_null)
 ```
 
+## Post-surgical infections
 
+```{r}
+set.seed(123)
 
+# Number of patients
+n <- 120
 
+# Simulate categorical predictor: surgery type
+surgery_type <- factor(sample(c("orthopedic", "cardiac", "abdominal"), 
+                              size = n, replace = TRUE))
 
+# Simulate continuous predictor: surgery duration (same distribution across groups)
+surgery_duration <- rnorm(n, mean = 120, sd = 30)  # in minutes
 
+# Linear predictor WITHOUT interaction
+# Base log-odds
+intercept <- -2
 
+# Effects of surgery type (using orthopedic as baseline)
+type_effects <- c(abdominal = 0, cardiac = 0.8, orthopedic = 0.6)
+
+# Effect of duration (common across surgery types)
+duration_effect <- 0.015  # small increase in odds with longer surgery
+
+# Compute linear predictor
+lin_pred <- intercept +
+  type_effects[surgery_type] +
+  duration_effect * surgery_duration
+
+# Convert to probabilities
+infection_prob <- plogis(lin_pred)
+
+# Simulate binary response
+infection <- rbinom(n, size = 1, prob = infection_prob)
+
+# Combine into a data frame
+surgical_data <- data.frame(
+  infection = infection,
+  surgery_type = surgery_type,
+  surgery_duration = round(surgery_duration)
+)
+
+# Preview
+head(surgical_data)
+```
+
+```{r}
+model <- glm(infection ~ surgery_type + surgery_duration, 
+             data = surgical_data, 
+             family = binomial)
+```
+
+### Odds ratio tables
+
+Extract odds ratios & CIs manually:
+```{r}
+odds_ratios <- exp(coef(model))
+
+# Confidence intervals on log-odds scale
+conf_int <- confint(model)
+
+# Convert to odds ratio scale
+or_with_ci <- cbind(
+  OR = exp(coef(model)),
+  LowerCI = exp(conf_int[, 1]),
+  UpperCI = exp(conf_int[, 2])
+)
+
+print(round(or_with_ci, 3))
+```
+
+Or using broom::tidy:
+```{r}
+broom::tidy(model, conf.int = TRUE, exponentiate = TRUE)
+```
+
+### Odds ratios visualisations
+
+Plotting with sjPlot
+```{r}
+# Plot odds ratios with confidence intervals
+library(sjPlot)
+plot_model(model, type = "est", transform = "exp", title = "Odds Ratios")
+```
+
+Plotting manually/ggplot
+```{r}
+# Tidy model output with broom
+tidy_model <- broom::tidy(model, conf.int = TRUE, exponentiate = TRUE)
+
+# Add the reference category manually
+ref_row <- data.frame(
+  term = "surgery_typeabdominal",  # assuming this is the reference
+  estimate = 1,
+  conf.low = 1,
+  conf.high = 1,
+)
+
+# Bind and clean labels
+tidy_model <- bind_rows(tidy_model, ref_row) %>%
+  mutate(surgery_type = gsub("surgery_type", "", term))  # clean labels
+
+# Clean up variable names for plotting (optional)
+tidy_model$term <- gsub("surgery_duration", "duration", tidy_model$term)
+tidy_model$term <- gsub(":", " × ", tidy_model$term)
+
+ggplot(tidy_model, aes(x = term, y = estimate)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "gray40") +
+  coord_flip() +
+  labs(
+    title = "Odds Ratios from Logistic Regression",
+    x = "Predictor",
+    y = "Odds Ratio (95% CI)"
+  ) +
+  theme_minimal()
+```
+
+Plotting manually - just the surgery type
+```{r}
+# Get tidy model output with exponentiated odds ratios
+or_table <- tidy(model, exponentiate = TRUE, conf.int = TRUE)
+
+# Filter to only surgery_type terms
+or_surgery <- or_table %>%
+  filter(grepl("surgery_type", term))
+
+# Add the reference category manually
+ref_row <- data.frame(
+  term = "surgery_typeabdominal",  # assuming this is the reference
+  estimate = 1,
+  conf.low = 1,
+  conf.high = 1
+)
+
+# Bind and clean labels
+or_plot_data <- bind_rows(ref_row, or_surgery) %>%
+  mutate(surgery_type = gsub("surgery_type", "", term))  # clean labels
+
+# Plot
+ggplot(or_plot_data, aes(x = surgery_type, y = estimate)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "gray40") +
+  labs(
+    y = "Odds Ratio",
+    x = "Surgery Type",
+    title = "Odds Ratios for Post-Surgical Infection by Surgery Type"
+  ) +
+  coord_flip() +
+  theme_minimal()
+```
 
 
 

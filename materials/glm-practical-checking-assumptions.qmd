@@ -543,6 +543,7 @@ seeds = pd.read_csv("data/seeds.csv")
 There is no formal worked answer provided. However, all of the code you will need can be adapted from the `diabetes` and `aphids` examples worked through in the chapter.
 
 You are also strongly encouraged to work with, or share your answer with, a neighbour.
+:::
 
 :::: {.callout-tip collapse="true"}
 #### Hints
@@ -555,6 +556,7 @@ It may help to visualise the experimental design (the number of trays has been s
 
 ![Seed germination experiment](images/seeds-design.png){width=70%}
 ::::
+
 :::
 
 ## Summary
