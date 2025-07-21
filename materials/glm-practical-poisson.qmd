@@ -760,6 +760,7 @@ The model we've constructed here is not a good fit and doesn't meet all of the a
 ## Summary
 
 ::: callout-tip
+
 #### Key points
 
 -   Count data are bounded between 0 and $\infty$, with integer increases
