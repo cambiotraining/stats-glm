@@ -30,10 +30,10 @@ Binary response data takes only one of two values. This can be `0` or `1`, `"yes
 
 ## Section setup
 
-We'll use the following libraries and data:
-
 :::: {.callout-note collapse="true"}
 ## Click to expand
+
+We'll use the following libraries and data:
 
 ::: {.panel-tabset group="language"}
 ## R
@@ -88,7 +88,7 @@ Note: you can download the `dgplots` script [here](dgplots.py). Ensure it's at t
 :::
 ::::
 
-## Binary response data example
+## Finches example
 
 The example in this section uses the `finches_early` data. These come from an analysis of gene flow across two finch species [@lamichhaney2020]. They are slightly adapted here for illustrative purposes.
 

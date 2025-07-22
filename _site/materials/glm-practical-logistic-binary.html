@@ -343,7 +343,7 @@ window.Quarto = {
   <ul>
 <li><a href="#context" id="toc-context" class="nav-link active" data-scroll-target="#context"><span class="header-section-number">7.1</span> Context</a></li>
   <li><a href="#section-setup" id="toc-section-setup" class="nav-link" data-scroll-target="#section-setup"><span class="header-section-number">7.2</span> Section setup</a></li>
-  <li><a href="#binary-response-data-example" id="toc-binary-response-data-example" class="nav-link" data-scroll-target="#binary-response-data-example"><span class="header-section-number">7.3</span> Binary response data example</a></li>
+  <li><a href="#finches-example" id="toc-finches-example" class="nav-link" data-scroll-target="#finches-example"><span class="header-section-number">7.3</span> Finches example</a></li>
   <li><a href="#load-and-visualise-the-data" id="toc-load-and-visualise-the-data" class="nav-link" data-scroll-target="#load-and-visualise-the-data"><span class="header-section-number">7.4</span> Load and visualise the data</a></li>
   <li><a href="#creating-a-suitable-model" id="toc-creating-a-suitable-model" class="nav-link" data-scroll-target="#creating-a-suitable-model"><span class="header-section-number">7.5</span> Creating a suitable model</a></li>
   <li><a href="#model-output" id="toc-model-output" class="nav-link" data-scroll-target="#model-output"><span class="header-section-number">7.6</span> Model output</a></li>
@@ -398,7 +398,6 @@ Learning outcomes
 <p>Binary response data takes only one of two values. This can be <code>0</code> or <code>1</code>, <code>"yes"</code> or <code>"no"</code> etc. Because these data are not continuous, we can’t analyse them with a standard linear model. Instead, we need to use something called a <strong>logistic regression</strong>. We illustrate how to do this with an example below.</p>
 </section><section id="section-setup" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="section-setup">
 <span class="header-section-number">7.2</span> Section setup</h2>
-<p>We’ll use the following libraries and data:</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -411,6 +410,7 @@ Click to expand
 </div>
 <div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
+<p>We’ll use the following libraries and data:</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">R</a></li>
@@ -466,8 +466,8 @@ Click to expand
 </div>
 </div>
 </div>
-</section><section id="binary-response-data-example" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="binary-response-data-example">
-<span class="header-section-number">7.3</span> Binary response data example</h2>
+</section><section id="finches-example" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="finches-example">
+<span class="header-section-number">7.3</span> Finches example</h2>
 <p>The example in this section uses the <code>finches_early</code> data. These come from an analysis of gene flow across two finch species <span class="citation" data-cites="lamichhaney2020">(<a href="../references.html#ref-lamichhaney2020" role="doc-biblioref">Lamichhaney et al. 2020</a>)</span>. They are slightly adapted here for illustrative purposes.</p>
 <p>The data focus on two species, <em>Geospiza fortis</em> and <em>G. scandens</em>. The original measurements are split by a uniquely timed event: a particularly strong El Niño event in 1983. This event changed the vegetation and food supply of the finches, allowing F1 hybrids of the two species to survive, whereas before 1983 they could not. The measurements are classed as <code>early</code> (pre-1983) and <code>late</code> (1983 onwards).</p>
 <p>Here we are looking only at the <code>early</code> data. We are specifically focussing on the beak shape classification, which we saw earlier in <a href="glm-intro-glm.html#fig-beak_shape_glm" class="quarto-xref">Figure&nbsp;<span>6.5</span></a>.</p>
@@ -802,7 +802,7 @@ Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -4.5939
 Date:                Tue, 22 Jul 2025   Deviance:                       9.1879
-Time:                        09:15:40   Pearson chi2:                     15.1
+Time:                        09:19:57   Pearson chi2:                     15.1
 No. Iterations:                     8   Pseudo R-squ. (CS):             0.7093
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1241,7 +1241,7 @@ Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
 Date:                Tue, 22 Jul 2025   Deviance:                       752.20
-Time:                        09:15:41   Pearson chi2:                     713.
+Time:                        09:19:59   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1458,7 +1458,7 @@ Model Family:                Binomial   Df Model:                            2
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -30.333
 Date:                Tue, 22 Jul 2025   Deviance:                       60.666
-Time:                        09:15:42   Pearson chi2:                     54.8
+Time:                        09:19:59   Pearson chi2:                     54.8
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2140
 Covariance Type:            nonrobust                                         
 ======================================================================================
@@ -1535,7 +1535,7 @@ Model Family:                Binomial   Df Model:                            3
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -30.274
 Date:                Tue, 22 Jul 2025   Deviance:                       60.548
-Time:                        09:15:42   Pearson chi2:                     54.3
+Time:                        09:19:59   Pearson chi2:                     54.3
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2157
 Covariance Type:            nonrobust                                         
 ===========================================================================================
