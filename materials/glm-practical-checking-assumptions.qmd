@@ -30,6 +30,9 @@ exec(open('setup_files/setup.py').read())
 -   Be able to evaluate whether a logistic regression meets the assumptions
 :::
 
+## Context
+We can now assess the quality of a generalised linear model. Although we can relax certain assumptions compared to standard linear models (linearity, equality of variance of residuals, and normality of residuals), we cannot relax all of them - some key assumptions still exist. We discuss these below.
+
 ## Libraries and functions
 
 :::: {.callout-note collapse="true"}
@@ -60,12 +63,6 @@ from patsy import dmatrix
 ```
 :::
 :::
-
-## Assumptions
-
-Although generalised linear models do allow us to relax certain assumptions compared to standard linear models (linearity, equality of variance of residuals, and normality of residuals).
-
-However, we cannot relax all of them - some key assumptions still exist.
 
 ### Assumption 1: Distribution of response variable
 
@@ -231,7 +228,7 @@ glm_dia_py_resid['obs'] = glm_dia_py_resid.reset_index().index
 We now have two columns:
 
 ```{python}
-glm_dia_py_resid.head
+glm_dia_py_resid.head()
 ```
 
 We can use these to create the plot:

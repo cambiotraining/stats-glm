@@ -27,6 +27,9 @@ exec(open('setup_files/setup.py').read())
 -   Assess whether assumptions are met and evaluate fit of a negative binomial model
 :::
 
+## Context
+In the previous chapter we looked at how to analyse count data. We used a Poisson regression to do this, which makes assumptions about the dispersion parameter. If everything is as expected (the mean and variance are they same) it's 1. But, data are rarely that compliant so we need to be able to deal with situations where this is not the case. Here, we look at the situation where we have overdispersion.
+
 ## Libraries and functions
 
 ::: {.callout-note collapse="true"}
@@ -66,13 +69,9 @@ from statsmodels.discrete.discrete_model import NegativeBinomial
 
 ## Removing dispersion assumptions
 
-In the previous chapter we looked at how to analyse count data. We used a Poisson regression to do this, which makes the assumption that the dispersion parameter $\approx 1$ (for a refresher on dispersion, see [Section @sec-mat_dispersion]).
+When we analysed the count data in the previous chapter, we used a Poisson regression. This makes the assumption that the dispersion parameter $\approx 1$ (for a refresher on dispersion, see [Section @sec-mat_dispersion]).
 
-So what happens if the data is over- or under-dispersed?
-
-Cue negative binomial models.
-
-Negative binomial models are also used for count data, but they have one crucial difference from Poisson regression: instead of making an assumption about the dispersion parameter, they actually estimate it as part of the model fitting.
+Here we look at a situation where that assumption is violated and the dispersion parameter is much larger than 1. For this we turn to negative binomial models. Instead of making an assumption about the dispersion parameter, they **estimate** it as part of the model fitting.
 
 ## Parasites dataset
 

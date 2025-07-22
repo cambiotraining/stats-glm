@@ -26,6 +26,9 @@ exec(open('setup_files/setup.py').read())
 -   Assess whether assumptions are met and test significance of the model
 :::
 
+## Context
+We have now covered analysing binary responses and learned how to assess the quality and appropriateness of the resulting models. In the next sections we extend this further, by looking at a different type of response variable: count data. The humble count may look innocent, but often hides a whole lot of nuances that are hard to spot. So, pay attention!
+
 ## Libraries and functions
 
 :::: {.callout-note collapse="true"}

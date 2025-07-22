@@ -31,6 +31,13 @@ exec(open('setup_files/setup.py').read())
 -   Individual predictor variables
 :::
 
+## Context
+Up until now we've focussed on creating appropriate models for non-continuous data and making model predictions. In this section we're going to focus on statistical significance testing.
+
+Generalised linear models are fitted a little differently to standard linear models - namely, using maximum likelihood estimation instead of ordinary least squares for estimating the model coefficients.
+
+As a result, we can no longer use F-tests for significance, or interpret $R^2$ values in quite the same way. This section will introduce likelihood ratio tests, a method for extracting p-values for GLMs.
+
 ## Libraries and functions
 
 :::: {.callout-note collapse="true"}
@@ -63,10 +70,6 @@ import numpy as np
 ```
 :::
 ::::
-
-Generalised linear models are fitted a little differently to standard linear models - namely, using maximum likelihood estimation instead of ordinary least squares for estimating the model coefficients.
-
-As a result, we can no longer use F-tests for significance, or interpret $R^2$ values in quite the same way. This section will introduce likelihood ratio tests, a method for extracting p-values for GLMs.
 
 ## Deviance {#sec-mat_deviance}
 
