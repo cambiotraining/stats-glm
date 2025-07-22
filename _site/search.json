@@ -4,29 +4,40 @@
     "href": "index.html",
     "title": "Course overview",
     "section": "",
-    "text": "Core aims\nWelcome to the wonderful world of generalised linear models!\nThese sessions are intended to enable you to construct and use generalised linear models confidently. These models allow you to analyse non-continuous responses, such as binary (yes/no) or count (1, 2, 3 …) data.\nAs with all of our statistics courses our primary focus is not on mathematical derivations, but on developing an intuitive understanding of the underlying statistical concepts. We use programming languages to help us with this.\nAt the same time this is also not a “how to mindlessly use a stats program” course! We hope that at the end of this course you feel like you have a better grasp on what it is we’re trying to do, and gained sufficient confidence in your coding skills to implement these statistical concepts in your own research!\nTo introduce sufficient understanding and coding experience for analysing data with non-continuous response variables.",
+    "text": "Overview\nWelcome to the wonderful world of generalised linear models! These sessions teach you how to analyse non-continuous responses, such as binary (yes/no) and count data. Our primary focus is not on mathematical derivations, but on developing an intuitive understanding of the underlying statistical concepts and applying these to data. We use programming languages to help us with this and hope that, by the end of this course, you’ll be confident to apply these concepts to your own research data.",
     "crumbs": [
       "Welcome",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Course overview</span>"
     ]
   },
   {
-    "objectID": "index.html#core-aims",
-    "href": "index.html#core-aims",
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
     "title": "Course overview",
     "section": "",
-    "text": "Course aims\n\n\n\nTo know what to do when presented with an arbitrary data set e.g.\n\nConstruct\n\na logistic model for binary response variables\na logistic model for proportion response variables\na Poisson model for count response variables\na Negative binomial model for count response variables\n\nPlot the data and the fitted curve in each case for both continuous and categorical predictors\nAssess the significance of fit\nAssess the goodness-of-fit\nAssess assumption of the model",
+    "text": "Learning Objectives\n\n\n\nTo know what to do when presented with an arbitrary data set e.g.\n\nConstruct\n\na logistic model for binary response variables\na logistic model for proportion response variables\na Poisson model for count response variables\na Negative binomial model for count response variables\n\nPlot the data and the fitted curve in each case for both continuous and categorical predictors\nAssess the significance of fit\nAssess the goodness-of-fit\nAssess assumption of the model\n\n\n\n\nTarget Audience\nThese materials are aimed at people who have to analyse (research) data and encounter non-continuous responses.\n\n\nPrerequisites\nA solid understanding of statistics, ideally through attending our Core statistics course. Additionally, a good working ability for coding is required - either in R or Python. See our Data analysis courses as an example.\nAll current scheduled events can be found here.\n\n\n\nExercises\nExercises in these materials are labelled according to their level of difficulty:\n\n\n\n\n\n\n\nLevel\nDescription\n\n\n\n\n  \nExercises in level 1 are simpler and designed to get you familiar with the concepts and syntax covered in the course.\n\n\n  \nExercises in level 2 combine different concepts together and apply it to a given task.\n\n\n  \nExercises in level 3 require going beyond the concepts and syntax introduced to solve new problems.",
     "crumbs": [
       "Welcome",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Course overview</span>"
     ]
   },
   {
-    "objectID": "index.html#authors",
-    "href": "index.html#authors",
+    "objectID": "index.html#citation-authors",
+    "href": "index.html#citation-authors",
     "title": "Course overview",
-    "section": "Authors",
-    "text": "Authors\nAbout the author(s):\n\nVicki Hodgson  \nAffiliation: Bioinformatics Training Facility, University of Cambridge\nRoles: writing - review & editing; conceptualisation; coding\nMatt Castle \nAffiliation: Bioinformatics Training Facility, University of Cambridge\nRoles: conceptualisation; writing\nRob Nicholls  \nAffiliation: Science and Technology Facilities Council, Rutherford Appleton Laboratory, Didcot\nRoles: conceptualisation\nMartin van Rongen   \nAffiliation: Bioinformatics Training Facility, University of Cambridge\nRoles: writing - review & editing; conceptualisation; coding",
+    "section": "Citation & Authors",
+    "text": "Citation & Authors\nPlease cite these materials if:\n\nYou adapted or used any of them in your own teaching.\nThese materials were useful for your research work. For example, you can cite us in the methods section of your paper: “We carried our analyses based on the recommendations in YourReferenceHere”.\n\n\nYou can cite these materials as:\n\nHodgson, V., Castle, M., Nicholls, R., van Rongen, M. (2025). Generalised linear models. https://cambiotraining.github.io/stats-glm\n\nOr in BibTeX format:\n@misc{YourReferenceHere,\n  author = {Hodgson, Vicki and Castle, Matt and Nicholls, Rob and van Rongen, Martin},\n  month = {7},\n  title = {Generalised linear models},\n  url = {https://cambiotraining.github.io/stats-glm},\n  year = {2025}\n}\nAbout the authors:\nVicki Hodgson  \nAffiliation: Cambridge Centre for Research Informatics Training Roles: writing - review & editing; conceptualisation; software\n\nMatt Castle  \nAffiliation: Cambridge Centre for Research Informatics Training Roles: conceptualisation; writing\n\nRob Nicholls  \nAffiliation: Science and Technology Facilities Council, Rutherford Appleton Laboratory, Didcot Roles: conceptualisation\n\nMartin van Rongen  \nAffiliation: Cambridge Centre for Research Informatics Training Roles: writing - review & editing; conceptualisation; software",
+    "crumbs": [
+      "Welcome",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Course overview</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#acknowledgements",
+    "href": "index.html#acknowledgements",
+    "title": "Course overview",
+    "section": "Acknowledgements",
+    "text": "Acknowledgements\n\n\nWe thank Hugo Tavares for constructive feedback on the manuscript.",
     "crumbs": [
       "Welcome",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Course overview</span>"
