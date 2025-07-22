@@ -24,7 +24,13 @@ exec(open('setup_files/setup.py').read())
 -   Be able to make model predictions
 :::
 
-## Libraries and functions
+## Context
+
+Binary response data takes only one of two values. This can be `0` or `1`, `"yes"` or `"no"` etc. Because these data are not continuous, we can't analyse them with a standard linear model. Instead, we need to use something called a **logistic regression**. We illustrate how to do this with an example below.
+
+## Section setup
+
+We'll use the following libraries and data:
 
 :::: {.callout-note collapse="true"}
 ## Click to expand
@@ -32,29 +38,25 @@ exec(open('setup_files/setup.py').read())
 ::: {.panel-tabset group="language"}
 ## R
 
-### Libraries
-
 ```{r}
-#| eval: false
-library(broom)
+#| message: false
+#| results: false
+
+# A collection of R packages designed for data science
 library(tidyverse)
+
+# A package for creating panels of diagnostic plots for a model
 library(ggResidpanel)
-```
 
-### Functions
-
-```{r}
-#| eval: false
-# create diagnostic plots
-ggResidpanel::resid_panel()
+# Data
+early_finches <- read_csv("data/finches_early.csv")
+diabetes <- read_csv("data/diabetes.csv")
+aphids <- read_csv("data/aphids.csv")
 ```
 
 ## Python
 
-### Libraries
-
 ```{python}
-#| eval: false
 # A maths library
 import math
 
@@ -74,19 +76,21 @@ import statsmodels.formula.api as smf
 from scipy.stats import *
 
 # Custom function to create diagnostic plots
-# if in your main working directory:
 from dgplots import *
+
+# Data
+early_finches_py = pd.read_csv("data/finches_early.csv")
+diabetes_py = pd.read_csv("data/diabetes.csv")
+aphids = pd.read_csv("data/aphids.csv")
 ```
 
-Note: you can download the `dgplots` script [here](setup_files/dgplots.py).
+Note: you can download the `dgplots` script [here](dgplots.py). Ensure it's at the same folder level of your scripts.
 :::
 ::::
 
-The example in this section uses the following data set:
+## Binary response data example
 
-`data/finches_early.csv`
-
-These data come from an analysis of gene flow across two finch species [@lamichhaney2020]. They are slightly adapted here for illustrative purposes.
+The example in this section uses the `finches_early` data. These come from an analysis of gene flow across two finch species [@lamichhaney2020]. They are slightly adapted here for illustrative purposes.
 
 The data focus on two species, *Geospiza fortis* and *G. scandens*. The original measurements are split by a uniquely timed event: a particularly strong El Niño event in 1983. This event changed the vegetation and food supply of the finches, allowing F1 hybrids of the two species to survive, whereas before 1983 they could not. The measurements are classed as `early` (pre-1983) and `late` (1983 onwards).
 
