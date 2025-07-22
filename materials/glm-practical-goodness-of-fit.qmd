@@ -3,11 +3,6 @@ title: "Goodness-of-fit"
 lightbox: true
 ---
 
-## Context
-In the previous chapter we've discussed significance testing. Here we are focusing on the goodness-of-fit of our model. This is all about how well a model fits the data, and typically involves summarising the discrepancy between the actual data points, and the fitted/predicted values that the model produces.
-
-Though closely linked, it's important to realise that goodness-of-fit and significance don't come hand-in-hand automatically: we might find a model that is significantly better than the null, but is still overall pretty rubbish at matching the data. So, to understand the quality of our model better, we should ideally perform both types of test.
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -34,6 +29,11 @@ exec(open('setup_files/setup.py').read())
 -   Know how to use at least two methods to evaluate the quality of a model fit
 -   Know how to use AIC values to perform model comparison
 :::
+
+## Context
+In the previous chapter we've discussed significance testing. Here we are focusing on the goodness-of-fit of our model. This is all about how well a model fits the data, and typically involves summarising the discrepancy between the actual data points, and the fitted/predicted values that the model produces.
+
+Though closely linked, it's important to realise that goodness-of-fit and significance don't come hand-in-hand automatically: we might find a model that is significantly better than the null, but is still overall pretty rubbish at matching the data. So, to understand the quality of our model better, we should ideally perform both types of test.
 
 ## Libraries and functions
 

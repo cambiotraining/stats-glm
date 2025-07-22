@@ -484,17 +484,6 @@
     ]
   },
   {
-    "objectID": "materials/glm-practical-goodness-of-fit.html#context",
-    "href": "materials/glm-practical-goodness-of-fit.html#context",
-    "title": "\n10  Goodness-of-fit\n",
-    "section": "",
-    "text": "Learning outcomes\n\n\n\n\nUnderstand the difference between significance and goodness-of-fit\nKnow how to use at least two methods to evaluate the quality of a model fit\nKnow how to use AIC values to perform model comparison",
-    "crumbs": [
-      "Model assessment",
-      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Goodness-of-fit</span>"
-    ]
-  },
-  {
     "objectID": "materials/glm-practical-goodness-of-fit.html#libraries-and-functions",
     "href": "materials/glm-practical-goodness-of-fit.html#libraries-and-functions",
     "title": "\n10  Goodness-of-fit\n",
