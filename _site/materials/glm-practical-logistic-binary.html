@@ -796,8 +796,8 @@ Model:                            GLM   Df Residuals:                       59
 Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -4.5939
-Date:                Mon, 21 Jul 2025   Deviance:                       9.1879
-Time:                        21:21:16   Pearson chi2:                     15.1
+Date:                Tue, 22 Jul 2025   Deviance:                       9.1879
+Time:                        08:25:49   Pearson chi2:                     15.1
 No. Iterations:                     8   Pseudo R-squ. (CS):             0.7093
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -908,8 +908,8 @@ Code available here
 <div class="tab-content" data-group="language">
 <div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_bks</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span>type.predict <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">glm_bks</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/augment.html">augment</a></span><span class="op">(</span>type.predict <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blength</span>, y <span class="op">=</span> <span class="va">pointed_beak</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">blength</span>, y <span class="op">=</span> <span class="va">.fitted</span><span class="op">)</span>,</span>
@@ -1235,8 +1235,8 @@ Model:                            GLM   Df Residuals:                      726
 Model Family:                Binomial   Df Model:                            1
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -376.10
-Date:                Mon, 21 Jul 2025   Deviance:                       752.20
-Time:                        21:21:17   Pearson chi2:                     713.
+Date:                Tue, 22 Jul 2025   Deviance:                       752.20
+Time:                        08:25:50   Pearson chi2:                     713.
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2238
 Covariance Type:            nonrobust                                         
 ==============================================================================
@@ -1452,8 +1452,8 @@ Model:                            GLM   Df Residuals:                       51
 Model Family:                Binomial   Df Model:                            2
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -30.333
-Date:                Mon, 21 Jul 2025   Deviance:                       60.666
-Time:                        21:21:18   Pearson chi2:                     54.8
+Date:                Tue, 22 Jul 2025   Deviance:                       60.666
+Time:                        08:25:51   Pearson chi2:                     54.8
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2140
 Covariance Type:            nonrobust                                         
 ======================================================================================
@@ -1529,8 +1529,8 @@ Model:                            GLM   Df Residuals:                       50
 Model Family:                Binomial   Df Model:                            3
 Link Function:                  Logit   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -30.274
-Date:                Mon, 21 Jul 2025   Deviance:                       60.548
-Time:                        21:21:18   Pearson chi2:                     54.3
+Date:                Tue, 22 Jul 2025   Deviance:                       60.548
+Time:                        08:25:51   Pearson chi2:                     54.3
 No. Iterations:                     4   Pseudo R-squ. (CS):             0.2157
 Covariance Type:            nonrobust                                         
 ===========================================================================================

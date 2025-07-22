@@ -108,7 +108,7 @@ Before we have a further look at the data, let's calculate the proportion of dam
 
 ```{r}
 challenger <-
-challenger %>%
+challenger |>
   mutate(total = 6,                     # total number of o-rings
          intact = 6 - damage,           # number of undamaged o-rings
          prop_damaged = damage / total) # proportion damaged o-rings
@@ -286,9 +286,11 @@ Another way of doing this it to generate a table with data for a range of temper
 
 ```{r}
 # create a table with sequential numbers ranging from 25 to 85
-model <- tibble(temp = seq(25, 85, by = 1)) %>% 
+new_data <- tibble(temp = seq(25, 85, by = 1))
+
+model <- new_data |> 
   # add a new column containing the predicted values
-  mutate(.pred = predict(glm_chl, newdata = ., type = "response"))
+  mutate(.pred = predict(glm_chl, newdata = new_data, type = "response"))
 
 ggplot(model, aes(temp, .pred)) +
   geom_line()
@@ -403,7 +405,7 @@ Let's assess those relationships by fitting a logistic model.
 
 ```{r}
 # Create a new variable for the number of incorrect presses
-levers <- levers %>%
+levers <- levers |>
   mutate(incorrect_presses = trials - correct_presses)
 
 # Fit the model

@@ -101,7 +101,7 @@ glm_null_py = model.fit()
 
 ## Chi-square tests
 
-Last chapter, we talked about [deviance](@sec-mat_deviance) and chi-square tests, to assess significance.
+In @sec-mat_deviance we talked about deviance and chi-square tests, to assess significance.
 
 We can use these in a very similar way to assess the goodness-of-fit of a model.
 
@@ -137,7 +137,7 @@ You can think about this p-value, roughly, as "the probability that this model i
 
 ## AIC values
 
-You might remember AIC values from standard linear modelling. AIC values are useful, because they tell us about overall model quality, factoring in both goodness-of-fit and model complexity.
+You [might remember AIC values](https://cambiotraining.github.io/corestats/materials/cs5_practical_model-comparisons.html) from standard linear modelling. AIC values are useful, because they tell us about overall model quality, factoring in both goodness-of-fit and model complexity.
 
 One of the best things about the Akaike information criterion (AIC) is that it isn't specific to linear models - it works for models fitted with maximum likelihood estimation.
 
@@ -201,7 +201,7 @@ There are many. Some of the most popular are McFadden's, Nagelkerke's, Cox & Sne
 
 #### Should you use pseudo $R^2$?
 
-[**We recommend not to use pseudo** $R^2$**.**]{style="color:orange;"}
+[**We recommend not to use pseudo** $R^2$**.**]{style="color:purple;"}
 
 (Unless you are very statistically-minded and prepared to wade through a lot of mathematical explanation...)
 

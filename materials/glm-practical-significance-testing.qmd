@@ -365,7 +365,7 @@ You should:
 Let's read in our data and mutate it to contain the relevant variables (this is borrowed from the last chapter):
 
 ```{r}
-challenger <- read_csv("data/challenger.csv") %>%
+challenger <- read_csv("data/challenger.csv") |>
   mutate(total = 6,                     # total number of o-rings
          intact = 6 - damage,           # number of undamaged o-rings
          prop_damaged = damage / total) # proportion damaged o-rings
@@ -525,7 +525,7 @@ You should:
 First, we need to remove the influential data point:
 
 ```{r}
-challenger_new <- challenger %>% filter(temp != 53)
+challenger_new <- challenger |> filter(temp != 53)
 ```
 
 Now we can create a new generalised linear model, based on these data:
@@ -690,7 +690,7 @@ Before we fit the model, we need to:
 ```{r}
 levers <- read_csv("data/levers.csv")
 
-levers <- levers %>%
+levers <- levers |>
   mutate(incorrect_presses = trials - correct_presses)
 
 glm_lev <- glm(cbind(correct_presses, incorrect_presses) ~ stress_type * sex + rat_age,

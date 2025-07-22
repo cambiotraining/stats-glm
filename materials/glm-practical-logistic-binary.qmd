@@ -301,12 +301,12 @@ cdf = function(b0, b1){
 
 df <- map2(b0, b1, cdf)
 
-df %>%
-  bind_rows(.id = "keys") %>%
-  mutate(keys = str_replace(keys, "1", "logistic function")) %>% 
-  mutate(keys = str_replace(keys, "2", "when \u03b21 = 0")) %>% 
-  mutate(keys = str_replace(keys, "3", "when \u03b21 is negative")) %>% 
-  mutate(keys = str_replace(keys, "4", "when \u03b21 is large")) %>% 
+df |> 
+  bind_rows(.id = "keys") |>
+  mutate(keys = str_replace(keys, "1", "logistic function")) |> 
+  mutate(keys = str_replace(keys, "2", "when \u03b21 = 0")) |> 
+  mutate(keys = str_replace(keys, "3", "when \u03b21 is negative")) |> 
+  mutate(keys = str_replace(keys, "4", "when \u03b21 is large")) |> 
   ggplot(aes(x = X, y = Y)) +
   geom_line() +
   facet_wrap(vars(keys))
@@ -456,8 +456,8 @@ We can calculate the the probabilities for all our observed values and if we do 
 #| results: hide
 #| message: false
 #| fig-show: hide
-glm_bks %>% 
-  augment(type.predict = "response") %>% 
+glm_bks |> 
+  augment(type.predict = "response") |> 
   ggplot() +
   geom_point(aes(x = blength, y = pointed_beak)) +
   geom_line(aes(x = blength, y = .fitted),
@@ -495,7 +495,7 @@ p.show()
 #| label: fig-beak_class_glm_probs
 #| fig-cap: "Predicted probabilities for beak classification"
 glm_bks |> 
-  augment(type.predict = "response") %>% 
+  augment(type.predict = "response") |> 
   ggplot() +
   geom_point(aes(x = blength, y = pointed_beak)) +
   geom_line(aes(x = blength, y = .fitted),

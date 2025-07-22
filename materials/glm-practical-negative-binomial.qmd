@@ -110,7 +110,7 @@ ggplot(parasites, aes(y = parasite_count, x = fish_length, colour = lake)) +
 
 ggplot(parasites, aes(y = parasite_count, x = lake, colour = fish_length)) +
   geom_violin() +
-  geom_jitter()
+  geom_jitter(width = 0.2)
 ```
 
 ## Python
@@ -132,7 +132,7 @@ p.show()
 p = (ggplot(parasites, aes(x = "lake", y = "parasite_count",
                        colour = "fish_length")) +
    geom_violin() +
-   geom_jitter())
+   geom_jitter(width = 0.2))
 
 p.show()
 ```
@@ -315,9 +315,12 @@ $$
 
 ### Comparing Poisson and negative binomial
 
-The main difference between a Poisson regression and a negative binomial regression is this: in the former the dispersion parameter is assumed to be 1, whereas in the latter it is estimated from the data.
+A Poisson regression and negative binomial regression are very similar to each other. They use the same link function - the log link function. There is however a key difference.
 
-They both, however, use the same link function - the log link function.
+::: {.callout-important}
+#### Difference Poisson and negative binomial
+In a Poisson regression the dispersion parameter $\lambda$ = 1. In a negative binomial regression it is estimated from the data.
+:::
 
 This means they will both have equations in the same form, as we just showed above. It also means that they can produce some quite similar-looking models.
 
@@ -332,7 +335,7 @@ First, let's plot the Poisson model:
 #| warning: false
 #| message: false
 
-ggplot(parasites, aes(y = parasite_count, x = fish_length, colour = lake)) +
+ggplot(parasites, aes(x = fish_length, y = parasite_count, colour = lake)) +
   geom_point() +
   geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
               method.args = list(family = "poisson"))
@@ -362,8 +365,8 @@ new_data.head()
 
 ```{python}
 p = (ggplot(parasites, aes(x = "fish_length",
-                       y = "parasite_count",
-                       colour = "lake")) +
+                           y = "parasite_count",
+                           colour = "lake")) +
    geom_point() +
    geom_line(new_data, aes(x = "fish_length", y = "pred",
                            colour = "lake"), size = 1))
@@ -417,8 +420,8 @@ new_data_nb.head()
 
 ```{python}
 p = (ggplot(parasites, aes(x = "fish_length",
-                       y = "parasite_count",
-                       colour = "lake")) +
+                           y = "parasite_count",
+                           colour = "lake")) +
    geom_point() +
    geom_line(new_data_nb, aes(x = "fish_length", y = "pred",
                               colour = "lake"), size = 1))
@@ -757,7 +760,7 @@ petri_aug <- augment(nb_petri)
 # add a new predicted column (exp(fitted))
 petri_aug$.predicted <- exp(petri_aug$.fitted) 
 
-ggplot(petri_aug, aes(y = colony_count, x = incubation_time, colour = treatment)) +
+ggplot(petri_aug, aes(x = incubation_time, y = colony_count, colour = treatment)) +
   geom_point() +
   geom_line(mapping = aes(y = .predicted), linewidth = 1)
 ```
@@ -766,7 +769,7 @@ Here's a more efficient way of doing exactly the same thing - we put the augment
 
 ```{r}
 #| eval: false
-ggplot(augment(nb_petri), aes(y = colony_count, x = incubation_time, colour = treatment)) +
+ggplot(augment(nb_petri), aes(x = incubation_time, y = colony_count, colour = treatment)) +
   geom_point() +
   geom_line(mapping = aes(y = exp(.fitted)), linewidth = 1)
 ```
@@ -775,7 +778,7 @@ Notice how this is subtly different from the model we would've visualised, if we
 
 ```{r}
 #| message: false
-ggplot(petri_aug, aes(y = colony_count, x = incubation_time, colour = treatment)) +
+ggplot(petri_aug, aes(x = incubation_time, y = colony_count, colour = treatment)) +
   geom_point() +
   geom_smooth(method = "glm.nb", se = FALSE) +
   labs(title = "This is not the model we wanted!")
@@ -811,8 +814,8 @@ new_data_nb.head()
 
 ```{python}
 p = (ggplot(bacteria, aes(x = "incubation_time",
-                      y = "colony_count",
-                      colour = "treatment")) +
+                          y = "colony_count",
+                          colour = "treatment")) +
    geom_point() +
    geom_line(new_data_nb, aes(x = "incubation_time", y = "pred",
                               colour = "treatment"), size = 1))
@@ -1084,8 +1087,8 @@ If you look carefully then you see that in both panels C and D there is a stray 
 With a closer look at the dataset, we can see that there is one island where the number of `endemics` is equal to 0: 
 
 ```{r}
-galapagos %>% 
-  arrange(endemics) %>%
+galapagos |> 
+  arrange(endemics) |>
   head(1)
 ```
 

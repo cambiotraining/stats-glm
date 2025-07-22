@@ -111,7 +111,7 @@ You might find [this page](https://cambiotraining.github.io/experimental-design/
 
 ## Other features to check
 
-There is a handful of other features or qualities that can affect the quality of model fit, and therefore the quality of the inferences we draw from it.
+There are a handful of other features or qualities that can affect the quality of model fit, and therefore the quality of the inferences we draw from it.
 
 These are not necessarily "formal" assumptions, but it's good practice to check for them.
 
@@ -412,7 +412,7 @@ Now, using what you've learned in this chapter, assess whether this logistic reg
 #| message: false
 levers <- read_csv("data/levers.csv")
 
-levers <- levers %>%
+levers <- levers |> 
   mutate(incorrect_presses = trials - correct_presses)
 
 glm_lev <- glm(cbind(correct_presses, incorrect_presses) ~ stress_type * sex + rat_age,
