@@ -110,7 +110,7 @@ When we compared our model against the null (last chapter), we tested the null h
 
 Now, however, we will test the null hypothesis that the fitted model and the saturated (perfect) model have the same deviance, i.e., that they both fit the data equally well.
 
-![Using deviance to assess goodness-of-fit](images/chisq_gof.png){width="70%"}
+![Using deviance to assess goodness-of-fit](images/chisq_gof.png){width="70%" #fig-deviance_gof}
 
 In most hypothesis tests, we want to reject the null hypothesis, but in this case, we'd like it to be **true**.
 

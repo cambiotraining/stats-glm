@@ -86,8 +86,7 @@ $$
 Y = \beta_0 + \beta_1X
 $$
 
-where $Y$ is the response variable (the thing we're interested in), $X$ the predictor variable and $\beta_0$ and $\beta_1$ are model coefficients. 
-More explicitly for our data, we get:
+where $Y$ is the response variable (the thing we're interested in), $X$ the predictor variable and $\beta_0$ and $\beta_1$ are model beta coefficients. More explicitly for our data, we get:
 
 $$
 beak\ depth = \beta_0 + \beta_1 \times beak\ length

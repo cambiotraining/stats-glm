@@ -131,6 +131,8 @@ Plotting the proportion of damaged o-rings against the launch temperature shows 
 ## R
 
 ```{r}
+#| label: fig-chal_tempvsdamage
+#| fig-cap: "Scatterplot of temperature against proportion of damaged o-rings"
 ggplot(challenger, aes(x = temp, y = prop_damaged)) +
   geom_point()
 ```
@@ -139,6 +141,8 @@ ggplot(challenger, aes(x = temp, y = prop_damaged)) +
 
 ```{python}
 #| results: hide
+#| label: fig-chal_tempvsdamage_py
+#| fig-cap: "Scatterplot of temperature against proportion of damaged o-rings"
 p = (ggplot(challenger_py,
          aes(x = "temp",
              y = "prop_damaged")) +
@@ -202,7 +206,7 @@ If we provide it with just the `prop_damaged`, then R/Python will incorrectly th
 
 A fractional variable is not constructed from a series of trials with successes/failures. It doesn't have trials - there's just a single value somewhere between 0 and 1 (or a percentage). An example of a fractional response variable might be what percentage of rocket fuel was used on a launch. We would not model this response variable with a logistic regression.
 
-![Fractional vs proportional variables](images/fractional-vs-proportional.png){width=40%}
+![Fractional vs proportional variables](images/fractional-vs-proportional.png){width=40% #fig-fracvsprop}
 :::
 
 ## Model output
@@ -236,6 +240,8 @@ Let's see how well our model would have performed if we would have fed it the da
 
 ```{r}
 #| message: false
+#| label: fig-chal_tempvsdamage_mod
+#| fig-cap: "Logistic curve of temperature against proportion of damaged o-rings"
 ggplot(challenger, aes(temp, prop_damaged)) +
   geom_point() +
   geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
@@ -265,6 +271,8 @@ model.head()
 
 ```{python}
 #| results: hide
+#| label: fig-chal_tempvsdamage_mod_py
+#| fig-cap: "Logistic curve of temperature against proportion of damaged o-rings"
 p = (ggplot(challenger_py,
          aes(x = "temp",
              y = "prop_damaged")) +
@@ -274,7 +282,7 @@ p = (ggplot(challenger_py,
 p.show()
 ```
 
-
+:::
 ::: {.callout-note collapse=true}
 ## Generating predicted values
 
@@ -284,6 +292,8 @@ p.show()
 Another way of doing this it to generate a table with data for a range of temperatures, from 25 to 85 degrees Fahrenheit, in steps of 1. We can then use these data to generate the logistic curve, based on the fitted model.
 
 ```{r}
+#| label: fig-chal_tempvsdamage_pred
+#| fig-cap: "Logistic curve of temperature against probability"
 # create a table with sequential numbers ranging from 25 to 85
 new_data <- tibble(temp = seq(25, 85, by = 1))
 
@@ -296,6 +306,8 @@ ggplot(model, aes(temp, .pred)) +
 ```
 
 ```{r}
+#| label: fig-chal_tempvsdamage_pred_launch
+#| fig-cap: "Logistic curve of temperature against probability with launch temperature"
 # plot the curve and the original data
 ggplot(model, aes(temp, .pred)) +
   geom_line(colour = "blue") +
@@ -310,7 +322,6 @@ It seems that there was a high probability of both o-rings failing at that launc
 
 We already did this above, since this is the most straightforward way of plotting the model in Python.
 
-:::
 :::
 :::
 

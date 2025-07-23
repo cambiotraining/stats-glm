@@ -124,6 +124,8 @@ We'll have to deal with this soon. For now, we can plot the data:
 ## R
 
 ```{r}
+#| label: fig-shapevslength
+#| fig-cap: "Boxplot of beak shape against beak length"
 ggplot(early_finches,
        aes(x = factor(pointed_beak),
           y = blength)) +
@@ -138,6 +140,8 @@ We can force Python to temporarily covert the data to a factor, by making the `p
 
 ```{python}
 #| results: hide
+#| label: fig-shapevslengthpy
+#| fig-cap: "Boxplot of beak shape against beak length"
 p = (ggplot(early_finches_py,
          aes(x = early_finches_py.pointed_beak.astype(object),
              y = "blength")) +
@@ -155,6 +159,8 @@ We can visualise that differently by plotting all the data points as a classic b
 ## R
 
 ```{r}
+#| label: fig-shapevslengthpoint
+#| fig-cap: "Scatterplot of beak shape against beak length"
 ggplot(early_finches,
        aes(x = blength, y = pointed_beak)) +
   geom_point()
@@ -164,6 +170,8 @@ ggplot(early_finches,
 
 ```{python}
 #| results: hide
+#| label: fig-shapevslengthpointpy
+#| fig-cap: "Scatterplot of beak shape against beak length"
 p = (ggplot(early_finches_py,
          aes(x = "blength",
              y = "pointed_beak")) +
@@ -180,6 +188,8 @@ This presents us with a bit of an issue. We could fit a linear regression model 
 
 ```{r}
 #| message: false
+#| label: fig-shapevslength_lm
+#| fig-cap: "Standard linear model of beak shape against beak length"
 ggplot(early_finches,
        aes(x = blength, y = pointed_beak)) +
   geom_point() +
@@ -190,6 +200,8 @@ ggplot(early_finches,
 
 ```{python}
 #| results: hide
+#| label: fig-shapevslength_lmpy
+#| fig-cap: "Standard linear model of beak shape against beak length"
 p = (ggplot(early_finches_py,
          aes(x = "blength",
              y = "pointed_beak")) +
@@ -211,6 +223,8 @@ But for the sake of exploration, let's look at the assumptions:
 
 ```{r}
 #| message: false
+#| label: fig-shapevslength_lm_diag
+#| fig-cap: "Diagnostic plots for `pointed_beak ~ length`"
 lm_bks <- lm(pointed_beak ~ blength,
              data = early_finches)
 
@@ -247,6 +261,8 @@ from dgplots import *
 
 
 ```{python}
+#| label: fig-shapevslength_lm_diag_py
+#| fig-cap: "Diagnostic plots for `pointed_beak ~ length`"
 dgplots(lm_bks_py)
 ```
 
@@ -293,6 +309,8 @@ The first plot shows the logistic function in its simplest form, with the others
 ```{r}
 #| echo: false
 #| warning: false
+#| label: fig-logisticfunction
+#| fig-cap: "The logistic function with varying $\\beta_1$"
 X <- seq(-10, 10 ,0.1)
 
 b0 <- c(0, 0, 0, 0)
@@ -529,6 +547,8 @@ For now, there is one thing that we can do that might be familiar: look for infl
 ## R
 
 ```{r}
+#| label: fig-glm_bks_cookd
+#| fig-cap: "Influential points for `glm_bks`"
 resid_panel(glm_bks, plots = "cookd")
 ```
 
@@ -556,6 +576,8 @@ We can use these to create the plot:
 
 ```{python}
 #| results: hide
+#| label: fig-glm_bks_py_cookd
+#| fig-cap: "Influential points for `glm_bks_py`"
 p = (ggplot(glm_bks_py_resid,
          aes(x = "obs",
              y = "cooks_d")) +

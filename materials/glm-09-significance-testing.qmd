@@ -103,7 +103,7 @@ Here's a few key definitions:
 |                                   | This is the greatest deviance of any possible model that could be fitted to the data, because it explains zero variance in the response variable.                                                                                                                               |
 +-----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-![Different models and their deviances](images/LRT_schematic.png){width="70%"}
+![Different models and their deviances](images/LRT_schematic.png){width="70%" #fig-modeldeviances}
 
 ## Revisiting the diabetes dataset
 
