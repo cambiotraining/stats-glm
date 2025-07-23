@@ -2,19 +2,19 @@ book:
   chapters:
     - part: "Introduction"
       chapters:
-        - materials/glm-intro-lm.qmd
-        - materials/glm-intro-glm.qmd
+        - materials/glm-05-intro-lm.qmd
+        - materials/glm-06-intro-glm.qmd
     - part: "Binary responses"
       chapters:
-        - materials/glm-practical-logistic-binary.qmd
-        - materials/glm-practical-logistic-proportion.qmd
+        - materials/glm-07-binary-response.qmd
+        - materials/glm-08-proportional-response.qmd
         #- materials/glm-practical-odds-ratios.qmd
     - part: "Model assessment"
       chapters:
-        - materials/glm-practical-significance-testing.qmd
-        - materials/glm-practical-goodness-of-fit.qmd
-        - materials/glm-practical-checking-assumptions.qmd
+        - materials/glm-09-significance-testing.qmd
+        - materials/glm-10-goodness-of-fit.qmd
+        - materials/glm-11-checking-assumptions.qmd
     - part: "Count responses"
       chapters:
-        - materials/glm-practical-poisson.qmd
-        - materials/glm-practical-negative-binomial.qmd
+        - materials/glm-12-analysing-count-data.qmd
+        - materials/glm-13-overdispersed-count-data.qmd

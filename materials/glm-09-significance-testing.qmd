@@ -1,0 +1,827 @@
+---
+title: "Significance testing"
+lightbox: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| results: hide
+source(file = "setup_files/setup.R")
+```
+
+```{python}
+#| echo: false
+#| message: false
+import shutup;shutup.please()
+exec(open('setup_files/setup.py').read())
+```
+
+::: callout-tip
+## Learning outcomes
+
+-   Understand the concept of statistical deviance
+-   Use likelihood ratio tests to perform significance testing for:
+-   An entire model (versus the null model)
+-   Individual predictor variables
+:::
+
+## Context
+Up until now we've focussed on creating appropriate models for non-continuous data and making model predictions. In this section we're going to focus on statistical significance testing.
+
+Generalised linear models are fitted a little differently to standard linear models - namely, using maximum likelihood estimation instead of ordinary least squares for estimating the model coefficients.
+
+As a result, we can no longer use F-tests for significance, or interpret $R^2$ values in quite the same way. This section will introduce likelihood ratio tests, a method for extracting p-values for GLMs.
+
+## Libraries and functions
+
+:::: {.callout-note collapse="true"}
+## Click to expand
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+#| eval: false
+library(broom)
+library(tidyverse)
+library(performance)
+
+# You will likely need to install this package first
+library(lmtest)
+```
+
+## Python
+
+```{python}
+#| eval: false
+import math
+import pandas as pd
+from plotnine import *
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from scipy.stats import *
+import numpy as np
+```
+:::
+::::
+
+## Deviance {#sec-mat_deviance}
+
+Several of the tests and metrics we'll discuss below are based heavily on deviance. So, what is deviance, and where does it come from?
+
+Here's a few key definitions:
+
++-----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Maximum likelihood estimation** | This is the method by which we fit the GLM (i.e., find the values for the beta coefficients). As the name suggests, we are trying to find the beta coefficients that maximise the likelihood of the dataset/sample.                                                             |
++-----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Likelihood**                    | In this context, "likelihood" refers to the joint probability of all of the data points in the sample. In other words, how likely is it that you would sample a set of data points like these, if they were being drawn from an underlying population where your model is true? |
+|                                   |                                                                                                                                                                                                                                                                                 |
+|                                   | Each candidate model fitted to a dataset will have its own unique likelihood.                                                                                                                                                                                                   |
++-----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Saturated (perfect) model**     | For each dataset, there is a "saturated", or perfect, model. This model has the same number of parameters in it as there are data points, meaning the data are fitted exactly - as if connecting the dots between them.                                                         |
+|                                   |                                                                                                                                                                                                                                                                                 |
+|                                   | This model has the largest possible likelihood of any model fitted to the dataset.                                                                                                                                                                                              |
+|                                   |                                                                                                                                                                                                                                                                                 |
+|                                   | Of course, we don't actually use the saturated model for drawing real conclusions, but we can use it as a baseline for comparison.                                                                                                                                              |
++-----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Deviance\                       | Each candidate model is compared back to the saturated model to figure out its deviance.                                                                                                                                                                                        |
+| (residual deviance)**             |                                                                                                                                                                                                                                                                                 |
+|                                   | Deviance is defined as the difference between the log-likelihood of your fitted model and the log-likelihood of the saturated model (multiplied by 2).                                                                                                                          |
+|                                   |                                                                                                                                                                                                                                                                                 |
+|                                   | Because deviance is all about capturing the discrepancy between fitted and actual values, it's performing a similar function to the residual sum of squares (RSS) in a standard linear model. In fact, the RSS is really just a specific type of deviance.                      |
+|                                   |                                                                                                                                                                                                                                                                                 |
+|                                   | Sometimes, the deviance of a candidate (non-null) model is referred to more fully as "residual deviance".                                                                                                                                                                       |
++-----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Null deviance**                 | One of the models that we can compare against the saturated model is the null model (a model with no predictors). This gives us the deviance value for the null model.                                                                                                          |
+|                                   |                                                                                                                                                                                                                                                                                 |
+|                                   | This is the greatest deviance of any possible model that could be fitted to the data, because it explains zero variance in the response variable.                                                                                                                               |
++-----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+![Different models and their deviances](images/LRT_schematic.png){width="70%"}
+
+## Revisiting the diabetes dataset
+
+As a worked example, we'll use a logistic regression fitted to the `diabetes` dataset that we saw in a previous section.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+diabetes <- read_csv("data/diabetes.csv")
+```
+
+## Python
+
+```{python}
+diabetes_py = pd.read_csv("data/diabetes.csv")
+
+diabetes_py.head()
+```
+:::
+
+As a reminder, this dataset contains three variables:
+
+-   `test_result`, binary results of a diabetes test result (1 for positive, 0 for negative)
+-   `glucose`, the results of a glucose tolerance test
+-   `diastolic` blood pressure
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+glm_dia <- glm(test_result ~ glucose * diastolic,
+                  family = "binomial",
+                  data = diabetes)
+```
+
+## Python
+
+```{python}
+model = smf.glm(formula = "test_result ~ glucose * diastolic", 
+                family = sm.families.Binomial(), 
+                data = diabetes_py)
+                
+glm_dia_py = model.fit()
+```
+:::
+
+## What are the p-values in the summary?
+
+You might have noticed that when you use `summary` to see the model output, it comes with some p-values automatically.
+
+What are they? Can you use/interpret them?
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+summary(glm_dia)
+```
+
+## Python
+
+```{python}
+print(glm_dia_py.summary())
+```
+:::
+
+Each individual parameter, or coefficient, has its own z-value and associated p-value. In each case, a hypothesis test has been performed - these are formally called **Wald tests**.
+
+The null hypothesis for these Wald tests is that the value of the coefficient = 0. The idea is that if a coefficient isn't significantly different from 0, then that parameter isn't useful and could be dropped from the model.
+
+These tests are the equivalent of the t-tests that are calculated as part of the `summary` output for standard linear models.
+
+::: callout-warning
+### Why can't we just use these p-values?
+
+In some cases, you can. However, there are a few cases where they don't give you all the info you need.
+
+Firstly: they don't tell you about the significance of the model as a whole (versus the null model).
+
+Secondly: for categorical predictors, you will get a separate Wald p-value for each non-reference group (compared back to the reference group). This is *not* the same as a p-value for the categorical predictor as a whole. The Wald p-values can also be heavily affected by which group was chosen as the reference.
+:::
+
+It's typically preferable to use a likelihood ratio test instead.
+
+## Likelihood ratio tests (LRTs)
+
+When we were assessing the significance of standard linear models, we were able to use the F-statistic to determine:
+
+-   the significance of the model versus a null model, and
+-   the significance of individual predictors.
+
+We can't use these F-tests for GLMs, but we can use LRTs in a really similar way, to calculate p-values for both the model as a whole, and for individual variables.
+
+These tests are all built on the idea of deviance, or the likelihood ratio, as discussed above on this page. We can compare any two models fitted to the same dataset by looking at the difference in their deviances, also known as the difference in their log-likelihoods, or more simply as a likelihood ratio.
+
+Helpfully, this likelihood ratio approximately follows a chi-square distribution, which we can capitalise on to calculate a p-value. All we need is the number of degrees of freedom, which is equal to the difference in the number of parameters of the two models you're comparing.
+
+::: callout-warning
+Importantly, we are only able to use this sort of test when one of the two models that we are comparing is a "simpler" version of the other, i.e., one model has a subset of the parameters of the other model.
+
+So while we could perform an LRT just fine between these two models: `Y ~ A + B + C` and `Y ~ A + B + C + D`, or between any model and the null (`Y ~ 1`), we would not be able to use this test to compare `Y ~ A + B + C` and `Y ~ A + B + D`.
+:::
+
+### Testing the model versus the null
+
+Since LRTs involve making a comparison between two models, we must first decide which models we're comparing, and check that one model is a "subset" of the other.
+
+Let's use an example from a previous section of the course, where we fitted a logistic regression to the `diabetes` dataset.
+
+::: {.panel-tabset group="language"}
+## R
+
+The first step is to create the two models that we want to compare: our original model, and the null model (with and without predictors, respectively).
+
+```{r}
+glm_dia <- glm(test_result ~ glucose * diastolic,
+                  family = "binomial",
+                  data = diabetes)
+
+glm_null <- glm(test_result ~ 1, 
+                family = binomial, 
+                data = diabetes)
+```
+
+Then, we use the `lrtest` function from the `lmtest` package to perform the test itself; we include both the models that we want to compare, listing them one after another.
+
+```{r}
+lrtest(glm_dia, glm_null)
+```
+
+We can see from the output that our chi-square statistic is significant, with a really small p-value. This tells us that, for the difference in degrees of freedom (here, that's 3), the change in deviance is actually quite big. (In this case, you can use `summary(glm_dia)` to see those deviances - 936 versus 748!)
+
+In other words, our model is better than the null.
+
+## Python
+
+The first step is to create the two models that we want to compare: our original model, and the null model (with and without our predictor, respectively).
+
+```{python}
+model = smf.glm(formula = "test_result ~ glucose * diastolic", 
+                family = sm.families.Binomial(), 
+                data = diabetes_py)
+                
+glm_dia_py = model.fit()
+
+model = smf.glm(formula = "test_result ~ 1",
+                family = sm.families.Binomial(),
+                data = diabetes_py)
+
+glm_null_py = model.fit()
+```
+
+Unlike in R, there isn't a nice neat function for extracting the $\chi^2$ value, so we have to do a little bit of work by hand.
+
+```{python}
+# calculate the likelihood ratio (i.e. the chi-square value)
+lrstat = -2*(glm_null_py.llf - glm_dia_py.llf)
+
+# calculate the associated p-value
+pvalue = chi2.sf(lrstat, glm_null_py.df_resid - glm_dia_py.df_resid)
+
+print(lrstat, pvalue)
+```
+
+This gives us the likelihood ratio, based on the log-likelihoods that we've extracted directly from the models, which approximates a chi-square distribution.
+
+We've also calculated the associated p-value, by providing the difference in degrees of freedom between the two models (in this case, that's simply 1, but for more complicated models it's easier to extract the degrees of freedom directly from the model as we've done here).
+
+Here, we have a large chi-square statistic and a small p-value. This tells us that, for the difference in degrees of freedom (here, that's 1), the change in deviance is actually quite big. (In this case, you can use `glm_dia_py.summary()` to see those deviances - 936 versus 748!)
+
+In other words, our model is better than the null.
+:::
+
+### Testing individual predictors
+
+As well as testing the overall model versus the null, we might want to test particular predictors to determine whether they are individually significant.
+
+The way to achieve this is essentially to perform a series of "targeted" likelihood ratio tests. In each LRT, we'll compare two models that are almost identical - one with, and one without, our variable of interest in each case.
+
+::: {.panel-tabset group="language"}
+## R
+
+The first step is to construct a new model that doesn't contain our predictor of interest. Let's test the `glucose:diastolic` interaction.
+
+```{r}
+glm_dia_add <- glm(test_result ~ glucose + diastolic,
+                  family = "binomial",
+                  data = diabetes)
+```
+
+Now, we can use the `lrtest` function (or the `anova` function) to compare the models with and without the interaction:
+
+```{r}
+lrtest(glm_dia, glm_dia_add)
+```
+
+This tells us that our interaction `glucose:diastolic` isn't significant - our more complex model doesn't have a meaningful reduction in deviance.
+
+This might, however, seem like a slightly clunky way to test each individual predictor. Luckily, we can also use our trusty `anova` function with an extra argument to tell us about individual predictors.
+
+By specifying that we want to use a chi-squared test, we are able to construct an analysis of deviance table (as opposed to an analysis of variance table) that will perform the likelihood ratio tests for us for each predictor:
+
+```{r}
+anova(glm_dia, test="Chisq")
+```
+
+You'll spot that the p-values we get from the analysis of deviance table match the p-values you could calculate yourself using `lrtest`; this is just more efficient when you have a complex model!
+
+## Python
+
+The first step is to construct a new model that doesn't contain our predictor of interest. Let's test the `glucose:diastolic` interaction.
+
+```{python}
+model = smf.glm(formula = "test_result ~ glucose + diastolic", 
+                family = sm.families.Binomial(), 
+                data = diabetes_py)
+                
+glm_dia_add_py = model.fit()
+```
+
+We'll then use the same code we used above, to compare the models with and without the interaction:
+
+```{python}
+lrstat = -2*(glm_dia_add_py.llf - glm_dia_py.llf)
+
+pvalue = chi2.sf(lrstat, glm_dia_py.df_model - glm_dia_add_py.df_model)
+
+print(lrstat, pvalue)
+```
+
+This tells us that our interaction `glucose:diastolic` isn't significant - our more complex model doesn't have a meaningful reduction in deviance.
+:::
+
+## Exercises
+
+### Predicting failure {#sec-exr_failure}
+
+::::: {.callout-exercise #ex-predict_failure}
+#### Predicting failure
+
+{{< level 2 >}}
+
+In the [previous chapter](glm-08-proportional-response.qmd), we used the `challenger.csv` dataset as a worked example.
+
+Our research question was: should NASA have cancelled the Challenger launch, based on the data they had about o-rings in previous launches?
+
+Let's try to come up with an interpretation from these data, with the help of a likelihood ratio test.
+
+You should:
+
+1.  Refit the model (if it's not still in your environment from last chapter)
+2.  Fit a null model (no predictors)
+3.  Perform a likelihood ratio test to compare the model to the null model
+4.  Decide what you think the answer is to the research question
+
+:::: {.callout-answer collapse="true"}
+
+::: {.panel-tabset group="language"}
+## R
+
+Let's read in our data and mutate it to contain the relevant variables (this is borrowed from the last chapter):
+
+```{r}
+challenger <- read_csv("data/challenger.csv") |>
+  mutate(total = 6,                     # total number of o-rings
+         intact = 6 - damage,           # number of undamaged o-rings
+         prop_damaged = damage / total) # proportion damaged o-rings
+```
+
+We create our logistic model like so:
+
+```{r}
+glm_chl <- glm(cbind(damage, intact) ~ temp,
+               family = binomial,
+               data = challenger)
+```
+
+We can get the model parameters as follows:
+
+```{r}
+summary(glm_chl)
+```
+
+And let's visualise the model, just to make sure it looks sensible.
+
+```{r}
+#| message: false
+ggplot(challenger, aes(temp, prop_damaged)) +
+  geom_point() +
+  geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
+              method.args = list(family = binomial)) +
+  xlim(25,85)
+```
+
+#### Comparing against the null
+
+The next question we can ask is: is our model any better than the null model?
+
+First, we define the null model; then we use `lrtest` to compare them.
+
+```{r}
+glm_chl_null <- glm(cbind(damage, intact) ~ 1,
+                family = binomial,
+                data = challenger)
+
+lrtest(glm_chl, glm_chl_null)
+```
+
+With a very small p-value (and a large chi-square statistic), it would seem that the model is indeed significantly better than the null.
+
+Since there's only one predictor variable, this is pretty much equivalent to saying that `temp` does predict the proportion of o-rings that are damaged.
+
+## Python
+
+We need to make sure we've read in our data, and mutated it to contain the relevant variables (this is borrowed from the last chapter):
+
+```{python}
+#| echo: false
+challenger_py = pd.read_csv("data/challenger.csv")
+challenger_py['total'] = 6
+challenger_py['intact'] = challenger_py['total'] - challenger_py['damage']
+challenger_py['prop_damaged'] = challenger_py['damage'] / challenger_py['total']
+```
+
+Our logistic regression is fitted like so:
+
+```{python}
+# create a generalised linear model
+model = smf.glm(formula = "damage + intact ~ temp",
+                family = sm.families.Binomial(),
+                data = challenger_py)
+# and get the fitted parameters of the model
+glm_chl_py = model.fit()
+```
+
+We can get the model parameters as follows:
+
+```{python}
+print(glm_chl_py.summary())
+```
+
+Generate new model data:
+
+```{python}
+model = pd.DataFrame({'temp': list(range(25, 86))})
+
+model["pred"] = glm_chl_py.predict(model)
+
+model.head()
+```
+
+And let's visualise the model:
+
+```{python}
+#| results: hide
+#| message: false
+p = (ggplot() +
+   geom_point(challenger_py, aes(x = "temp", y = "prop_damaged")) +
+   geom_line(model, aes(x = "temp", y = "pred"), colour = "blue", size = 1))
+
+p.show()
+```
+
+#### Comparing against the null
+
+The next question we can ask is: is our model any better than the null model?
+
+First we need to define the null model:
+
+```{python}
+# create a linear model
+model = smf.glm(formula = "damage + intact ~ 1",
+                family = sm.families.Binomial(),
+                data = challenger_py)
+# and get the fitted parameters of the model
+glm_chl_null_py = model.fit()
+
+print(glm_chl_null_py.summary())
+```
+
+```{python}
+lrstat = -2*(glm_chl_null_py.llf - glm_chl_py.llf)
+
+pvalue = chi2.sf(lrstat, glm_chl_null_py.df_resid - glm_chl_py.df_resid)
+
+print(lrstat, pvalue)
+```
+
+With a very small p-value (and a large chi-square statistic), it would seem that the model is indeed significantly better than the null.
+
+Since there's only one predictor variable, this is pretty much equivalent to saying that `temp` does predict the proportion of o-rings that are damaged.
+:::
+
+So, could NASA have predicted what happened?
+
+Probably, yes. They certainly should have listened to the engineers who were raising concerns based on these data. But that's the subject of many documentaries, if you're interested in the topic, so we won't get into it here...
+::::
+:::::
+
+### Predicting failure (with a tweak) {#sec-exr_failure-tweak}
+
+::::: {.callout-exercise #ex-failure_tweak}
+#### Predicting failure (with a tweak)
+{{< level 3 >}}
+
+In the `challenger` dataset, the data point at 53 degrees Fahrenheit is quite influential.
+
+Would the conclusions from the previous exercise still hold without that point?
+
+You should:
+
+1.  Fit a model without this data point
+2.  Visualise the new model
+3.  Determine whether there is a significant link between launch temperature and o-ring failure in the new model
+
+:::: {.callout-answer collapse="true"}
+
+::: {.panel-tabset group="language"}
+## R
+
+First, we need to remove the influential data point:
+
+```{r}
+challenger_new <- challenger |> filter(temp != 53)
+```
+
+Now we can create a new generalised linear model, based on these data:
+
+```{r}
+glm_chl_new <- glm(cbind(damage, intact) ~ temp,
+               family = binomial,
+               data = challenger_new)
+```
+
+We can get the model parameters as follows:
+
+```{r}
+summary(glm_chl_new)
+```
+
+And let's visualise the model:
+
+```{r}
+#| message: false
+ggplot(challenger_new, aes(temp, prop_damaged)) +
+  geom_point() +
+  geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
+              method.args = list(family = binomial)) +
+  xlim(25,85) +
+  # add a vertical line at 53 F temperature
+  geom_vline(xintercept = 53, linetype = "dashed")
+```
+
+The prediction proportion of damaged o-rings is markedly less than what was observed.
+
+#### Comparing against the null
+
+So is our new model any better than the null?
+
+We need to construct a new null model - we can't use the one from the previous exercise, because it was fitted to a different dataset that had an extra observation.
+
+```{r}
+glm_chl_null_new <- glm(cbind(damage, intact) ~ 1,
+                family = binomial,
+                data = challenger_new)
+
+lrtest(glm_chl_new, glm_chl_null_new)
+```
+
+The model is not significantly better than the null in this case, with a p-value here of just over 0.05.
+
+## Python
+
+First, we need to remove the influential data point:
+
+```{python}
+challenger_new_py = challenger_py.query("temp != 53")
+```
+
+We can create a new generalised linear model, based on these data:
+
+```{python}
+# create a generalised linear model
+model = smf.glm(formula = "damage + intact ~ temp",
+                family = sm.families.Binomial(),
+                data = challenger_new_py)
+# and get the fitted parameters of the model
+glm_chl_new_py = model.fit()
+```
+
+We can get the model parameters as follows:
+
+```{python}
+print(glm_chl_new_py.summary())
+```
+
+Generate new model data:
+
+```{python}
+model = pd.DataFrame({'temp': list(range(25, 86))})
+
+model["pred"] = glm_chl_new_py.predict(model)
+
+model.head()
+```
+
+And let's visualise the model:
+
+```{python}
+#| results: hide
+#| message: false
+p = (ggplot() +
+   geom_point(challenger_new_py, aes(x = "temp", y = "prop_damaged")) +
+   geom_line(model, aes(x = "temp", y = "pred"), colour = "blue", size = 1) +
+   # add a vertical line at 53 F temperature
+   geom_vline(xintercept = 53, linetype = "dashed"))
+
+p.show()
+```
+
+The prediction proportion of damaged o-rings is markedly less than what was observed.
+
+#### Comparing against the null
+
+So is our new model any better than the null?
+
+We need to construct a new null model - we can't use the one from the previous exercise, because it was fitted to a different dataset that had an extra observation.
+
+```{python}
+# create a linear model
+model = smf.glm(formula = "damage + intact ~ 1",
+                family = sm.families.Binomial(),
+                data = challenger_new_py)
+# and get the fitted parameters of the model
+glm_chl_new_null_py = model.fit()
+
+print(glm_chl_new_null_py.summary())
+```
+
+```{python}
+lrstat = -2*(glm_chl_new_null_py.llf - glm_chl_new_py.llf)
+
+pvalue = chi2.sf(lrstat, glm_chl_new_null_py.df_resid - glm_chl_new_py.df_resid)
+
+print(lrstat, pvalue)
+```
+
+The model is not significantly better than the null in this case, with a p-value here of just over 0.05.
+:::
+
+So, could NASA have predicted what happened? This model is not significantly different from the null, i.e., temperature is not a significant predictor.
+
+However, note that it’s only marginally non-significant, and this is with a data point removed.
+
+It is possible that if more data points were available that followed a similar trend, the story might be different). Even if we did use our non-significant model to make a prediction, it doesn’t give us a value anywhere near 5 failures for a temperature of 53 degrees Fahrenheit. So overall, based on the model we’ve fitted with these data, there was no clear indication that a temperature just a few degrees cooler than previous missions could have been so disastrous for the Challenger.
+::::
+:::::
+
+### Revisiting rats and levers {#sec-exr_levers-again}
+
+:::::::: {.callout-exercise #ex-levers_again}
+#### Revisiting rats and levers
+{{< level 2 >}}
+
+Last chapter, we fitted a model to the `levers.csv` dataset in [Exercise @sec-exr_levers].
+
+Now, let's test significance.
+
+In this exercise, you should:
+
+1.  Fit a model with the predictors `~ stress_type * sex + rat_age`
+2.  Assess whether this model is significant over the null model
+3.  Assess whether any of the 4 individual predictors (including the interaction) are significant
+
+::::::: {.callout-answer collapse="true"}
+#### Fit the model
+
+Before we fit the model, we need to:
+
+-   Read the data in
+-   Mutate to create an `incorrect_presses` variable
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+levers <- read_csv("data/levers.csv")
+
+levers <- levers |>
+  mutate(incorrect_presses = trials - correct_presses)
+
+glm_lev <- glm(cbind(correct_presses, incorrect_presses) ~ stress_type * sex + rat_age,
+               family = binomial,
+               data = levers)
+```
+
+## Python
+
+```{python}
+levers = pd.read_csv("data/levers.csv")
+
+levers['incorrect_presses'] = levers['trials'] - levers['correct_presses']
+
+model = smf.glm(formula = "correct_presses + incorrect_presses ~ stress_type * sex + rat_age",
+                family = sm.families.Binomial(),
+                data = levers)
+
+glm_lev = model.fit()
+```
+:::
+
+#### Compare to the null
+
+We also need to fit a null model to these data before we can do any comparisons.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+glm_lev_null <- glm(cbind(correct_presses, incorrect_presses) ~ 1,
+                    family = binomial,
+                    data = levers)
+```
+
+## Python
+
+```{python}
+model = smf.glm(formula = "correct_presses + incorrect_presses ~ 1",
+                family = sm.families.Binomial(),
+                data = levers)
+
+glm_lev_null = model.fit()
+```
+:::
+
+Now, we run our likelihood ratio test comparing the two models.
+
+::: {.panel-tabset group="language"}
+## R
+
+```{r}
+anova(glm_lev, glm_lev_null)
+```
+
+## Python
+
+```{python}
+lrstat = -2*(glm_lev_null.llf - glm_lev.llf)
+
+pvalue = chi2.sf(lrstat, glm_lev_null.df_resid - glm_lev.df_resid)
+
+print(lrstat, pvalue)
+```
+:::
+
+This is pretty significant, suggesting that our model is quite a bit better than the null.
+
+#### Test individual predictors
+
+Now, let's test individual predictors.
+
+::: {.panel-tabset group="language"}
+## R
+
+This is extremely easy to do in R. We produce an analysis of deviance table with `anova`, using the chi-square statistic for our likelihood ratios.
+
+```{r}
+anova(glm_lev, test = "Chisq")
+```
+
+## Python
+
+Let's build two new candidate models: one with `rat_age` removed, and one with the `stress:sex` interaction removed.
+
+(If the interaction isn't significant, then we'll push on and look at the main effects of `stress` and `sex`, if needed.)
+
+#### The age effect
+
+```{python}
+model = smf.glm(formula = "correct_presses + incorrect_presses ~ stress_type * sex",
+                family = sm.families.Binomial(),
+                data = levers)
+glm_lev_dropage = model.fit()
+
+lrstat = -2*(glm_lev_dropage.llf - glm_lev.llf)
+pvalue = chi2.sf(lrstat, glm_lev_dropage.df_resid - glm_lev.df_resid)
+
+print(lrstat, pvalue)
+```
+
+#### The stress:sex interaction
+
+```{python}
+model = smf.glm(formula = "correct_presses + incorrect_presses ~ stress_type + sex + rat_age",
+                family = sm.families.Binomial(),
+                data = levers)
+glm_lev_dropint = model.fit()
+
+lrstat = -2*(glm_lev_dropint.llf - glm_lev.llf)
+pvalue = chi2.sf(lrstat, glm_lev_dropint.df_resid - glm_lev.df_resid)
+
+print(lrstat, pvalue)
+```
+
+Since the interaction is significant, we don't really need the specifics of the main effects (it becomes hard to interpret!)
+:::
+:::::::
+::::::::
+
+## Summary
+
+Likelihood and deviance are very important in generalised linear models - not just for fitting the model via maximum likelihood estimation, but for assessing significance and [goodness-of-fit](glm-10-goodness-of-fit.qmd). To determine the quality of a model and draw conclusions from it, it's important to assess both of these things.
+
+::: callout-tip
+#### Key points
+
+-   Deviance is the difference between predicted and actual values, and is calculated by comparing a model's log-likelihood to that of the perfect "saturated" model
+-   Using deviance, likelihood ratio tests can be used in lieu of F-tests for generalised linear models
+-   This is distinct from (and often better than) using the Wald p-values that are reported automatically in the model summary
+:::
