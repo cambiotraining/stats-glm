@@ -249,6 +249,8 @@ ggplot(challenger, aes(temp, prop_damaged)) +
   xlim(25,85)
 ```
 
+We get the warning `Warning in eval(family$initialize): non-integer #successes in a binomial glm!`. This is because we're feeding a proportion value between 0 and 1 to a binomial GLM. What it is expecting is the number of successes out of a fixed number of trials.  See the explanation above for more information. We'll revisit this later!
+
 ## Python
 
 We can get the predicted values for the model as follows:
