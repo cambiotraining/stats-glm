@@ -196,7 +196,7 @@ When we were assessing the significance of standard linear models, we were able 
 -   the significance of the model versus a null model, and
 -   the significance of individual predictors.
 
-We can't use these F-tests for GLMs, but we can use LRTs in a really similar way, to calculate p-values for both the model as a whole, and for individual variables.
+We can't use these F-tests for GLMs, but we can use LRTs in a very similar way, to calculate p-values for both the model as a whole, and for individual variables. This work because, in general, if you have a test statistic and you know the distribution of that test statistic, then you can use this to calculate a p-value.
 
 These tests are all built on the idea of deviance, or the likelihood ratio, as discussed above on this page. We can compare any two models fitted to the same dataset by looking at the difference in their deviances, also known as the difference in their log-likelihoods, or more simply as a likelihood ratio.
 
