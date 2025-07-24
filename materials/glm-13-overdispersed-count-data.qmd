@@ -103,14 +103,20 @@ head(parasites)
 
 ```{r}
 #| warning: false
-
-ggplot(parasites, aes(y = parasite_count, x = fish_length, colour = lake)) +
+#| label: fig-fishlengthvsprscnt
+#| fig-cap: "Scatterplot of parasite count against fishlength"
+ggplot(parasites, aes(x = fish_length, y = parasite_count, colour = lake)) +
   geom_point()
+```
 
-ggplot(parasites, aes(y = parasite_count, x = lake, colour = fish_length)) +
+```{r}
+#| label: fig-fishlengthvsprscnt_violin
+#| fig-cap: "Violin plot of parasite count against fishlength"
+ggplot(parasites, aes(x = lake, y = parasite_count, colour = fish_length)) +
   geom_violin() +
   geom_jitter(width = 0.2)
 ```
+
 
 ## Python
 
@@ -122,12 +128,19 @@ parasites.head()
 
 ```{python}
 #| warning: false
+#| label: fig-fishlengthvsprscnt_py
+#| fig-cap: "Scatterplot of parasite count against fishlength"
 p = (ggplot(parasites, aes(x = "fish_length", y = "parasite_count",
                            colour = "lake")) +
        geom_point())
 
 p.show()
+```
 
+```{python}
+#| warning: false
+#| label: fig-fishlengthvsprscnt_violin_py
+#| fig-cap: "Violin plot of parasite count against fishlength"
 p = (ggplot(parasites, aes(x = "lake", y = "parasite_count",
                        colour = "fish_length")) +
    geom_violin() +
@@ -135,6 +148,7 @@ p = (ggplot(parasites, aes(x = "lake", y = "parasite_count",
 
 p.show()
 ```
+
 :::
 
 We get a reasonably clear picture here; it seems that `lake C` might have a higher number of parasites overall, and that across all three lakes, bigger fish have more parasites too.
@@ -333,7 +347,8 @@ First, let's plot the Poisson model:
 ```{r}
 #| warning: false
 #| message: false
-
+#| label: fig-fishlengthvsprscnt_lake
+#| fig-cap: "Poisson model for parasite count against fishlength, by lake"
 ggplot(parasites, aes(x = fish_length, y = parasite_count, colour = lake)) +
   geom_point() +
   geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
@@ -363,6 +378,8 @@ new_data.head()
 ```
 
 ```{python}
+#| label: fig-fishlengthvsprscnt_lake_py
+#| fig-cap: "Poisson model for parasite count against fishlength, by lake"
 p = (ggplot(parasites, aes(x = "fish_length",
                            y = "parasite_count",
                            colour = "lake")) +
@@ -384,7 +401,8 @@ All we have to do is switch the `method` for `geom_smooth` over to `glm.nb`:
 ```{r}
 #| warning: false
 #| message: false
-
+#| label: fig-fishlengthvsprscnt_lake_nb
+#| fig-cap: "Negative binomial model for parasite count against fishlength, by lake"
 ggplot(parasites, aes(y = parasite_count, x = fish_length, colour = lake)) +
   geom_point() +
   geom_smooth(method = "glm.nb", se = FALSE, fullrange = TRUE)
@@ -418,6 +436,8 @@ new_data_nb.head()
 ```
 
 ```{python}
+#| label: fig-fishlengthvsprscnt_lake_nb_py
+#| fig-cap: "Negative binomial model for parasite count against fishlength, by lake"
 p = (ggplot(parasites, aes(x = "fish_length",
                            y = "parasite_count",
                            colour = "lake")) +
@@ -436,6 +456,8 @@ Looking at them side-by-side may help:
 ```{r}
 #| echo: false
 #| message: false
+#| label: fig-fishlengthvsprscnt_lake_poivsnb
+#| fig-cap: "Comparison between Poisson and Negative binomial models"
 library(patchwork)
 
 poi <- ggplot(parasites, aes(y = parasite_count, x = fish_length, colour = lake)) +
@@ -478,6 +500,8 @@ So, all we really need to pay attention to is whether there are any influential 
 Once again, the `performance` package comes in handy for assessing all of these.
 
 ```{r}
+#| label: fig-diag_nb_para
+#| fig-cap: "Diagnostic plots for `nb_para`"
 check_model(nb_para, check = c('pp_check',
                                'vif',
                                'outliers'))

@@ -93,7 +93,7 @@ We can plot the data:
 
 ```{r}
 #| label: fig-scatter_isl
-#| fig-cap: Scatterplot of area and species
+#| fig-cap: "Scatterplot of area and species"
 ggplot(islands, aes(x = area, y = species)) +
   geom_point()
 ```
@@ -103,7 +103,7 @@ ggplot(islands, aes(x = area, y = species)) +
 ```{python}
 #| results: hide
 #| label: fig-scatter_isl_py
-#| fig-cap: Scatterplot of area and species
+#| fig-cap: "Scatterplot of area and species"
 p = (ggplot(islands, aes(x = "area", y = "species")) +
    geom_point())
 
@@ -207,7 +207,7 @@ So, an island of area km<sup>2</sup> will have $`r expb1` \times `r expb0` \appr
 
 ```{r}
 #| label: fig-poisson_isl
-#| fig-cap: Poisson regression on species ~ area
+#| fig-cap: "Poisson regression on `species ~ area`"
 ggplot(islands, aes(area, species)) +
   geom_point() +
   geom_smooth(method = "glm", se = FALSE, fullrange = TRUE, 
@@ -230,7 +230,7 @@ model.head()
 ```{python}
 #| results: hide
 #| label: fig-poisson_isl_py
-#| fig-cap: Poisson regression on species ~ area
+#| fig-cap: "Poisson regression on `species ~ area`"
 p = (ggplot(islands, aes(x = "area", y = "species")) +
    geom_point() +
    geom_line(model, aes(x = "area", y = "pred"),
@@ -259,6 +259,8 @@ We're also going to talk about **dispersion**, which really comes into play when
 With the generic `check_model` function, we can visually assess a few things quite quickly.
 
 ```{r}
+#| label: fig-diag_glm_isl
+#| fig-cap: "Diagnostic plots for `glm_isl`"
 check_model(glm_isl)
 ```
 
