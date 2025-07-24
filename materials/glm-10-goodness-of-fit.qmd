@@ -112,7 +112,7 @@ Now, however, we will test the null hypothesis that the fitted model and the sat
 
 ![Using deviance to assess goodness-of-fit](images/chisq_gof.png){width="70%" #fig-deviance_gof}
 
-In most hypothesis tests, we want to reject the null hypothesis, but in this case, we'd like it to be **true**.
+In most hypothesis tests, we want to reject the null hypothesis, but in this case, we'd like it to be **true**. This is because what checking is whether the model we just fitted is just as good (or good enough) as the saturated model.
 
 ::: {.panel-tabset group="language"}
 ## R
