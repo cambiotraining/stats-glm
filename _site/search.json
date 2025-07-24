@@ -48,7 +48,18 @@
     "href": "setup.html",
     "title": "Setup",
     "section": "",
-    "text": "R and RStudio\n\n\nWindows\nDownload and install all these using default options:\n\nR \nRStudio\n\n\n\nMac OS\nDownload and install all these using default options:\n\nR\nRStudio\n\n\n\nLinux\n\nGo to the R installation folder and look at the instructions for your distribution.\nDownload the RStudio installer for your distribution and install it using your package manager.",
+    "text": "Working with R\nIf you’re using R for these sessions, please follow the instructions for installing R and RStudio.",
+    "crumbs": [
+      "Welcome",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Setup</span>"
+    ]
+  },
+  {
+    "objectID": "setup.html#working-with-python",
+    "href": "setup.html#working-with-python",
+    "title": "Setup",
+    "section": "Working with Python",
+    "text": "Working with Python\nIf you’re using Python for these sessions, please follow the instructions for installing Python and Visual Studio Code.",
     "crumbs": [
       "Welcome",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Setup</span>"
