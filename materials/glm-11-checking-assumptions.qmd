@@ -156,8 +156,6 @@ When checking assumptions and assessing quality of fit for GLMs, we don't use th
 |                                                                       |                            | Can also be visualised                                                     |
 +-----------------------------------------------------------------------+----------------------------+----------------------------------------------------------------------------+
 
-Let's fit some useful diagnostic plots, using the `diabetes` and `aphids` example datasets.
-
 ::: {.panel-tabset group="language"}
 ## R
 
@@ -170,6 +168,8 @@ glm_dia <- glm(test_result ~ glucose * diastolic,
                   data = diabetes)
 ```
 
+Let's fit some useful diagnostic plots, using the `diabetes` and `aphids` example datasets.
+
 We're going to rely heavily on the `performance` package in R for assessing the assumptions and fit of our model.
 
 The `check_model` function will be our primary workhorse. This function automatically detects the type of model you give it, and produces the appropriate panel of plots all by itself. (So, so cool. And yes, it works for linear models too!)
@@ -181,6 +181,12 @@ check_model(glm_dia)
 ```
 
 ## Python
+
+Creating diagnostic plots in Python is not straightforward, since there are no decent packages out there. However, that does not mean we can't check assumptions! In the next few sections we'll visit every assumption individually using code.
+
+If you're interested in the visual aspect, just look at the R code.
+
+We'll start with creating the model.
 
 ```{python}
 diabetes_py = pd.read_csv("data/diabetes.csv")
@@ -216,6 +222,8 @@ check_outliers(glm_dia, threshold = list('cook' = 0.5))
 
 ## Python
 
+That said, this is the one plot we can create quite easily: Cook's D.
+
 We can use the `get_influence` function to extract information like leverage, Cook's distance etc. about all of our data points:
 
 ```{python}
@@ -227,7 +235,6 @@ glm_dia_py_resid = pd.DataFrame(glm_dia_py.
 # add row index 
 glm_dia_py_resid['obs'] = glm_dia_py_resid.reset_index().index
 ```
-
 
 We now have two columns:
 
@@ -332,9 +339,7 @@ check_model(glm_dia, check = "vif")
 
 The `statsmodels` package contains a function for calculating VIF.
 
-It uses the original dataset, rather than the model, to do this. This means you have to manually exclude the response variable, and then use the `dmatrix` function from `patsy` to .
-
-To make sure all that
+It uses the original data, rather than the model, to do this. This means you have to manually exclude the response variable, and then use the `dmatrix` function from `patsy` to create the matrix that can be used to calculate the VIF.
 
 ```{python}
 from statsmodels.stats.outliers_influence import variance_inflation_factor
@@ -399,14 +404,18 @@ print(vif_data)
 ```
 :::
 
-Much better!
+Much better! This means that dropping the interaction term drastically improves the model.
+
+Why does this matter? Well, if you want to make specific comments about the predictors, then collinearity is an issue, because dropping one of the predictors can cause large swings in the beta estimates. This is an issue if you try to have a meaningful model.
+
+If all you care about is the overall accuracy of your model (the machine learning approach, where all we care about is maximum prediction) then collinearity becomes irrelevant, because the model and residuals don't change due to collinearity.
 
 ## Exercises
 
 ### Revisiting rats and levers (again) {#sec-exr_levers-again-again}
 
 ::: {.callout-exercise}
-####Revisiting rats and levers (again)
+#### Revisiting rats and levers (again)
 
 {{< level 2 >}}
 
