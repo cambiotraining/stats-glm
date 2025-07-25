@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>12&nbsp; Analysing count data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../materials/glm-13-overdispersed-count-data.html" rel="next">
+<link href="../materials/glm-11-checking-assumptions.html" rel="prev">
+<link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-b13b45a669a15caaa44b422aa2b28d1d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Generalised linear models</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/cambiotraining/"> <i class="bi bi-github" role="img" aria-label="Bioinformatics Training Facility GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/bioinfocambs"> <i class="bi bi-twitter" role="img" aria-label="Bioinformatics Training Facility Twitter">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysing count data</span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Welcome</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Course overview</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">References</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Introduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-05-intro-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Linear models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-06-intro-glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Generalise your model</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Binary responses</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-07-binary-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Binary response</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-08-proportional-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Proportional response</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Model assessment</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-09-significance-testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Significance testing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-10-goodness-of-fit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Goodness-of-fit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-11-checking-assumptions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Checking assumptions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Count responses</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-12-analysing-count-data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysing count data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-13-overdispersed-count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Overdispersed count data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#context" id="toc-context" class="nav-link active" data-scroll-target="#context"><span class="header-section-number">12.1</span> Context</a></li>
+  <li><a href="#section-setup" id="toc-section-setup" class="nav-link" data-scroll-target="#section-setup"><span class="header-section-number">12.2</span> Section setup</a></li>
+  <li><a href="#load-and-visualise-the-data" id="toc-load-and-visualise-the-data" class="nav-link" data-scroll-target="#load-and-visualise-the-data"><span class="header-section-number">12.3</span> Load and visualise the data</a></li>
+  <li><a href="#constructing-a-model" id="toc-constructing-a-model" class="nav-link" data-scroll-target="#constructing-a-model"><span class="header-section-number">12.4</span> Constructing a model</a>
+  <ul class="collapse">
+  <li><a href="#the-model-equation" id="toc-the-model-equation" class="nav-link" data-scroll-target="#the-model-equation"><span class="header-section-number">12.4.1</span> The model equation</a></li>
+  </ul></li>
+  <li><a href="#plotting-the-poisson-regression" id="toc-plotting-the-poisson-regression" class="nav-link" data-scroll-target="#plotting-the-poisson-regression"><span class="header-section-number">12.5</span> Plotting the Poisson regression</a></li>
+  <li><a href="#assumptions-model-fit" id="toc-assumptions-model-fit" class="nav-link" data-scroll-target="#assumptions-model-fit"><span class="header-section-number">12.6</span> Assumptions &amp; model fit</a></li>
+  <li><a href="#sec-mat_dispersion" id="toc-sec-mat_dispersion" class="nav-link" data-scroll-target="#sec-mat_dispersion"><span class="header-section-number">12.7</span> Dispersion</a>
+  <ul class="collapse">
+  <li><a href="#what-is-dispersion" id="toc-what-is-dispersion" class="nav-link" data-scroll-target="#what-is-dispersion"><span class="header-section-number">12.7.1</span> What is dispersion?</a></li>
+  <li><a href="#a-hidden-assumption" id="toc-a-hidden-assumption" class="nav-link" data-scroll-target="#a-hidden-assumption"><span class="header-section-number">12.7.2</span> A “hidden assumption”</a></li>
+  <li><a href="#assessing-dispersion" id="toc-assessing-dispersion" class="nav-link" data-scroll-target="#assessing-dispersion"><span class="header-section-number">12.7.3</span> Assessing dispersion</a></li>
+  </ul></li>
+  <li><a href="#assessing-significance" id="toc-assessing-significance" class="nav-link" data-scroll-target="#assessing-significance"><span class="header-section-number">12.8</span> Assessing significance</a>
+  <ul class="collapse">
+  <li><a href="#comparing-against-the-null" id="toc-comparing-against-the-null" class="nav-link" data-scroll-target="#comparing-against-the-null"><span class="header-section-number">12.8.1</span> Comparing against the null</a></li>
+  </ul></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">12.9</span> Exercises</a>
+  <ul class="collapse">
+  <li><a href="#sec-exr_seatbelts" id="toc-sec-exr_seatbelts" class="nav-link" data-scroll-target="#sec-exr_seatbelts"><span class="header-section-number">12.9.1</span> Seat belts</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">12.10</span> Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysing count data</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning outcomes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Be able to identify count data</li>
+<li>Fit a Poisson regression model with count data</li>
+<li>Assess whether assumptions are met and test significance of the model</li>
+</ul>
+</div>
+</div>
+<section id="context" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="context"><span class="header-section-number">12.1</span> Context</h2>
+<p>We have now covered analysing binary responses and learned how to assess the quality and appropriateness of the resulting models. In the next sections we extend this further, by looking at a different type of response variable: count data. The humble count may look innocent, but often hides a whole lot of nuances that are hard to spot. So, pay attention!</p>
+</section>
+<section id="section-setup" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="section-setup"><span class="header-section-number">12.2</span> Section setup</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Click to expand
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We’ll use the following libraries and data:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required R libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the required data</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>islands <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/islands.csv"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>seatbelts <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/seatbelts.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required Python libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the required data</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>islands <span class="op">=</span> pd.read_csv(<span class="st">"data/islands.csv"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>seatbelts <span class="op">=</span> pd.read_csv(<span class="st">"data/seatbelts.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The worked example in this chapter will use the <code>islands</code> dataset.</p>
+<p>This is a dataset comprising 35 observations of two variables. For each small island in the dataset, the researcher recorded the number of unique <code>species</code>; they want to know if this can be predicted from the <code>area</code> (km<sup>2</sup>) of the island.</p>
+</section>
+<section id="load-and-visualise-the-data" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="load-and-visualise-the-data"><span class="header-section-number">12.3</span> Load and visualise the data</h2>
+<p>First we load the data, then we visualise it.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>islands <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/islands.csv"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(islands)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  species  area
+    &lt;dbl&gt; &lt;dbl&gt;
+1     114  12.1
+2     130  13.4
+3     113  13.7
+4     109  14.5
+5     118  16.8
+6     136  19.0</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>islands <span class="op">=</span> pd.read_csv(<span class="st">"data/islands.csv"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>islands.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   species       area
+0      114  12.076133
+1      130  13.405439
+2      113  13.723525
+3      109  14.540359
+4      118  16.792122</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>We can plot the data:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(islands, <span class="fu">aes</span>(<span class="at">x =</span> area, <span class="at">y =</span> species)) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-scatter_isl" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scatter_isl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-scatter_isl-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;12.1: Scatterplot of area and species"><img src="glm-12-analysing-count-data_files/figure-html/fig-scatter_isl-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatter_isl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.1: Scatterplot of area and species
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(islands, aes(x <span class="op">=</span> <span class="st">"area"</span>, y <span class="op">=</span> <span class="st">"species"</span>)) <span class="op">+</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>   geom_point())</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-scatter_isl_py" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scatter_isl_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-scatter_isl_py-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;12.2: Scatterplot of area and species"><img src="glm-12-analysing-count-data_files/figure-html/fig-scatter_isl_py-1.png" class="img-fluid figure-img" width="614"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatter_isl_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.2: Scatterplot of area and species
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Each dot on the scatterplot represents an island in the dataset.</p>
+<p>It looks as though <code>area</code> definitely has some relationship with the number of <code>species</code> that we observe.</p>
+<p>Next step is to try to model these data.</p>
+</section>
+<section id="constructing-a-model" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="constructing-a-model"><span class="header-section-number">12.4</span> Constructing a model</h2>
+<p>The <code>species</code> variable is the outcome or response (since we’re interested in whether it’s predicted by <code>area</code>).</p>
+<p>It qualifies as a count variable. It’s bounded at 0 and <span class="math inline">\(\infty\)</span>, and can only jump up in integers - in other words, you can’t have less than 0 species, or 6.3 species.</p>
+<p>This means the best place to start is a Poisson regression. We fit these in a very similar way to a logistic regression, just with a different option specified for the <code>family</code> argument.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>glm_isl <span class="ot">&lt;-</span> <span class="fu">glm</span>(species <span class="sc">~</span> area,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> islands, <span class="at">family =</span> <span class="st">"poisson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>and we look at the model summary:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_isl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = species ~ area, family = "poisson", data = islands)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) 4.241129   0.041322  102.64   &lt;2e-16 ***
+area        0.035613   0.001247   28.55   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 856.899  on 34  degrees of freedom
+Residual deviance:  30.437  on 33  degrees of freedom
+AIC: 282.66
+
+Number of Fisher Scoring iterations: 3</code></pre>
+</div>
+</div>
+<p>The output is strikingly similar to the logistic regression models (who’d have guessed, eh?) and the main numbers to extract from the output are the coefficients (the two numbers underneath <code>Estimate</code> in the table above):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coefficients</span>(glm_isl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        area 
+ 4.24112904  0.03561346 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"species ~ area"</span>,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Poisson(),</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> islands)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>glm_isl <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s look at the model output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_isl.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:                species   No. Observations:                   35
+Model:                            GLM   Df Residuals:                       33
+Model Family:                 Poisson   Df Model:                            1
+Link Function:                    Log   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -139.33
+Date:                Fri, 25 Jul 2025   Deviance:                       30.437
+Time:                        08:28:46   Pearson chi2:                     30.3
+No. Iterations:                     4   Pseudo R-squ. (CS):              1.000
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      4.2411      0.041    102.636      0.000       4.160       4.322
+area           0.0356      0.001     28.551      0.000       0.033       0.038
+==============================================================================</code></pre>
+</div>
+</div>
+<p>The output is strikingly similar to the logistic regression models (who’d have guessed, eh?) and the main numbers to extract from the output are the coefficients (the two numbers underneath <code>coef</code> in the table above):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_isl.params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Intercept    4.241129
+area         0.035613
+dtype: float64</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="the-model-equation" class="level3" data-number="12.4.1">
+<h3 data-number="12.4.1" class="anchored" data-anchor-id="the-model-equation"><span class="header-section-number">12.4.1</span> The model equation</h3>
+<p>Now that we have the beta coefficients, we can place them inside an equation.</p>
+<p>The left-hand side of this equation is the expected number of species, <span class="math inline">\(E(species)\)</span>.</p>
+<p>On the right-hand side, we take the linear equation <span class="math inline">\(\beta_0 + \beta_1 * x_1\)</span> and embed it inside the inverse link function, which in this case is just the exponential function.</p>
+<p>It looks like this:</p>
+<p><span class="math display">\[ E(species) = \exp(4.24 + 0.036 \times area) \]</span></p>
+<p>Interpreting this requires a bit of thought (not much, but a bit).</p>
+<p>The intercept coefficient, 4.24, is related to the number of species we would expect on an island of zero area. But in order to turn this number into something meaningful we have to exponentiate it.</p>
+<p>Since <span class="math inline">\(\exp(4.24) \approx 69\)</span>, we can say that the baseline number of species the model expects on any island is 69.</p>
+<p>The coefficient of <code>area</code> is the fun bit. For starters we can see that it is a positive number which does mean that increasing <code>area</code> leads to increasing numbers of <code>species</code>. Good so far.</p>
+<p>But what does the value 0.036 actually mean? Well, if we exponentiate it as well, we get <span class="math inline">\(\exp(0.036) \approx 1.04\)</span>. This means that for every increase in <code>area</code> of 1 km<sup>2</sup> (the original units of the area variable), the number of species on the island is multiplied by 1.04.</p>
+<p>So, an island of area km<sup>2</sup> will have <span class="math inline">\(1.04 \times 69 \approx 72\)</span> species.</p>
+</section>
+</section>
+<section id="plotting-the-poisson-regression" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="plotting-the-poisson-regression"><span class="header-section-number">12.5</span> Plotting the Poisson regression</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(islands, <span class="fu">aes</span>(area, species)) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">fullrange =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"poisson"</span>)) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">10</span>,<span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-poisson_isl" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-poisson_isl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-poisson_isl-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;12.3: Poisson regression on species ~ area"><img src="glm-12-analysing-count-data_files/figure-html/fig-poisson_isl-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-poisson_isl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.3: Poisson regression on <code>species ~ area</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<p>First, we produce a set of predictions, which we can then plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> pd.DataFrame({<span class="st">'area'</span>: <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">10</span>, <span class="dv">50</span>))})</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>model[<span class="st">"pred"</span>] <span class="op">=</span> glm_isl.predict(model)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>model.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   area        pred
+0    10   99.212463
+1    11  102.809432
+2    12  106.536811
+3    13  110.399326
+4    14  114.401877</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(islands, aes(x <span class="op">=</span> <span class="st">"area"</span>, y <span class="op">=</span> <span class="st">"species"</span>)) <span class="op">+</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>   geom_point() <span class="op">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>   geom_line(model, aes(x <span class="op">=</span> <span class="st">"area"</span>, y <span class="op">=</span> <span class="st">"pred"</span>),</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                        colour <span class="op">=</span> <span class="st">"blue"</span>, size <span class="op">=</span> <span class="dv">1</span>))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-poisson_isl_py" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-poisson_isl_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-poisson_isl_py-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;12.4: Poisson regression on species ~ area"><img src="glm-12-analysing-count-data_files/figure-html/fig-poisson_isl_py-1.png" class="img-fluid figure-img" width="614"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-poisson_isl_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.4: Poisson regression on <code>species ~ area</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="assumptions-model-fit" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="assumptions-model-fit"><span class="header-section-number">12.6</span> Assumptions &amp; model fit</h2>
+<p>As a reminder from last chapter, we want to consider the following things to assess whether we’ve fit the right model:</p>
+<ul>
+<li>The distribution of the response variable</li>
+<li>The link function</li>
+<li>Independence</li>
+<li>Influential points</li>
+</ul>
+<p>(We don’t need to worry about collinearity here - there’s only one predictor!)</p>
+<p>We’re also going to talk about <strong>dispersion</strong>, which really comes into play when talking about count data - we’ll get to that after we’ve run through the stuff that’s familiar.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<p>With the generic <code>check_model</code> function, we can visually assess a few things quite quickly.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(glm_isl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glm`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-diag_glm_isl" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-diag_glm_isl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-diag_glm_isl-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;12.5: Diagnostic plots for glm_isl"><img src="glm-12-analysing-count-data_files/figure-html/fig-diag_glm_isl-3.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-diag_glm_isl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.5: Diagnostic plots for <code>glm_isl</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The posterior predictive check looks alright. The blue simulations seem to be following a pretty similar distribution to the actual data in green.</p>
+<p>The leverage/Cook’s distance plot also isn’t identifying any data points that we need to be concerned about. We can follow up on that:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_outliers</span>(glm_isl, <span class="at">threshold =</span> <span class="fu">list</span>(<span class="st">'cook'</span><span class="ot">=</span><span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>OK: No outliers detected.
+- Based on the following method and threshold: cook (0.5).
+- For variable: (Whole model)</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<p>We can check for influential points:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>influence <span class="op">=</span> glm_isl.get_influence()</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>cooks <span class="op">=</span> influence.cooks_distance[<span class="dv">0</span>]</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>influential_points <span class="op">=</span> np.where(cooks <span class="op">&gt;</span> <span class="fl">0.5</span>)[<span class="dv">0</span>]</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Influential points:"</span>, influential_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Influential points: []</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Influential points</strong>: There’s no evidence of any points with high Cook’s distances, so life is rosy on that front.</p>
+<p><strong>Independence</strong>: From the description of the dataset, it sounds plausible that each island is independent. Of course, if we later found out that some of the islands were clustered together into a bunch of archipelagos, that would definitely be cause for concern.</p>
+<p><strong>Distribution &amp; link function</strong>: Again, from the description of the <code>species</code> variable, we can be confident that this really is a count variable. Whether or not Poisson regression with the log link function is correct, however, will depend on what happens when we look at the dispersion parameter.</p>
+</section>
+<section id="sec-mat_dispersion" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="sec-mat_dispersion"><span class="header-section-number">12.7</span> Dispersion</h2>
+<section id="what-is-dispersion" class="level3" data-number="12.7.1">
+<h3 data-number="12.7.1" class="anchored" data-anchor-id="what-is-dispersion"><span class="header-section-number">12.7.1</span> What is dispersion?</h3>
+<p>Dispersion, in statistics, is a general term to describe the variability, scatter, or spread of a distribution. Variance is actually a type of dispersion.</p>
+<p>In a normal distribution, the mean (average/central tendency) and the variance (dispersion) are independent of each other; we need both numbers, or parameters, to understand the shape of the distribution.</p>
+<p>Other distributions, however, require different parameters to describe them in full. For a Poisson distribution - which we’ll learn more about when we talk about count data - we need just one parameter (<span class="math inline">\(\lambda\)</span>) to describe the distribution, because the mean and variance are assumed to be the same.</p>
+<p>In the context of a model, you can think about the dispersion as the degree to which the data are spread out around the model curve. A dispersion parameter of 1 means the data are spread out exactly as we expect; &lt;1 is called underdispersion; and &gt;1 is called overdispersion.</p>
+</section>
+<section id="a-hidden-assumption" class="level3" data-number="12.7.2">
+<h3 data-number="12.7.2" class="anchored" data-anchor-id="a-hidden-assumption"><span class="header-section-number">12.7.2</span> A “hidden assumption”</h3>
+<p>When performing Poisson regression, we make an extra assumption: that the dispersion parameter to 1. This means we don’t have to waste time and statistical power in estimating the dispersion.</p>
+<p>However, if our data are underdispersed or overdispersed, then we might be violating this assumption we’ve made.</p>
+<p>Underdispersion is quite rare. It’s far more likely that you’ll encounter overdispersion.</p>
+<p>In these situations, you may wish to fit a different GLM to the data. Negative binomial regression, for instance, is a common alternative for count data.</p>
+</section>
+<section id="assessing-dispersion" class="level3" data-number="12.7.3">
+<h3 data-number="12.7.3" class="anchored" data-anchor-id="assessing-dispersion"><span class="header-section-number">12.7.3</span> Assessing dispersion</h3>
+<p>The easiest way to check dispersion in a model is to calculate the ratio of the residual deviance to the residual degrees of freedom.</p>
+<p>If we take a look at the model output, we can see the two quantities we care about - residual deviance and residual degrees of freedom:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_isl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = species ~ area, family = "poisson", data = islands)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) 4.241129   0.041322  102.64   &lt;2e-16 ***
+area        0.035613   0.001247   28.55   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 856.899  on 34  degrees of freedom
+Residual deviance:  30.437  on 33  degrees of freedom
+AIC: 282.66
+
+Number of Fisher Scoring iterations: 3</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_isl.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:                species   No. Observations:                   35
+Model:                            GLM   Df Residuals:                       33
+Model Family:                 Poisson   Df Model:                            1
+Link Function:                    Log   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -139.33
+Date:                Fri, 25 Jul 2025   Deviance:                       30.437
+Time:                        08:28:47   Pearson chi2:                     30.3
+No. Iterations:                     4   Pseudo R-squ. (CS):              1.000
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      4.2411      0.041    102.636      0.000       4.160       4.322
+area           0.0356      0.001     28.551      0.000       0.033       0.038
+==============================================================================</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The residual deviance is 30.44, on 33 residual degrees of freedom. All we need to do is divide one by the other to get our dispersion parameter.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>glm_isl<span class="sc">$</span>deviance<span class="sc">/</span>glm_isl<span class="sc">$</span>df.residual</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.922334</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_isl.deviance<span class="op">/</span>glm_isl.df_resid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.9223340414458482</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The dispersion parameter here is 0.9223. That’s pretty good - not far off 1 at all.</p>
+<p>But how can we check whether it is <em>significantly</em> different from 1?</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<p>Once again, the <code>performance</code> package comes in very helpful here.</p>
+<p>The <code>check_overdispersion</code> function will give us both the dispersion parameter and a p-value (which is based on a chi-square test - like the goodness-of-fit ones you were running <a href="../materials/glm-09-significance-testing.html">last chapter</a>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_overdispersion</span>(glm_isl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Overdispersion test
+
+       dispersion ratio =  0.919
+  Pearson's Chi-Squared = 30.339
+                p-value =    0.6</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>No overdispersion detected.</code></pre>
+</div>
+</div>
+<p>Here, it confirms our suspicions; the dispersion parameter is both <em>descriptively</em> close to 1, and also not <em>significantly</em> different from 1.</p>
+<p>You’ll notice that this function does give a slightly different value for the dispersion parameter, compared to when we calculated it manually above.</p>
+<p>This is because it actually uses the sum of squared Pearson residuals instead of the residual deviance (a distinction which really isn’t worth worrying about). Broadly, the conclusion should be the same, so the difference doesn’t matter very much.</p>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<p>Well, you’ve actually already got the knowledge you need to do this, from the <a href="../materials/glm-09-significance-testing.html">previous chapter</a> on significance testing.</p>
+<p>Specifically, the chi-squared goodness-of-fit test can be used to check whether the dispersion is within sensible limits.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(glm_isl.deviance, glm_isl.df_resid)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.5953470127463268</code></pre>
+</div>
+</div>
+<p>If our chi-squared goodness-of-fit test returns a large (insignificant) p-value, as it does here, that tells us that we don’t need to worry about the dispersion.</p>
+<p>If our chi-squared goodness-of-fit test returned a small, significant p-value, this would tell us our model doesn’t fit the data well. And, since dispersion is all about the spread of points around the model, it makes sense that these two things are so closely related!</p>
+</div>
+</div>
+</div>
+<p>Great - we can proceed with the Poisson regression, since we don’t seem to have overdispersed or underdispersed data.</p>
+<p><a href="../materials/glm-13-overdispersed-count-data.html">Next chapter</a> we’ll look at what we would have done next, if we had run into problems with dispersion.</p>
+</section>
+</section>
+<section id="assessing-significance" class="level2" data-number="12.8">
+<h2 data-number="12.8" class="anchored" data-anchor-id="assessing-significance"><span class="header-section-number">12.8</span> Assessing significance</h2>
+<p>By testing the dispersion with a chi-square test, we have already essentially checked the goodness-of-fit of this model - it’s good.</p>
+<p>This leaves us with two things to check:</p>
+<ol type="1">
+<li>Is the overall model better than the null model?</li>
+<li>Are any of the individual predictors significant?</li>
+</ol>
+<section id="comparing-against-the-null" class="level3" data-number="12.8.1">
+<h3 data-number="12.8.1" class="anchored" data-anchor-id="comparing-against-the-null"><span class="header-section-number">12.8.1</span> Comparing against the null</h3>
+<p>We need to fit the null model, and then we can extract the null deviance and degrees of freedom to compare against our model.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>glm_isl_null <span class="ot">&lt;-</span> <span class="fu">glm</span>(species <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> islands, <span class="at">family =</span> <span class="st">"poisson"</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(glm_isl, glm_isl_null)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: species ~ area
+Model 2: species ~ 1
+  Resid. Df Resid. Dev Df Deviance  Pr(&gt;Chi)    
+1        33      30.44                          
+2        34     856.90 -1  -826.46 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Since there’s only one predictor, we actually could achieve the same effect here by just computing an analysis of deviance table:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(glm_isl, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model: poisson, link: log
+
+Response: species
+
+Terms added sequentially (first to last)
+
+     Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+NULL                    34     856.90              
+area  1   826.46        33      30.44 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<p>First, we fit a null model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"species ~ 1"</span>,</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Poisson(),</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> islands)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>glm_isl_null <span class="op">=</span> model.fit()</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>glm_isl_null.df_resid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>np.int64(34)</code></pre>
+</div>
+</div>
+<p>And now we can compare the two:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the likelihood ratio (i.e. the chi-square value)</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(glm_isl_null.llf <span class="op">-</span> glm_isl.llf)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the associated p-value</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, glm_isl_null.df_resid <span class="op">-</span> glm_isl.df_resid)</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>826.4623291533155 9.523357725017566e-182</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>This gives a reported p-value extremely close to zero, which is rather small.</p>
+<p>Therefore, this model is significant over the null, and <code>species</code> does appear to be predicted by <code>area</code>.</p>
+</section>
+</section>
+<section id="exercises" class="level2" data-number="12.9">
+<h2 data-number="12.9" class="anchored" data-anchor-id="exercises"><span class="header-section-number">12.9</span> Exercises</h2>
+<section id="sec-exr_seatbelts" class="level3" data-number="12.9.1">
+<h3 data-number="12.9.1" class="anchored" data-anchor-id="sec-exr_seatbelts"><span class="header-section-number">12.9.1</span> Seat belts</h3>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise 1 - Seat belts
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div id="ex-seatbelts" class="callout-exercise">
+<p><font style="font-variant: small-caps">Level:</font> <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><br></p>
+<p>For this exercise we’ll be using the data from <code>data/seatbelts.csv</code>.</p>
+<p>The data tracks the number of drivers killed in road traffic accidents, before and after the seat belt law was introduced. The information on whether the law was in place is encoded in the <code>law</code> column as <code>0</code> (law not in place) or <code>1</code> (law in place).</p>
+<p>The <code>year</code> variable is our predictor of interest.</p>
+<p>In this exercise, you should:</p>
+<ol type="1">
+<li>Visualise the data</li>
+<li>Create a poisson regression model and extract its equation</li>
+<li>Plot the regression model on top of the data</li>
+<li>Assess if the model is a decent predictor for the number of fatalities (&amp; check assumptions)</li>
+</ol>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-11-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-2" role="tab" aria-controls="tabset-11-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>seatbelts <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/seatbelts.csv"</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(seatbelts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 10
+  casualties drivers front  rear   kms petrol_price van_killed   law  year month
+       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
+1        107    1687   867   269  9059        0.103         12     0  1969 Jan  
+2         97    1508   825   265  7685        0.102          6     0  1969 Feb  
+3        102    1507   806   319  9963        0.102         12     0  1969 Mar  
+4         87    1385   814   407 10955        0.101          8     0  1969 Apr  
+5        119    1632   991   454 11823        0.101         10     0  1969 May  
+6        106    1511   945   427 12391        0.101         13     0  1969 Jun  </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-11-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-11-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>seatbelts <span class="op">=</span> pd.read_csv(<span class="st">"data/seatbelts.csv"</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>seatbelts.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   casualties  drivers  front  rear  ...  van_killed  law  year  month
+0         107     1687    867   269  ...          12    0  1969    Jan
+1          97     1508    825   265  ...           6    0  1969    Feb
+2         102     1507    806   319  ...          12    0  1969    Mar
+3          87     1385    814   407  ...           8    0  1969    Apr
+4         119     1632    991   454  ...          10    0  1969    May
+
+[5 rows x 10 columns]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer" data-collapse="true">
+<section id="visualise-the-data" class="level4">
+<h4 class="anchored" data-anchor-id="visualise-the-data">Visualise the data</h4>
+<p>First we have a look at the data comparing no law versus law:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
+<p>We have to convert the <code>law</code> column to a factor, otherwise R will see it as numerical.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>seatbelts <span class="sc">|&gt;</span> </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">as_factor</span>(law), casualties)) <span class="sc">+</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-boxplot_seatbelt" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-boxplot_seatbelt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-boxplot_seatbelt-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;12.6: Boxplot of driver casualties before and after seatbelt introduction"><img src="glm-12-analysing-count-data_files/figure-html/fig-boxplot_seatbelt-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-boxplot_seatbelt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.6: Boxplot of driver casualties before and after seatbelt introduction
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The data are recorded by month and year, so we can also display the number of drivers killed by year:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>seatbelts <span class="sc">|&gt;</span> </span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(year, casualties)) <span class="sc">+</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-scatter_seatbelt" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scatter_seatbelt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-scatter_seatbelt-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;12.7: Scatterplot of driver casualties across years"><img src="glm-12-analysing-count-data_files/figure-html/fig-scatter_seatbelt-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatter_seatbelt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.7: Scatterplot of driver casualties across years
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
+<p>We have to convert the <code>law</code> column to a factor, otherwise R will see it as numerical.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(seatbelts, aes(x <span class="op">=</span> seatbelts.law.astype(<span class="bu">object</span>),</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>                       y <span class="op">=</span> <span class="st">"casualties"</span>)) <span class="op">+</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>   geom_boxplot() <span class="op">+</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>   geom_jitter(width <span class="op">=</span> <span class="fl">0.2</span>))</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-boxplot_seatbelt_py" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-boxplot_seatbelt_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-boxplot_seatbelt_py-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;12.8: Boxplot of driver casualties before and after seatbelt introduction"><img src="glm-12-analysing-count-data_files/figure-html/fig-boxplot_seatbelt_py-1.png" class="img-fluid figure-img" width="614"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-boxplot_seatbelt_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.8: Boxplot of driver casualties before and after seatbelt introduction
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The data are recorded by month and year, so we can also display the number of casualties by year:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(seatbelts,</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"year"</span>,</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"casualties"</span>)) <span class="op">+</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>     geom_point())</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-scatter_seatbelt_py" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scatter_seatbelt_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-scatter_seatbelt_py-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figure&nbsp;12.9: Scatterplot of driver casualties across years"><img src="glm-12-analysing-count-data_files/figure-html/fig-scatter_seatbelt_py-3.png" class="img-fluid figure-img" width="614"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatter_seatbelt_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.9: Scatterplot of driver casualties across years
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The data look a bit weird. There’s a bit of a wavy pattern across years. And although it looks like fatalities are lower after the law was implemented, there are many more observations when the law was <em>not</em> in place, which is going to make the data harder to interpret.</p>
+</section>
+<section id="constructing-a-model-1" class="level4">
+<h4 class="anchored" data-anchor-id="constructing-a-model-1">Constructing a model</h4>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-13-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-1" role="tab" aria-controls="tabset-13-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-2" role="tab" aria-controls="tabset-13-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-13-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-13-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>glm_stb <span class="ot">&lt;-</span> <span class="fu">glm</span>(casualties <span class="sc">~</span> year,</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> seatbelts, <span class="at">family =</span> <span class="st">"poisson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-13-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"casualties ~ year"</span>,</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Poisson(),</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> seatbelts)</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>glm_stb <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="model-equation" class="level4">
+<h4 class="anchored" data-anchor-id="model-equation">Model equation</h4>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-14-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-14-1" role="tab" aria-controls="tabset-14-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-14-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-14-2" role="tab" aria-controls="tabset-14-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-14-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-14-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coefficients</span>(glm_stb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        year 
+  37.168958   -0.016373 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-14-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-14-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_stb.params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Intercept    37.168958
+year         -0.016373
+dtype: float64</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The coefficients of the Poisson model equation should be placed in the following formula, in order to estimate the expected number of species as a function of island size:</p>
+<p><span class="math display">\[ E(casualties) = \exp(37.17 - -0.016 \times year) \]</span></p>
+</section>
+<section id="visualise-model" class="level4">
+<h4 class="anchored" data-anchor-id="visualise-model">Visualise model</h4>
+<p>We can just adapt the code used in the worked example earlier in the chapter:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-15-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-15-1" role="tab" aria-controls="tabset-15-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-15-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-15-2" role="tab" aria-controls="tabset-15-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-15-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-15-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(seatbelts, <span class="fu">aes</span>(year, casualties)) <span class="sc">+</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">fullrange =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> poisson)) <span class="sc">+</span></span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">1970</span>, <span class="dv">1985</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-poisson_seatbelt" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-poisson_seatbelt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-poisson_seatbelt-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figure&nbsp;12.10: Poisson regression of driver casualties across years"><img src="glm-12-analysing-count-data_files/figure-html/fig-poisson_seatbelt-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-poisson_seatbelt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.10: Poisson regression of driver casualties across years
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-15-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-15-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> pd.DataFrame({<span class="st">'year'</span>: <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1968</span>, <span class="dv">1985</span>))})</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>model[<span class="st">"pred"</span>] <span class="op">=</span> glm_stb.predict(model)</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>model.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   year        pred
+0  1968  140.737690
+1  1969  138.452153
+2  1970  136.203733
+3  1971  133.991827
+4  1972  131.815842</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(seatbelts, aes(x <span class="op">=</span> <span class="st">"year"</span>,</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>                       y <span class="op">=</span> <span class="st">"casualties"</span>)) <span class="op">+</span></span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>   geom_point() <span class="op">+</span></span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>   geom_line(model, aes(x <span class="op">=</span> <span class="st">"year"</span>, y <span class="op">=</span> <span class="st">"pred"</span>),</span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>                        colour <span class="op">=</span> <span class="st">"blue"</span>, size <span class="op">=</span> <span class="dv">1</span>))</span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-poisson_seatbelt_py" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-poisson_seatbelt_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-12-analysing-count-data_files/figure-html/fig-poisson_seatbelt_py-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figure&nbsp;12.11: Poisson regression of driver casualties across years"><img src="glm-12-analysing-count-data_files/figure-html/fig-poisson_seatbelt_py-1.png" class="img-fluid figure-img" width="614"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-poisson_seatbelt_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.11: Poisson regression of driver casualties across years
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="assessing-model-quality-significance" class="level4">
+<h4 class="anchored" data-anchor-id="assessing-model-quality-significance">Assessing model quality &amp; significance</h4>
+<p>Are the assumptions met?</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Response distribution &amp; link function</td>
+<td>Yes, based on the info given</td>
+</tr>
+<tr class="even">
+<td>Independence</td>
+<td>Yes, based on the info given</td>
+</tr>
+<tr class="odd">
+<td>Influential points</td>
+<td>Check with Cook’s distance</td>
+</tr>
+<tr class="even">
+<td>Dispersion</td>
+<td>Check dispersion parameter</td>
+</tr>
+</tbody>
+</table>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-16-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-16-1" role="tab" aria-controls="tabset-16-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-16-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-16-2" role="tab" aria-controls="tabset-16-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-16-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-16-1-tab">
+<p>We can assess outliers visually or by printing a list of high leverage points:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_outliers</span>(glm_stb, <span class="at">threshold =</span> <span class="fu">list</span>(<span class="st">'cook'</span><span class="ot">=</span><span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>OK: No outliers detected.
+- Based on the following method and threshold: cook (0.5).
+- For variable: (Whole model)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(glm_stb, <span class="at">check =</span> <span class="st">'outliers'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glm`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-12-analysing-count-data_files/figure-html/unnamed-chunk-45-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="glm-12-analysing-count-data_files/figure-html/unnamed-chunk-45-3.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It seems we’re okay on the outlier front.</p>
+<p>For dispersion, again we have some options of how to test it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_overdispersion</span>(glm_stb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Overdispersion test
+
+       dispersion ratio =   4.535
+  Pearson's Chi-Squared = 861.667
+                p-value = &lt; 0.001</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Overdispersion detected.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(glm_stb, <span class="at">check =</span> <span class="st">'overdispersion'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glm`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-12-analysing-count-data_files/figure-html/unnamed-chunk-46-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="glm-12-analysing-count-data_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Dispersion is <em>definitely</em> a problem here.</p>
+<p>For completeness, we can also peek at the posterior predictive check:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(glm_stb, <span class="at">check =</span> <span class="st">'pp_check'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glm`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-12-analysing-count-data_files/figure-html/unnamed-chunk-47-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="glm-12-analysing-count-data_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It doesn’t seem to be doing the best job. Around 0 and in the 180+ range of the x-axis, it’s under-predicting the counts; and it might be over-predicting a bit in the middle (120-140 ish).</p>
+</div>
+<div id="tabset-16-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-16-2-tab">
+<p>We can assess outliers by printing a list of high leverage points:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>influence <span class="op">=</span> glm_isl.get_influence()</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>cooks <span class="op">=</span> influence.cooks_distance[<span class="dv">0</span>]</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>influential_points <span class="op">=</span> np.where(cooks <span class="op">&gt;</span> <span class="fl">0.5</span>)[<span class="dv">0</span>]</span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Influential points:"</span>, influential_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Influential points: []</code></pre>
+</div>
+</div>
+<p>It seems we’re okay on the outlier front.</p>
+<p>For dispersion, let’s calculate the parameter and p-value:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(glm_stb.deviance, glm_stb.df_resid)</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_stb.deviance<span class="op">/</span>glm_stb.df_resid, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>4.475851158209689 3.1298697149299994e-84</code></pre>
+</div>
+</div>
+<p>Dispersion is <em>definitely</em> a problem here.</p>
+</div>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 54%">
+<col style="width: 45%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Response distribution &amp; link function</td>
+<td>Yes, based on the info given</td>
+</tr>
+<tr class="even">
+<td>Independence</td>
+<td>Yes, based on the info given</td>
+</tr>
+<tr class="odd">
+<td>Influential points</td>
+<td>Yes, no data points identified</td>
+</tr>
+<tr class="even">
+<td>Dispersion</td>
+<td><strong>Clear overdispersion</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Given that we have a problem with overdispersion, we probably wouldn’t proceed with significance testing here under normal circumstances. Instead, we’d want to fit a different GLM that can handle this overdispersion.</p>
+<p>For completeness, however, since these are course materials rather than normal circumstances - let’s check: is the model significant over the null?</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-17-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-17-1" role="tab" aria-controls="tabset-17-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-17-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-17-2" role="tab" aria-controls="tabset-17-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-17-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-17-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>glm_null <span class="ot">&lt;-</span> <span class="fu">glm</span>(casualties <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">family =</span> <span class="st">"poisson"</span>, </span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> seatbelts)</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(glm_stb, glm_null)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: casualties ~ year
+Model 2: casualties ~ 1
+  Resid. Df Resid. Dev Df Deviance  Pr(&gt;Chi)    
+1       190     850.41                          
+2       191     984.50 -1  -134.08 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-17-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-17-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"casualties ~ 1"</span>,</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Poisson(),</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> seatbelts)</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>glm_stb_null <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(glm_stb_null.llf <span class="op">-</span> glm_stb.llf)</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, glm_stb_null.df_resid <span class="op">-</span> glm_stb.df_resid)</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>134.0834016068129 5.23879166948147e-31</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>What does the significant p-value here tell us?</p>
+<p>Well, given the difference in degrees of freedom (1), the change in residual deviance between our model and the null model is unexpectedly large. So the model is doing <em>something</em> over and above what the null is doing.</p>
+</section>
+<section id="conclusions" class="level4">
+<h4 class="anchored" data-anchor-id="conclusions">Conclusions</h4>
+<p>Does this significant comparison against the null allow us to draw any conclusions about whether the seatbelt <code>law</code> affects the number of <code>casualties</code>?</p>
+<p>No.&nbsp;Don’t let it tempt you.</p>
+<p>The model we’ve constructed here is not a good fit and doesn’t meet all of the assumptions. We need to fit a different type of model that can cope with the overdispersion, which we’ll look into next chapter.</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="summary" class="level2" data-number="12.10">
+<h2 data-number="12.10" class="anchored" data-anchor-id="summary"><span class="header-section-number">12.10</span> Summary</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key points
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Count data are bounded between 0 and <span class="math inline">\(\infty\)</span>, with integer increases</li>
+<li>This type of data can be modelled with a Poisson regression, using a log link function</li>
+<li>Poisson regression makes all of the same assumptions as logistic regression, plus an assumption about dispersion</li>
+</ul>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../materials/glm-11-checking-assumptions.html" class="pagination-link" aria-label="Checking assumptions">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Checking assumptions</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../materials/glm-13-overdispersed-count-data.html" class="pagination-link" aria-label="Overdispersed count data">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Overdispersed count data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <img src="https://creativecommons.org/images/deed/cc_icon_black_x2.png" class="img-fluid" width="25"> Bioinformatics Training Facility</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

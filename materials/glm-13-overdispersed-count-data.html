@@ -1,0 +1,2542 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>13&nbsp; Overdispersed count data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../materials/glm-12-analysing-count-data.html" rel="prev">
+<link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-b13b45a669a15caaa44b422aa2b28d1d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Generalised linear models</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/cambiotraining/"> <i class="bi bi-github" role="img" aria-label="Bioinformatics Training Facility GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/bioinfocambs"> <i class="bi bi-twitter" role="img" aria-label="Bioinformatics Training Facility Twitter">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Overdispersed count data</span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Welcome</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Course overview</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">References</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Introduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-05-intro-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Linear models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-06-intro-glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Generalise your model</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Binary responses</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-07-binary-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Binary response</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-08-proportional-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Proportional response</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Model assessment</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-09-significance-testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Significance testing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-10-goodness-of-fit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Goodness-of-fit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-11-checking-assumptions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Checking assumptions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Count responses</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-12-analysing-count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysing count data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-13-overdispersed-count-data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Overdispersed count data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#context" id="toc-context" class="nav-link active" data-scroll-target="#context"><span class="header-section-number">13.1</span> Context</a></li>
+  <li><a href="#section-setup" id="toc-section-setup" class="nav-link" data-scroll-target="#section-setup"><span class="header-section-number">13.2</span> Section setup</a></li>
+  <li><a href="#removing-dispersion-assumptions" id="toc-removing-dispersion-assumptions" class="nav-link" data-scroll-target="#removing-dispersion-assumptions"><span class="header-section-number">13.3</span> Removing dispersion assumptions</a></li>
+  <li><a href="#parasites-dataset" id="toc-parasites-dataset" class="nav-link" data-scroll-target="#parasites-dataset"><span class="header-section-number">13.4</span> Parasites dataset</a></li>
+  <li><a href="#load-and-visualise-the-data" id="toc-load-and-visualise-the-data" class="nav-link" data-scroll-target="#load-and-visualise-the-data"><span class="header-section-number">13.5</span> Load and visualise the data</a></li>
+  <li><a href="#constructing-a-poisson-model" id="toc-constructing-a-poisson-model" class="nav-link" data-scroll-target="#constructing-a-poisson-model"><span class="header-section-number">13.6</span> Constructing a Poisson model</a>
+  <ul class="collapse">
+  <li><a href="#checking-dispersion" id="toc-checking-dispersion" class="nav-link" data-scroll-target="#checking-dispersion"><span class="header-section-number">13.6.1</span> Checking dispersion</a></li>
+  </ul></li>
+  <li><a href="#negative-binomial-model" id="toc-negative-binomial-model" class="nav-link" data-scroll-target="#negative-binomial-model"><span class="header-section-number">13.7</span> Negative binomial model</a>
+  <ul class="collapse">
+  <li><a href="#extract-equation" id="toc-extract-equation" class="nav-link" data-scroll-target="#extract-equation"><span class="header-section-number">13.7.1</span> Extract equation</a></li>
+  <li><a href="#comparing-poisson-and-negative-binomial" id="toc-comparing-poisson-and-negative-binomial" class="nav-link" data-scroll-target="#comparing-poisson-and-negative-binomial"><span class="header-section-number">13.7.2</span> Comparing Poisson and negative binomial</a></li>
+  <li><a href="#checking-assumptions-model-quality" id="toc-checking-assumptions-model-quality" class="nav-link" data-scroll-target="#checking-assumptions-model-quality"><span class="header-section-number">13.7.3</span> Checking assumptions &amp; model quality</a></li>
+  <li><a href="#significance-model-comparison" id="toc-significance-model-comparison" class="nav-link" data-scroll-target="#significance-model-comparison"><span class="header-section-number">13.7.4</span> Significance &amp; model comparison</a></li>
+  </ul></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">13.8</span> Exercises</a>
+  <ul class="collapse">
+  <li><a href="#sec-exr_bacteria" id="toc-sec-exr_bacteria" class="nav-link" data-scroll-target="#sec-exr_bacteria"><span class="header-section-number">13.8.1</span> Bacteria colonies</a></li>
+  <li><a href="#sec-exr_galapagos" id="toc-sec-exr_galapagos" class="nav-link" data-scroll-target="#sec-exr_galapagos"><span class="header-section-number">13.8.2</span> Galapagos models</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">13.9</span> Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Overdispersed count data</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning outcomes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Understand what dispersion is and why it’s important</li>
+<li>Be able to diagnose or recognise overdispersion in count data</li>
+<li>Fit a negative binomial regression model to overdispersed count data</li>
+<li>Know the difference between Poisson and negative binomial regression</li>
+<li>Assess whether assumptions are met and evaluate fit of a negative binomial model</li>
+</ul>
+</div>
+</div>
+<section id="context" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="context"><span class="header-section-number">13.1</span> Context</h2>
+<p>In the previous chapter we looked at how to analyse count data. We used a Poisson regression to do this, which makes assumptions about the dispersion parameter. If everything is as expected (the mean and variance are they same) it’s 1. But, data are rarely that compliant so we need to be able to deal with situations where this is not the case. Here, we look at the situation where we have overdispersion.</p>
+</section>
+<section id="section-setup" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="section-setup"><span class="header-section-number">13.2</span> Section setup</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Click to expand
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We’ll use the following libraries and data:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required R libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the required data</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>parasites <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/parasites.csv"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>bacteria <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/bacteria.csv"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>galapagos <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/galapagos.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required Python libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.discrete.discrete_model <span class="im">import</span> NegativeBinomial</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> variance_inflation_factor</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> patsy <span class="im">import</span> dmatrix</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the required data</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>parasites <span class="op">=</span> pd.read_csv(<span class="st">"data/parasites.csv"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>bacteria <span class="op">=</span> pd.read_csv(<span class="st">"data/bacteria.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="removing-dispersion-assumptions" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="removing-dispersion-assumptions"><span class="header-section-number">13.3</span> Removing dispersion assumptions</h2>
+<p>When we analysed the count data in the previous chapter, we used a Poisson regression. This makes the assumption that the dispersion parameter <span class="math inline">\(\approx 1\)</span> (for a refresher on dispersion, see <a href="glm-12-analysing-count-data.html#sec-mat_dispersion" class="quarto-xref">Section&nbsp;<span>12.7</span></a>).</p>
+<p>Here we look at a situation where that assumption is violated and the dispersion parameter is much larger than 1. For this we turn to negative binomial models. Instead of making an assumption about the dispersion parameter, they <strong>estimate</strong> it as part of the model fitting.</p>
+</section>
+<section id="parasites-dataset" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="parasites-dataset"><span class="header-section-number">13.4</span> Parasites dataset</h2>
+<p>We’ll explore this with the <code>parasites</code> dataset.</p>
+<p>These data are about parasites found on the gills of freshwater fish.</p>
+<p>The ecologists who conducted the research observed a total of 64 fish, which varied by:</p>
+<ul>
+<li>which <code>lake</code> they were found in</li>
+<li>the <code>fish_length</code> (cm)</li>
+</ul>
+<p>They were interested in how these factors influenced the <code>parasite_count</code> of small parasites found on each fish.</p>
+</section>
+<section id="load-and-visualise-the-data" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="load-and-visualise-the-data"><span class="header-section-number">13.5</span> Load and visualise the data</h2>
+<p>First we load the data, then we visualise it.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>parasites <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/parasites.csv"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(parasites)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  parasite_count lake  fish_length
+           &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;
+1             46 C            21.1
+2            138 C            26.4
+3             23 C            18.9
+4             35 B            27.2
+5            118 C            29  
+6             43 B            24.2</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(parasites, <span class="fu">aes</span>(<span class="at">x =</span> fish_length, <span class="at">y =</span> parasite_count, <span class="at">colour =</span> lake)) <span class="sc">+</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fishlengthvsprscnt" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fishlengthvsprscnt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;13.1: Scatterplot of parasite count against fishlength"><img src="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fishlengthvsprscnt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.1: Scatterplot of parasite count against fishlength
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(parasites, <span class="fu">aes</span>(<span class="at">x =</span> lake, <span class="at">y =</span> parasite_count, <span class="at">colour =</span> fish_length)) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The following aesthetics were dropped during statistical transformation:
+colour.
+ℹ This can happen when ggplot fails to infer the correct grouping structure in
+  the data.
+ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+  variable into a factor?</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-fishlengthvsprscnt_violin" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fishlengthvsprscnt_violin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_violin-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;13.2: Violin plot of parasite count against fishlength"><img src="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_violin-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fishlengthvsprscnt_violin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.2: Violin plot of parasite count against fishlength
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>parasites <span class="op">=</span> pd.read_csv(<span class="st">"data/parasites.csv"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>parasites.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   parasite_count lake  fish_length
+0              46    C         21.1
+1             138    C         26.4
+2              23    C         18.9
+3              35    B         27.2
+4             118    C         29.0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(parasites, aes(x <span class="op">=</span> <span class="st">"fish_length"</span>, y <span class="op">=</span> <span class="st">"parasite_count"</span>,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                           colour <span class="op">=</span> <span class="st">"lake"</span>)) <span class="op">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>       geom_point())</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fishlengthvsprscnt_py" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fishlengthvsprscnt_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_py-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;13.3: Scatterplot of parasite count against fishlength"><img src="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_py-1.png" class="img-fluid figure-img" width="614"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fishlengthvsprscnt_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.3: Scatterplot of parasite count against fishlength
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(parasites, aes(x <span class="op">=</span> <span class="st">"lake"</span>, y <span class="op">=</span> <span class="st">"parasite_count"</span>,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                       colour <span class="op">=</span> <span class="st">"fish_length"</span>)) <span class="op">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>   geom_violin() <span class="op">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>   geom_jitter(width <span class="op">=</span> <span class="fl">0.2</span>))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fishlengthvsprscnt_violin_py" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fishlengthvsprscnt_violin_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_violin_py-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;13.4: Violin plot of parasite count against fishlength"><img src="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_violin_py-3.png" class="img-fluid figure-img" width="614"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fishlengthvsprscnt_violin_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.4: Violin plot of parasite count against fishlength
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>We get a reasonably clear picture here; it seems that <code>lake C</code> might have a higher number of parasites overall, and that across all three lakes, bigger fish have more parasites too.</p>
+</section>
+<section id="constructing-a-poisson-model" class="level2" data-number="13.6">
+<h2 data-number="13.6" class="anchored" data-anchor-id="constructing-a-poisson-model"><span class="header-section-number">13.6</span> Constructing a Poisson model</h2>
+<p>Given that the response variable, <code>parasite_count</code>, is a count variable, let’s try to construct a Poisson regression.</p>
+<p>We’ll construct the full model, with an interaction.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>glm_para <span class="ot">&lt;-</span> <span class="fu">glm</span>(parasite_count <span class="sc">~</span> lake <span class="sc">*</span> fish_length,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> parasites, <span class="at">family =</span> <span class="st">"poisson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>and we look at the model summary:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_para)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = parasite_count ~ lake * fish_length, family = "poisson", 
+    data = parasites)
+
+Coefficients:
+                    Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)        1.656e+00  1.763e-01   9.391   &lt;2e-16 ***
+lakeB             -7.854e-01  2.804e-01  -2.801   0.0051 ** 
+lakeC              3.527e-01  2.261e-01   1.560   0.1188    
+fish_length        9.127e-02  6.643e-03  13.738   &lt;2e-16 ***
+lakeB:fish_length  1.523e-02  1.031e-02   1.477   0.1398    
+lakeC:fish_length -5.079e-05  8.389e-03  -0.006   0.9952    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 2073.8  on 63  degrees of freedom
+Residual deviance: 1056.5  on 58  degrees of freedom
+AIC: 1429.2
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"parasite_count ~ lake * fish_length"</span>,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Poisson(),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> parasites)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>glm_para <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s look at the model output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_para.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:         parasite_count   No. Observations:                   64
+Model:                            GLM   Df Residuals:                       58
+Model Family:                 Poisson   Df Model:                            5
+Link Function:                    Log   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -708.61
+Date:                Fri, 25 Jul 2025   Deviance:                       1056.5
+Time:                        08:28:56   Pearson chi2:                 1.07e+03
+No. Iterations:                     5   Pseudo R-squ. (CS):              1.000
+Covariance Type:            nonrobust                                         
+=========================================================================================
+                            coef    std err          z      P&gt;|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+Intercept                 1.6556      0.176      9.391      0.000       1.310       2.001
+lake[T.B]                -0.7854      0.280     -2.801      0.005      -1.335      -0.236
+lake[T.C]                 0.3527      0.226      1.560      0.119      -0.090       0.796
+fish_length               0.0913      0.007     13.738      0.000       0.078       0.104
+lake[T.B]:fish_length     0.0152      0.010      1.477      0.140      -0.005       0.035
+lake[T.C]:fish_length -5.079e-05      0.008     -0.006      0.995      -0.016       0.016
+=========================================================================================</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="checking-dispersion" class="level3" data-number="13.6.1">
+<h3 data-number="13.6.1" class="anchored" data-anchor-id="checking-dispersion"><span class="header-section-number">13.6.1</span> Checking dispersion</h3>
+<p>Before we launch into any significance testing, we’re going to check one of the assumptions: that the dispersion parameter = 1 (you might’ve guessed where this is going…)</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_overdispersion</span>(glm_para)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Overdispersion test
+
+       dispersion ratio =   18.378
+  Pearson's Chi-Squared = 1065.905
+                p-value =  &lt; 0.001</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Overdispersion detected.</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_para.deviance<span class="op">/</span>glm_para.df_resid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>18.215417572845308</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(glm_para.deviance, glm_para.df_resid)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>2.3125874815114225e-183</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Oh no - there is <em>definitely</em> overdispersion here.</p>
+<p>We won’t bother looking at the analysis of deviance table or asking whether the model is better than the null model. The Poisson regression we’ve fitted here is not right, and we need to fit a different type of model.</p>
+<p>The main alternative to a Poisson model, used for overdispersed count data, is something called a negative binomial model.</p>
+</section>
+</section>
+<section id="negative-binomial-model" class="level2" data-number="13.7">
+<h2 data-number="13.7" class="anchored" data-anchor-id="negative-binomial-model"><span class="header-section-number">13.7</span> Negative binomial model</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<p>To specify a negative binomial model, we use the <code>glm.nb</code> function from the <code>MASS</code> package.</p>
+<p>The syntax is the same as <code>glm</code>, except we don’t need to specify a <code>family</code> argument.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nb_para <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(parasite_count <span class="sc">~</span> lake <span class="sc">*</span> fish_length, parasites)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nb_para)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm.nb(formula = parasite_count ~ lake * fish_length, data = parasites, 
+    init.theta = 3.37859216, link = log)
+
+Coefficients:
+                   Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept)        1.943370   0.739434   2.628  0.00858 **
+lakeB             -0.784885   1.094625  -0.717  0.47335   
+lakeC              0.212060   1.006021   0.211  0.83305   
+fish_length        0.079939   0.029485   2.711  0.00671 **
+lakeB:fish_length  0.015428   0.043380   0.356  0.72210   
+lakeC:fish_length  0.005719   0.039542   0.145  0.88501   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for Negative Binomial(3.3786) family taken to be 1)
+
+    Null deviance: 118.202  on 63  degrees of freedom
+Residual deviance:  67.288  on 58  degrees of freedom
+AIC: 615.99
+
+Number of Fisher Scoring iterations: 1
+
+              Theta:  3.379 
+          Std. Err.:  0.623 
+
+ 2 x log-likelihood:  -601.991 </code></pre>
+</div>
+</div>
+<p>This output is very similar to the other GLM outputs that we’ve seen but with some additional information at the bottom regarding the dispersion parameter that the negative binomial model has used, which in R is called theta (<span class="math inline">\(\theta\)</span>), 3.379.</p>
+<p>This number is estimated from the data. This is what makes negative binomial regression different from Poisson regression.</p>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<p>We can continue to use <code>statsmodels</code>, specifically the <code>NegativeBinomial</code> function.</p>
+<p>The syntax for getting this to work is a little different, and takes several steps.</p>
+<p>First, we identify our response variable:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> parasites[<span class="st">'parasite_count'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we need to set up our set of predictors. The function we’re using requires us to provide a matrix where each row is a unique observation (fish, in this case) and each column is a predictor.</p>
+<p>Because we want to include the <code>lake:fish_length</code> interaction, we actually need to manually generate those columns ourselves, like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create dummy variables for 'lake' (switch to True/False values)</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>lake_dummies <span class="op">=</span> pd.get_dummies(parasites[<span class="st">'lake'</span>], drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create interaction terms manually: lake_dummies * fish_length</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>interactions <span class="op">=</span> lake_dummies.multiply(parasites[<span class="st">'fish_length'</span>], axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>interactions.columns <span class="op">=</span> [<span class="ss">f'</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">:fish_length'</span> <span class="cf">for</span> col <span class="kw">in</span> interactions.columns]</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Combine all predictors: fish_length, lake dummies, interactions</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> pd.concat([parasites[<span class="st">'fish_length'</span>], lake_dummies, interactions], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Add a constant/intercept (required), and make sure that we're using floats</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> sm.add_constant(X).astype(<span class="bu">float</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we can fit our model and look at the summary:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.discrete.discrete_model <span class="im">import</span> NegativeBinomial</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the model (Y, X)</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> NegativeBinomial(Y, X)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>nb_para <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Optimization terminated successfully.
+         Current function value: 4.703057
+         Iterations: 32
+         Function evaluations: 39
+         Gradient evaluations: 39</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(nb_para.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     NegativeBinomial Regression Results                      
+==============================================================================
+Dep. Variable:         parasite_count   No. Observations:                   64
+Model:               NegativeBinomial   Df Residuals:                       58
+Method:                           MLE   Df Model:                            5
+Date:                Fri, 25 Jul 2025   Pseudo R-squ.:                 0.05947
+Time:                        08:28:56   Log-Likelihood:                -301.00
+converged:                       True   LL-Null:                       -320.03
+Covariance Type:            nonrobust   LLR p-value:                 3.658e-07
+=================================================================================
+                    coef    std err          z      P&gt;|z|      [0.025      0.975]
+---------------------------------------------------------------------------------
+const             1.9434      0.689      2.819      0.005       0.592       3.294
+fish_length       0.0799      0.027      2.915      0.004       0.026       0.134
+B                -0.7849      1.026     -0.765      0.444      -2.796       1.226
+C                 0.2121      0.961      0.221      0.825      -1.671       2.095
+B:fish_length     0.0154      0.041      0.380      0.704      -0.064       0.095
+C:fish_length     0.0057      0.038      0.152      0.879      -0.068       0.080
+alpha             0.2960      0.055      5.424      0.000       0.189       0.403
+=================================================================================</code></pre>
+</div>
+</div>
+<p>In particular, we might like to know what the dispersion parameter is.</p>
+<p>By default, <code>NegativeBinomial</code> from <code>statsmodels</code> provides something called alpha (<span class="math inline">\(\alpha\)</span>), which is not the same as the significance threshold. To convert this into the dispersion parameter you’re using to seeing (sometimes referred to as theta, <span class="math inline">\(\theta\)</span>), you need <span class="math inline">\(\frac{1}{\alpha}\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="dv">1</span><span class="op">/</span>nb_para.params[<span class="st">'alpha'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3.378591992548569</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="extract-equation" class="level3" data-number="13.7.1">
+<h3 data-number="13.7.1" class="anchored" data-anchor-id="extract-equation"><span class="header-section-number">13.7.1</span> Extract equation</h3>
+<p>If we wanted to express our model as a formal equation, we need to extract the coefficients:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coefficients</span>(nb_para)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      (Intercept)             lakeB             lakeC       fish_length 
+      1.943370195      -0.784885086       0.212060149       0.079939234 
+lakeB:fish_length lakeC:fish_length 
+      0.015428470       0.005718571 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(nb_para.params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>const            1.943370
+fish_length      0.079939
+B               -0.784885
+C                0.212060
+B:fish_length    0.015428
+C:fish_length    0.005719
+alpha            0.295981
+dtype: float64</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>These are the coefficients of the negative binomial model equation and need to be placed in the following formula in order to estimate the expected number of species as a function of the other variables:</p>
+<p><span class="math display">\[
+\begin{split}
+E(species) = \exp(1.94 + \begin{pmatrix} 0 \\ -0.78 \\ 0.212 \end{pmatrix} \begin{pmatrix} A \\ B \\ C \end{pmatrix} + 0.08 \times fishlength + \begin{pmatrix} 0 \\ 0.0154 \\ 0.0057 \end{pmatrix} \begin{pmatrix} A \\ B \\ C \end{pmatrix} \times fishlength)
+\end{split}
+\]</span></p>
+</section>
+<section id="comparing-poisson-and-negative-binomial" class="level3" data-number="13.7.2">
+<h3 data-number="13.7.2" class="anchored" data-anchor-id="comparing-poisson-and-negative-binomial"><span class="header-section-number">13.7.2</span> Comparing Poisson and negative binomial</h3>
+<p>A Poisson regression and negative binomial regression are very similar to each other. They use the same link function - the log link function. There is however a key difference.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Difference Poisson and negative binomial
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In a Poisson regression the dispersion parameter <span class="math inline">\(\lambda\)</span> = 1. In a negative binomial regression it is estimated from the data.</p>
+</div>
+</div>
+<p>This means they will both have equations in the same form, as we just showed above. It also means that they can produce some quite similar-looking models.</p>
+<p>Let’s visualise and compare them.</p>
+<p>First, let’s plot the Poisson model:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(parasites, <span class="fu">aes</span>(<span class="at">x =</span> fish_length, <span class="at">y =</span> parasite_count, <span class="at">colour =</span> lake)) <span class="sc">+</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">fullrange =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"poisson"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fishlengthvsprscnt_lake" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fishlengthvsprscnt_lake-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_lake-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;13.5: Poisson model for parasite count against fishlength, by lake"><img src="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_lake-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fishlengthvsprscnt_lake-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.5: Poisson model for parasite count against fishlength, by lake
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<p>To do this, we need to produce a set of predictions, which we can then plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get unique lake values from your dataset</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>lake_levels <span class="op">=</span> parasites[<span class="st">'lake'</span>].unique()</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create prediction grid for each lake</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>new_data <span class="op">=</span> pd.concat([</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    pd.DataFrame({</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'fish_length'</span>: np.linspace(<span class="dv">10</span>, <span class="dv">40</span>, <span class="dv">100</span>),</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'lake'</span>: lake</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    }) <span class="cf">for</span> lake <span class="kw">in</span> lake_levels</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>new_data[<span class="st">'pred'</span>] <span class="op">=</span> glm_para.predict(new_data)</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>new_data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   fish_length lake       pred
+0    10.000000    C  18.549643
+1    10.303030    C  19.069529
+2    10.606061    C  19.603986
+3    10.909091    C  20.153422
+4    11.212121    C  20.718257</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(parasites, aes(x <span class="op">=</span> <span class="st">"fish_length"</span>,</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>                           y <span class="op">=</span> <span class="st">"parasite_count"</span>,</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                           colour <span class="op">=</span> <span class="st">"lake"</span>)) <span class="op">+</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>   geom_point() <span class="op">+</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>   geom_line(new_data, aes(x <span class="op">=</span> <span class="st">"fish_length"</span>, y <span class="op">=</span> <span class="st">"pred"</span>,</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>                           colour <span class="op">=</span> <span class="st">"lake"</span>), size <span class="op">=</span> <span class="dv">1</span>))</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fishlengthvsprscnt_lake_py" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fishlengthvsprscnt_lake_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_lake_py-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;13.6: Poisson model for parasite count against fishlength, by lake"><img src="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_lake_py-1.png" class="img-fluid figure-img" width="614"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fishlengthvsprscnt_lake_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.6: Poisson model for parasite count against fishlength, by lake
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Now, let’s plot the negative binomial model:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<p>All we have to do is switch the <code>method</code> for <code>geom_smooth</code> over to <code>glm.nb</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(parasites, <span class="fu">aes</span>(<span class="at">y =</span> parasite_count, <span class="at">x =</span> fish_length, <span class="at">colour =</span> lake)) <span class="sc">+</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm.nb"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">fullrange =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fishlengthvsprscnt_lake_nb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fishlengthvsprscnt_lake_nb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_lake_nb-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;13.7: Negative binomial model for parasite count against fishlength, by lake"><img src="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_lake_nb-3.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fishlengthvsprscnt_lake_nb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.7: Negative binomial model for parasite count against fishlength, by lake
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get unique lake values from your dataset</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>lake_levels <span class="op">=</span> parasites[<span class="st">'lake'</span>].unique()</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create prediction grid for each lake</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>new_data_nb <span class="op">=</span> pd.concat([</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>    pd.DataFrame({</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'fish_length'</span>: np.linspace(<span class="dv">10</span>, <span class="dv">40</span>, <span class="dv">100</span>),</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'lake'</span>: lake</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    }) <span class="cf">for</span> lake <span class="kw">in</span> lake_levels</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Repeat the transformations we used when fitting the model</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>lake_dummies <span class="op">=</span> pd.get_dummies(new_data[<span class="st">'lake'</span>], drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>interactions <span class="op">=</span> lake_dummies.multiply(new_data_nb[<span class="st">'fish_length'</span>], axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>interactions.columns <span class="op">=</span> [<span class="ss">f'</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">:fish_length'</span> <span class="cf">for</span> col <span class="kw">in</span> interactions.columns]</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>X_new <span class="op">=</span> pd.concat([new_data_nb[<span class="st">'fish_length'</span>], lake_dummies, interactions], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>X_new <span class="op">=</span> sm.add_constant(X_new).astype(<span class="bu">float</span>)</span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we can safely predict:</span></span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>new_data_nb[<span class="st">'pred'</span>] <span class="op">=</span> nb_para.predict(X_new)</span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>new_data_nb.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   fish_length lake       pred
+0    10.000000    C  20.328185
+1    10.303030    C  20.862750
+2    10.606061    C  21.411372
+3    10.909091    C  21.974421
+4    11.212121    C  22.552276</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(parasites, aes(x <span class="op">=</span> <span class="st">"fish_length"</span>,</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>                           y <span class="op">=</span> <span class="st">"parasite_count"</span>,</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>                           colour <span class="op">=</span> <span class="st">"lake"</span>)) <span class="op">+</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>   geom_point() <span class="op">+</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>   geom_line(new_data_nb, aes(x <span class="op">=</span> <span class="st">"fish_length"</span>, y <span class="op">=</span> <span class="st">"pred"</span>,</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>                              colour <span class="op">=</span> <span class="st">"lake"</span>), size <span class="op">=</span> <span class="dv">1</span>))</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fishlengthvsprscnt_lake_nb_py" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fishlengthvsprscnt_lake_nb_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_lake_nb_py-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;13.8: Negative binomial model for parasite count against fishlength, by lake"><img src="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_lake_nb_py-1.png" class="img-fluid figure-img" width="614"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fishlengthvsprscnt_lake_nb_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.8: Negative binomial model for parasite count against fishlength, by lake
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>It’s subtle - the two sets of curves look quite similar - but they’re not quite the same.</p>
+<p>Looking at them side-by-side may help:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-fishlengthvsprscnt_lake_poivsnb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fishlengthvsprscnt_lake_poivsnb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_lake_poivsnb-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figure&nbsp;13.9: Comparison between Poisson and Negative binomial models"><img src="glm-13-overdispersed-count-data_files/figure-html/fig-fishlengthvsprscnt_lake_poivsnb-3.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fishlengthvsprscnt_lake_poivsnb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.9: Comparison between Poisson and Negative binomial models
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="checking-assumptions-model-quality" class="level3" data-number="13.7.3">
+<h3 data-number="13.7.3" class="anchored" data-anchor-id="checking-assumptions-model-quality"><span class="header-section-number">13.7.3</span> Checking assumptions &amp; model quality</h3>
+<p>These steps are performed in precisely the same way we would do for a Poisson regression.</p>
+<p>Remember, the things we checked for in a Poisson regression were:</p>
+<ul>
+<li>Response distribution</li>
+<li>Correct link function</li>
+<li>Independence</li>
+<li>Influential points</li>
+<li>Collinearity</li>
+<li>Dispersion</li>
+</ul>
+<p>For free, I’ll just tell you now that the first three assumptions are met.</p>
+<p>Plus, we don’t have to worry about dispersion with a negative binomial model.</p>
+<p>So, all we really need to pay attention to is whether there are any influential points to worry about, or any collinearity.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<p>Once again, the <code>performance</code> package comes in handy for assessing all of these.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(nb_para, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">'pp_check'</span>,</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'vif'</span>,</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'outliers'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `negbin`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_outliers</span>(nb_para, <span class="at">threshold =</span> <span class="fu">list</span>(<span class="st">'cook'</span><span class="ot">=</span><span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>OK: No outliers detected.
+- Based on the following method and threshold: cook (0.5).
+- For variable: (Whole model)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_collinearity</span>(nb_para)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Model has interaction terms. VIFs might be inflated.
+  Try to center the variables used for the interaction, or check
+  multicollinearity among predictors of a model without interaction terms.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Check for Multicollinearity
+
+Low Correlation
+
+        Term  VIF        VIF 95% CI adj. VIF Tolerance Tolerance 95% CI
+ fish_length 3.13 [  2.26,    4.61]     1.77      0.32     [0.22, 0.44]
+
+High Correlation
+
+             Term     VIF        VIF 95% CI adj. VIF Tolerance Tolerance 95% CI
+             lake 1321.85 [863.04, 2024.86]    36.36  7.57e-04     [0.00, 0.00]
+ lake:fish_length 1430.57 [934.01, 2191.42]    37.82  6.99e-04     [0.00, 0.00]</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-diag_nb_para" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-diag_nb_para-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-13-overdispersed-count-data_files/figure-html/fig-diag_nb_para-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figure&nbsp;13.10: Diagnostic plots for nb_para"><img src="glm-13-overdispersed-count-data_files/figure-html/fig-diag_nb_para-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-diag_nb_para-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.10: Diagnostic plots for <code>nb_para</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<p>We check these things similarly to how we’ve done it previously.</p>
+<p>For influential points, we’re actually going to refit our model via <code>smf.glm</code> (which will give us access to <code>get_influence</code>). However, we’ll use the <code>alpha</code> value that was estimated from the model we fitted with <code>NegativeBinomial</code>, rather than making any assumptions about its value.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>alpha_est <span class="op">=</span> nb_para.params[<span class="st">'alpha'</span>]</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula<span class="op">=</span><span class="st">'parasite_count ~ lake * fish_length'</span>,</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>                data<span class="op">=</span>parasites,</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>                family<span class="op">=</span>sm.families.NegativeBinomial(alpha <span class="op">=</span> alpha_est))</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>glm_nb_para <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can check influential points:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>influence <span class="op">=</span> glm_nb_para.get_influence()</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>cooks <span class="op">=</span> influence.cooks_distance[<span class="dv">0</span>]</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>influential_points <span class="op">=</span> np.where(cooks <span class="op">&gt;</span> <span class="fl">0.5</span>)[<span class="dv">0</span>] <span class="co"># Set appropriate threshold here</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Influential points:"</span>, influential_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Influential points: [19 26]</code></pre>
+</div>
+</div>
+<p>There seem to be a couple of points with a higher Cook’s distance. If you investigate a bit further, they both still have a Cook’s distance of &lt;1, and neither of them cause dramatic changes to the model fit if removed.</p>
+<p>The method that we’re using here to assess influence is quite sensitive, so a threshold of 1 might be more appropriate.</p>
+<p>Collinearity/variance inflation factors:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> variance_inflation_factor</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> patsy <span class="im">import</span> dmatrix</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop the response variable</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> parasites.drop(columns<span class="op">=</span><span class="st">'parasite_count'</span>)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create design matrix based on model formula</span></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> dmatrix(<span class="st">"lake * fish_length"</span>, data<span class="op">=</span>parasites, return_type<span class="op">=</span><span class="st">'dataframe'</span>)</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate VIF for each feature</span></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>vif_data <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'feature'</span>] <span class="op">=</span> X.columns</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'VIF'</span>] <span class="op">=</span> [variance_inflation_factor(X.values, i)</span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>                   <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">1</span>])]</span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vif_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 feature         VIF
+0              Intercept  110.301908
+1              lake[T.B]   46.505809
+2              lake[T.C]   47.455623
+3            fish_length    3.122694
+4  lake[T.B]:fish_length   47.367520
+5  lake[T.C]:fish_length   49.942831</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The posterior predictive check looks alright, and there’s no high leverage points to worry about, but we seem to have some potential issues around our main effect of <code>lake</code> along with the <code>lake:fish_length</code> interaction.</p>
+<p>This is often a sign that that the interaction term is unnecessary. Let’s test that theory with some significance testing and model comparison.</p>
+</section>
+<section id="significance-model-comparison" class="level3" data-number="13.7.4">
+<h3 data-number="13.7.4" class="anchored" data-anchor-id="significance-model-comparison"><span class="header-section-number">13.7.4</span> Significance &amp; model comparison</h3>
+<p>Let’s see whether any of our predictors are significant (main effects and/or interaction effect).</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<p>We can use the trusty <code>anova</code> and <code>step</code> functions:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(nb_para, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in anova.negbin(nb_para, test = "Chisq"): tests made without
+re-estimating 'theta'</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model: Negative Binomial(3.3786), link: log
+
+Response: parasite_count
+
+Terms added sequentially (first to last)
+
+                 Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+NULL                                63    118.202              
+lake              2  19.1628        61     99.040 6.900e-05 ***
+fish_length       1  31.6050        60     67.435 1.889e-08 ***
+lake:fish_length  2   0.1471        58     67.288    0.9291    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">step</span>(nb_para)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Start:  AIC=613.99
+parasite_count ~ lake * fish_length
+
+                   Df Deviance    AIC
+- lake:fish_length  2   67.435 610.14
+&lt;none&gt;                  67.288 613.99
+
+Step:  AIC=610.14
+parasite_count ~ lake + fish_length
+
+              Df Deviance    AIC
+&lt;none&gt;             67.286 610.14
+- lake         2   84.179 623.03
+- fish_length  1   98.819 639.67</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:  glm.nb(formula = parasite_count ~ lake + fish_length, data = parasites, 
+    init.theta = 3.370433436, link = log)
+
+Coefficients:
+(Intercept)        lakeB        lakeC  fish_length  
+    1.78006     -0.40015      0.35282      0.08654  
+
+Degrees of Freedom: 63 Total (i.e. Null);  60 Residual
+Null Deviance:      117.9 
+Residual Deviance: 67.29    AIC: 612.1</code></pre>
+</div>
+</div>
+<p>Alternatively, we could fit an additive model and compare the two directly:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>nb_para_add <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(parasite_count <span class="sc">~</span> lake <span class="sc">+</span> fish_length, parasites)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(nb_para, nb_para_add)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio tests of Negative Binomial Models
+
+Response: parasite_count
+               Model    theta Resid. df    2 x log-lik.   Test    df  LR stat.
+1 lake + fish_length 3.370433        60       -602.1381                       
+2 lake * fish_length 3.378592        58       -601.9912 1 vs 2     2 0.1469037
+    Pr(Chi)
+1          
+2 0.9291809</code></pre>
+</div>
+</div>
+<p>This tells us that the interaction term is not significant.</p>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<p>Let’s start by fitting a new additive model without our interaction.</p>
+<p>Again, we start by specifying our response variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> parasites[<span class="st">'parasite_count'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This next bit is much simpler than before, without the need to generate the interaction:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create dummy variables for 'lake' (switch to True/False values)</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>lake_dummies <span class="op">=</span> pd.get_dummies(parasites[<span class="st">'lake'</span>], drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine the predictors: fish_length, lake dummies</span></span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> pd.concat([parasites[<span class="st">'fish_length'</span>], lake_dummies], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a constant/intercept (required), and make sure that we're using floats</span></span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> sm.add_constant(X).astype(<span class="bu">float</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we can fit our model and look at the summary.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the model (Y, X)</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> NegativeBinomial(Y, X)</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>nb_para_add <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Optimization terminated successfully.
+         Current function value: 4.704204
+         Iterations: 17
+         Function evaluations: 22
+         Gradient evaluations: 22</code></pre>
+</div>
+</div>
+<p>Now, we want to compare the two models (<code>nb_para</code> and <code>nb_para_add</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(nb_para_add.llf <span class="op">-</span> nb_para.llf)</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, nb_para_add.df_resid <span class="op">-</span> nb_para.df_resid)</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.14690373762027775 0.9291808672960002</code></pre>
+</div>
+</div>
+<p>This tells us that the interaction term is not significant.</p>
+</div>
+</div>
+</div>
+<p>Dropping the interaction will also solve our VIF problem:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-11-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-2" role="tab" aria-controls="tabset-11-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_collinearity</span>(nb_para_add)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Check for Multicollinearity
+
+Low Correlation
+
+        Term  VIF       VIF 95% CI adj. VIF Tolerance Tolerance 95% CI
+        lake 1.01 [1.00, 1.29e+14]     1.00      0.99     [0.00, 1.00]
+ fish_length 1.01 [1.00, 1.29e+14]     1.00      0.99     [0.00, 1.00]</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-11-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-11-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop the response variable</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> parasites.drop(columns<span class="op">=</span><span class="st">'parasite_count'</span>)</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create design matrix based on model formula</span></span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> dmatrix(<span class="st">"lake + fish_length"</span>, data<span class="op">=</span>parasites, return_type<span class="op">=</span><span class="st">'dataframe'</span>)</span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate VIF for each feature</span></span>
+<span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a>vif_data <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb75-9"><a href="#cb75-9" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'feature'</span>] <span class="op">=</span> X.columns</span>
+<span id="cb75-10"><a href="#cb75-10" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'VIF'</span>] <span class="op">=</span> [variance_inflation_factor(X.values, i)</span>
+<span id="cb75-11"><a href="#cb75-11" aria-hidden="true" tabindex="-1"></a>                   <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">1</span>])]</span>
+<span id="cb75-12"><a href="#cb75-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-13"><a href="#cb75-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vif_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       feature        VIF
+0    Intercept  37.353114
+1    lake[T.B]   1.254778
+2    lake[T.C]   1.261793
+3  fish_length   1.006317</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Excellent. Seems we have found a well-fitting model for our <code>parasites</code> data!</p>
+</section>
+</section>
+<section id="exercises" class="level2" data-number="13.8">
+<h2 data-number="13.8" class="anchored" data-anchor-id="exercises"><span class="header-section-number">13.8</span> Exercises</h2>
+<section id="sec-exr_bacteria" class="level3" data-number="13.8.1">
+<h3 data-number="13.8.1" class="anchored" data-anchor-id="sec-exr_bacteria"><span class="header-section-number">13.8.1</span> Bacteria colonies</h3>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise 1 - Bacteria colonies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div id="ex-bacteria" class="callout-exercise">
+<p><font style="font-variant: small-caps">Level:</font> <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><br></p>
+<p>In this exercise, we’ll use the <code>bacteria</code> dataset.</p>
+<p>Each row of the dataset represents a petri dish on which bacterial colonies were grown. Each dish was given one of three antibacterial treatments, and then after enough time had passed (between 12 and 24 hours), the number of colonies on the dish were counted. Due to variation in the lab, not all dishes were assessed at the same time.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>bacteria <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/bacteria.csv"</span>)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bacteria)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  colony_count treatment incubation_time
+         &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt;
+1           37 control                13
+2           34 control                22
+3          100 control                23
+4           47 control                15
+5           61 control                14
+6            4 control                12</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>bacteria <span class="op">=</span> pd.read_csv(<span class="st">"data/bacteria.csv"</span>)</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>bacteria.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   colony_count treatment  incubation_time
+0            37   control               13
+1            34   control               22
+2           100   control               23
+3            47   control               15
+4            61   control               14</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The dataset contains three variables in total:</p>
+<ul>
+<li>The response variable <code>colony_count</code></li>
+<li>The <code>treatment</code> (control/high/low)</li>
+<li>The <code>incubation_time</code> (hrs)</li>
+</ul>
+<p>You should:</p>
+<ol type="1">
+<li>Fit an additive (no interaction) negative binomial model</li>
+<li>Visualise the model*</li>
+<li>Evaluate whether the assumptions are met &amp; the model fits well</li>
+<li>Test the significance of the model versus the null**</li>
+</ol>
+<p>*R users, this will involve a bit of thinking; consider using the <code>broom::augment</code> function to help you.</p>
+<p>**Python users, this will involve adapting previous code in a new way.</p>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer" data-collapse="true">
+<section id="fit-an-additive-model" class="level4">
+<h4 class="anchored" data-anchor-id="fit-an-additive-model">Fit an additive model</h4>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-13-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-1" role="tab" aria-controls="tabset-13-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-2" role="tab" aria-controls="tabset-13-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-13-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-13-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>nb_petri <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(colony_count <span class="sc">~</span> treatment <span class="sc">+</span> incubation_time, bacteria)</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nb_petri)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm.nb(formula = colony_count ~ treatment + incubation_time, 
+    data = bacteria, init.theta = 2.196271257, link = log)
+
+Coefficients:
+                Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)      2.55945    0.39276   6.517 7.19e-11 ***
+treatmenthigh   -1.16289    0.18516  -6.280 3.38e-10 ***
+treatmentlow     0.31331    0.18426   1.700 0.089058 .  
+incubation_time  0.07973    0.02232   3.573 0.000353 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for Negative Binomial(2.1963) family taken to be 1)
+
+    Null deviance: 174.616  on 89  degrees of freedom
+Residual deviance:  99.189  on 86  degrees of freedom
+AIC: 836.62
+
+Number of Fisher Scoring iterations: 1
+
+              Theta:  2.196 
+          Std. Err.:  0.342 
+
+ 2 x log-likelihood:  -826.621 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-13-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-2-tab">
+<p>Identify response variable:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> bacteria[<span class="st">'colony_count'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Set up predictors:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create dummy variable for categorical treatment predictor</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>treatment_dummies <span class="op">=</span> pd.get_dummies(bacteria[<span class="st">'treatment'</span>], drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine predictors</span></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> pd.concat([bacteria[<span class="st">'incubation_time'</span>], treatment_dummies], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a constant/intercept (required), cast to float</span></span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> sm.add_constant(X).astype(<span class="bu">float</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Fit model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> NegativeBinomial(Y, X)</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>nb_petri <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Optimization terminated successfully.
+         Current function value: 4.592339
+         Iterations: 16
+         Function evaluations: 18
+         Gradient evaluations: 18</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(nb_petri.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     NegativeBinomial Regression Results                      
+==============================================================================
+Dep. Variable:           colony_count   No. Observations:                   90
+Model:               NegativeBinomial   Df Residuals:                       86
+Method:                           MLE   Df Model:                            3
+Date:                Fri, 25 Jul 2025   Pseudo R-squ.:                 0.06337
+Time:                        08:28:59   Log-Likelihood:                -413.31
+converged:                       True   LL-Null:                       -441.27
+Covariance Type:            nonrobust   LLR p-value:                 4.364e-12
+===================================================================================
+                      coef    std err          z      P&gt;|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------
+const               2.5595      0.381      6.714      0.000       1.812       3.307
+incubation_time     0.0797      0.022      3.611      0.000       0.036       0.123
+high               -1.1629      0.190     -6.121      0.000      -1.535      -0.791
+low                 0.3133      0.185      1.691      0.091      -0.050       0.676
+alpha               0.4553      0.071      6.414      0.000       0.316       0.594
+===================================================================================</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualise-the-model" class="level4">
+<h4 class="anchored" data-anchor-id="visualise-the-model">Visualise the model</h4>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-14-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-14-1" role="tab" aria-controls="tabset-14-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-14-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-14-2" role="tab" aria-controls="tabset-14-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-14-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-14-1-tab">
+<p>Because we’ve fitted a negative binomial model without an interaction term, we can’t just use <code>geom_smooth</code> (it will automatically include the interaction, which is incorrect).</p>
+<p>So, we’re going to use the <code>broom::augment</code> function to extract some fitted values. We need to exponentiate these values to get the <em>actual</em> predicted counts, which we can then model with <code>geom_line</code>, like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="co"># created augmented model object</span></span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>petri_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(nb_petri)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The `augment()` method for objects of class `negbin` is not maintained by the broom team, and is only supported through the `glm` tidier method. Please be cautious in interpreting and reporting broom output.
+
+This warning is displayed once per session.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># add a new predicted column (exp(fitted))</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>petri_aug<span class="sc">$</span>.predicted <span class="ot">&lt;-</span> <span class="fu">exp</span>(petri_aug<span class="sc">$</span>.fitted) </span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(petri_aug, <span class="fu">aes</span>(<span class="at">x =</span> incubation_time, <span class="at">y =</span> colony_count, <span class="at">colour =</span> treatment)) <span class="sc">+</span></span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y =</span> .predicted), <span class="at">linewidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-47-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here’s a more efficient way of doing exactly the same thing - we put the augmented object in directly as our data, and do the exponentiation inside the <code>geom_line</code> <code>aes</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">augment</span>(nb_petri), <span class="fu">aes</span>(<span class="at">x =</span> incubation_time, <span class="at">y =</span> colony_count, <span class="at">colour =</span> treatment)) <span class="sc">+</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">exp</span>(.fitted)), <span class="at">linewidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice how this is subtly different from the model we would’ve visualised, if we’d just used <code>geom_smooth</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(petri_aug, <span class="fu">aes</span>(<span class="at">x =</span> incubation_time, <span class="at">y =</span> colony_count, <span class="at">colour =</span> treatment)) <span class="sc">+</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm.nb"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"This is not the model we wanted!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-49-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-14-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-14-2-tab">
+<p>We can copy and adapt the code we used for the <code>parasites</code> example in the main body of the chapter - just remember to change all the names!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get unique treatment values</span></span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>treatment_levels <span class="op">=</span> bacteria[<span class="st">'treatment'</span>].unique()</span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create prediction grid for each lake</span></span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a>new_data_nb <span class="op">=</span> pd.concat([</span>
+<span id="cb94-6"><a href="#cb94-6" aria-hidden="true" tabindex="-1"></a>    pd.DataFrame({</span>
+<span id="cb94-7"><a href="#cb94-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'incubation_time'</span>: np.linspace(<span class="dv">12</span>, <span class="dv">24</span>, <span class="dv">100</span>), <span class="co"># set sensible start &amp; end!</span></span>
+<span id="cb94-8"><a href="#cb94-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'treatment'</span>: treatment</span>
+<span id="cb94-9"><a href="#cb94-9" aria-hidden="true" tabindex="-1"></a>    }) <span class="cf">for</span> treatment <span class="kw">in</span> treatment_levels</span>
+<span id="cb94-10"><a href="#cb94-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb94-11"><a href="#cb94-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-12"><a href="#cb94-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Repeat the transformations we used when fitting the model</span></span>
+<span id="cb94-13"><a href="#cb94-13" aria-hidden="true" tabindex="-1"></a>treatment_dummies <span class="op">=</span> pd.get_dummies(new_data_nb[<span class="st">'treatment'</span>], drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb94-14"><a href="#cb94-14" aria-hidden="true" tabindex="-1"></a>X_new <span class="op">=</span> pd.concat([new_data_nb[<span class="st">'incubation_time'</span>], treatment_dummies], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb94-15"><a href="#cb94-15" aria-hidden="true" tabindex="-1"></a>X_new <span class="op">=</span> sm.add_constant(X_new).astype(<span class="bu">float</span>)</span>
+<span id="cb94-16"><a href="#cb94-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-17"><a href="#cb94-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we can safely predict:</span></span>
+<span id="cb94-18"><a href="#cb94-18" aria-hidden="true" tabindex="-1"></a>new_data_nb[<span class="st">'pred'</span>] <span class="op">=</span> nb_petri.predict(X_new)</span>
+<span id="cb94-19"><a href="#cb94-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-20"><a href="#cb94-20" aria-hidden="true" tabindex="-1"></a>new_data_nb.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   incubation_time treatment       pred
+0        12.000000   control  33.657760
+1        12.121212   control  33.984624
+2        12.242424   control  34.314663
+3        12.363636   control  34.647907
+4        12.484848   control  34.984387</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(bacteria, aes(x <span class="op">=</span> <span class="st">"incubation_time"</span>,</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>                          y <span class="op">=</span> <span class="st">"colony_count"</span>,</span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>                          colour <span class="op">=</span> <span class="st">"treatment"</span>)) <span class="op">+</span></span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>   geom_point() <span class="op">+</span></span>
+<span id="cb96-5"><a href="#cb96-5" aria-hidden="true" tabindex="-1"></a>   geom_line(new_data_nb, aes(x <span class="op">=</span> <span class="st">"incubation_time"</span>, y <span class="op">=</span> <span class="st">"pred"</span>,</span>
+<span id="cb96-6"><a href="#cb96-6" aria-hidden="true" tabindex="-1"></a>                              colour <span class="op">=</span> <span class="st">"treatment"</span>), size <span class="op">=</span> <span class="dv">1</span>))</span>
+<span id="cb96-7"><a href="#cb96-7" aria-hidden="true" tabindex="-1"></a>                              </span>
+<span id="cb96-8"><a href="#cb96-8" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-51-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-51-1.png" class="img-fluid figure-img" width="614"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="evaluate-assumptions-fit" class="level4">
+<h4 class="anchored" data-anchor-id="evaluate-assumptions-fit">Evaluate assumptions &amp; fit</h4>
+<p>We don’t need to worry about dispersion - we’re explicitly modelling that, rather than making any assumptions.</p>
+<p>We can be reasonably sure we’ve chosen the right response variable distribution and link function; these are clearly count data.</p>
+<p>With the info we’ve got, we don’t have any reason to be worried about independence. If, however, we found out more about the design - for example, that the petri dishes had been processed in batches, perhaps by different researchers - that might set off alarm bells.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-15-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-15-1" role="tab" aria-controls="tabset-15-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-15-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-15-2" role="tab" aria-controls="tabset-15-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-15-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-15-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(nb_petri, <span class="at">check =</span> <span class="fu">c</span>(<span class="st">'pp_check'</span>, <span class="st">'outliers'</span>, <span class="st">'vif'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `negbin`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-52-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-52-3.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_collinearity</span>(nb_petri)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Check for Multicollinearity
+
+Low Correlation
+
+            Term  VIF   VIF 95% CI adj. VIF Tolerance Tolerance 95% CI
+       treatment 1.08 [1.01, 2.25]     1.04      0.92     [0.44, 0.99]
+ incubation_time 1.08 [1.01, 2.25]     1.04      0.92     [0.44, 0.99]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_outliers</span>(nb_petri, <span class="at">threshold =</span> <span class="fu">list</span>(<span class="st">'cook'</span><span class="ot">=</span><span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>OK: No outliers detected.
+- Based on the following method and threshold: cook (0.5).
+- For variable: (Whole model)</code></pre>
+</div>
+</div>
+<p>No obvious issues to report!</p>
+</div>
+<div id="tabset-15-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-15-2-tab">
+<p>Refit the model with <code>smf.glm</code>, so we can access <code>get_influence</code>. Don’t forget to include the estimated <code>alpha</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>alpha_est <span class="op">=</span> nb_petri.params[<span class="st">'alpha'</span>]</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula<span class="op">=</span><span class="st">'colony_count ~ treatment + incubation_time'</span>,</span>
+<span id="cb103-4"><a href="#cb103-4" aria-hidden="true" tabindex="-1"></a>                data<span class="op">=</span>bacteria,</span>
+<span id="cb103-5"><a href="#cb103-5" aria-hidden="true" tabindex="-1"></a>                family<span class="op">=</span>sm.families.NegativeBinomial(alpha <span class="op">=</span> alpha_est))</span>
+<span id="cb103-6"><a href="#cb103-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-7"><a href="#cb103-7" aria-hidden="true" tabindex="-1"></a>glm_nb_petri <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can check influential points:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>influence <span class="op">=</span> glm_nb_petri.get_influence()</span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>cooks <span class="op">=</span> influence.cooks_distance[<span class="dv">0</span>]</span>
+<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a>influential_points <span class="op">=</span> np.where(cooks <span class="op">&gt;</span> <span class="fl">0.5</span>)[<span class="dv">0</span>] <span class="co"># Set appropriate threshold here</span></span>
+<span id="cb104-6"><a href="#cb104-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-7"><a href="#cb104-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Influential points:"</span>, influential_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Influential points: [88]</code></pre>
+</div>
+</div>
+<p>We have one possible influential point; if this were a real analysis, we would want to follow up on this now, e.g., removing it and refitting, and seeing if our model shifts dramatically.</p>
+<p>(Spoiler alert - it doesn’t!)</p>
+<p>Collinearity/variance inflation factors:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop the response variable</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> bacteria.drop(columns<span class="op">=</span><span class="st">'colony_count'</span>)</span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create design matrix based on model formula</span></span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> dmatrix(<span class="st">"treatment + incubation_time"</span>, data<span class="op">=</span>bacteria, return_type<span class="op">=</span><span class="st">'dataframe'</span>)</span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate VIF for each feature</span></span>
+<span id="cb106-8"><a href="#cb106-8" aria-hidden="true" tabindex="-1"></a>vif_data <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb106-9"><a href="#cb106-9" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'feature'</span>] <span class="op">=</span> X.columns</span>
+<span id="cb106-10"><a href="#cb106-10" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'VIF'</span>] <span class="op">=</span> [variance_inflation_factor(X.values, i)</span>
+<span id="cb106-11"><a href="#cb106-11" aria-hidden="true" tabindex="-1"></a>                   <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">1</span>])]</span>
+<span id="cb106-12"><a href="#cb106-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-13"><a href="#cb106-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vif_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             feature        VIF
+0          Intercept  28.462829
+1  treatment[T.high]   1.379350
+2   treatment[T.low]   1.435343
+3    incubation_time   1.079513</code></pre>
+</div>
+</div>
+<p>No issues with the VIF values!</p>
+</div>
+</div>
+</div>
+</section>
+<section id="compare-model-to-null" class="level4">
+<h4 class="anchored" data-anchor-id="compare-model-to-null">Compare model to null</h4>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-16-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-16-1" role="tab" aria-controls="tabset-16-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-16-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-16-2" role="tab" aria-controls="tabset-16-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-16-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-16-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>nb_petri_null <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(colony_count <span class="sc">~</span> <span class="dv">1</span>, bacteria)</span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(nb_petri, nb_petri_null)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio tests of Negative Binomial Models
+
+Response: colony_count
+                        Model    theta Resid. df    2 x log-lik.   Test    df
+1                           1 1.220838        89       -882.5434             
+2 treatment + incubation_time 2.196271        86       -826.6210 1 vs 2     3
+  LR stat.      Pr(Chi)
+1                      
+2 55.92243 4.364176e-12</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-16-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-16-2-tab">
+<p>We’ve not constructed a null model yet earlier in this chapter, so don’t worry if you didn’t figure this bit out on your own.</p>
+<p>We still need to set up a <code>Y</code> response and an <code>X</code> predictor matrix. However, since we only want to regress <code>colony_count ~ 1</code>, our <code>X</code> matrix just needs to be a column of 1s, with the same length as <code>Y</code>.</p>
+<p>We can set that up like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> bacteria[<span class="st">'colony_count'</span>]</span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.ones((<span class="bu">len</span>(Y), <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>From here, the model fitting proceeds exactly as before.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> NegativeBinomial(Y, X)</span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a>nb_petri_null <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Optimization terminated successfully.
+         Current function value: 4.903019
+         Iterations: 6
+         Function evaluations: 7
+         Gradient evaluations: 7</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(nb_petri_null.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     NegativeBinomial Regression Results                      
+==============================================================================
+Dep. Variable:           colony_count   No. Observations:                   90
+Model:               NegativeBinomial   Df Residuals:                       89
+Method:                           MLE   Df Model:                            0
+Date:                Fri, 25 Jul 2025   Pseudo R-squ.:               3.734e-12
+Time:                        08:29:00   Log-Likelihood:                -441.27
+converged:                       True   LL-Null:                       -441.27
+Covariance Type:            nonrobust   LLR p-value:                       nan
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+const          3.9035      0.097     40.423      0.000       3.714       4.093
+alpha          0.8191      0.116      7.049      0.000       0.591       1.047
+==============================================================================</code></pre>
+</div>
+</div>
+<p>We can see that the model, indeed, only contains a constant (intercept) with no predictors. That’s what we wanted.</p>
+<p>Now, we want to compare the two models (<code>nb_petri</code> and <code>nb_petri_null</code>). This reuses the likelihood ratio test code we’ve been using so far in the course:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(nb_petri_null.llf <span class="op">-</span> nb_petri.llf)</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, nb_petri_null.df_resid <span class="op">-</span> nb_petri.df_resid)</span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>55.92242554561949 4.364156630706304e-12</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>In conclusion: our additive model is significant over the null, and there are no glaring concerns with assumptions that are not met.</p>
+<p>Our visualisation of the model seems sensible too. The number of colonies increases with incubation time - this seems very plausible - and the high antibacterial condition definitely is stunted compared to the control, as we might expect.</p>
+<p>Why does the low antibacterial dose condition seem to have more growth than the control? Well, this could just be a fluke. If we repeated the experiment the effect might vanish.</p>
+<p>Or, it might be an indication of a stress-induced growth response in those dishes (i.e., a small amount of antibacterial treatment reveals some sort of resistance).</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-exr_galapagos" class="level3" data-number="13.8.2">
+<h3 data-number="13.8.2" class="anchored" data-anchor-id="sec-exr_galapagos"><span class="header-section-number">13.8.2</span> Galapagos models</h3>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise 2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div id="ex-galapagos" class="callout-exercise">
+<p><font style="font-variant: small-caps">Level:</font> <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><br></p>
+<p>For this exercise we’ll be using the data from <code>data/galapagos.csv</code>.</p>
+<p>In this dataset, each row corresponds to one of the 30 Galapagos islands. The relationship between the number of plant species (<code>species</code>) and several geographic variables is of interest:</p>
+<ul>
+<li><code>endemics</code> – the number of endemic species</li>
+<li><code>area</code> – the area of the island km<sup>2</sup></li>
+<li><code>elevation</code> – the highest elevation of the island (m)</li>
+<li><code>nearest</code> – the distance from the nearest island (km)</li>
+</ul>
+<p>However, fitting both a Poisson and a negative binomial regression produce quite bad results, with strange fit.</p>
+<p>In this exercise, you should:</p>
+<ol type="1">
+<li>Fit and visualise a Poisson model</li>
+<li>Fit and visualise a negative binomial model</li>
+<li>Explore ways to improve the fit of the model</li>
+</ol>
+<p>(Hint: just because we’re fitting a GLM, doesn’t mean we can’t still transform our data!)</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+A note for Python users
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Due to the small (near-zero) beta coefficients for these data, the <code>NegativeBinomial</code> method we’ve been using struggles to converge on a successful model. Therefore, there is no Python code provided for this example.</p>
+<p>However, you might find it useful to read through the answer regardless - this is a very interesting dataset!</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer" data-collapse="true">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>galapagos <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/galapagos.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="fitting-a-poisson-model" class="level4">
+<h4 class="anchored" data-anchor-id="fitting-a-poisson-model">Fitting a Poisson model</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>glm_gal <span class="ot">&lt;-</span> <span class="fu">glm</span>(species <span class="sc">~</span> area <span class="sc">+</span> endemics <span class="sc">+</span> elevation <span class="sc">+</span> nearest,</span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> galapagos, <span class="at">family =</span> <span class="st">"poisson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(galapagos, <span class="fu">aes</span>(endemics, species)) <span class="sc">+</span></span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">fullrange =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"poisson"</span>)) <span class="sc">+</span></span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Poisson"</span>)</span>
+<span id="cb119-6"><a href="#cb119-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-7"><a href="#cb119-7" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-62-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Our model is doing okay over on the right hand side, but it’s not really doing a good job in the bottom left corner - which is where most of the data points are clustered!</p>
+</section>
+<section id="fitting-a-negative-binomial-model" class="level4">
+<h4 class="anchored" data-anchor-id="fitting-a-negative-binomial-model">Fitting a negative binomial model</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>nb_gal <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(species <span class="sc">~</span> area <span class="sc">+</span> endemics <span class="sc">+</span> elevation <span class="sc">+</span> nearest,</span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> galapagos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(galapagos, <span class="fu">aes</span>(endemics, species)) <span class="sc">+</span></span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm.nb"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">fullrange =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Negative binomial"</span>)</span>
+<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb121-6"><a href="#cb121-6" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-64-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-64-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This model does a better job in the lower left, but now is getting things a bit wrong over on the far right.</p>
+</section>
+<section id="improving-the-fit" class="level4">
+<h4 class="anchored" data-anchor-id="improving-the-fit">Improving the fit</h4>
+<p>Is there anything we can do to improve on these two models?</p>
+<p>There appears to be a power relationship between <code>species</code> and <code>endemics</code>. So, one thing we could do is log-transform the response (<code>species</code>) and predictor (<code>endemics</code>) variables.</p>
+<p>If we log-transform them both and put them on a scatterplot, they look like this - linear?!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> galapagos,</span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">log</span>(endemics),</span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> <span class="fu">log</span>(species))) <span class="sc">+</span></span>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-65-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We could add a regression line to this.</p>
+<p>Or, we could just log-transform <code>endemics</code> and fit a negative binomial model to that, without also log-transforming <code>species</code>. Let’s do all of this and plot them together with the original Poisson and Negative binomial models.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(galapagos, <span class="fu">aes</span>(<span class="fu">log</span>(endemics), <span class="fu">log</span>(species))) <span class="sc">+</span></span>
+<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">fullrange =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> poisson)) <span class="sc">+</span></span>
+<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Linear model of log-log"</span>)</span>
+<span id="cb123-6"><a href="#cb123-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb123-7"><a href="#cb123-7" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(galapagos, <span class="fu">aes</span>(<span class="fu">log</span>(endemics), species)) <span class="sc">+</span></span>
+<span id="cb123-8"><a href="#cb123-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb123-9"><a href="#cb123-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm.nb"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">fullrange =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb123-10"><a href="#cb123-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">500</span>) <span class="sc">+</span></span>
+<span id="cb123-11"><a href="#cb123-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Negative binomial of log(endemics)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-3"><a href="#cb124-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span> p3 <span class="sc">+</span> p4 <span class="sc">+</span></span>
+<span id="cb124-4"><a href="#cb124-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">tag_levels =</span> <span class="st">"A"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing non-finite outside the scale range
+(`stat_smooth()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: In lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, 
+    ...) :
+ extra argument 'family' will be disregarded</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing non-finite outside the scale range
+(`stat_smooth()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-67-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="glm-13-overdispersed-count-data_files/figure-html/unnamed-chunk-67-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From this it is clear that the negative binomial model fitted to <code>species ~ log(endemics)</code> in panel D produces a much better fit than the original fit in panel B.</p>
+<p>Equally, looking at the relationship between <code>log(species) ~ log(endemics)</code> in panel C it illustrates that this is pretty well-modelled using a linear line.</p>
+<p>There is a slight issue, though.</p>
+<p>If you look carefully then you see that in both panels C and D there is a stray value left of zero, almost escaping past the y-axis. There is also a warning message, saying <code>Removed 1 row containing non-finite outside the scale range</code>.</p>
+<p>With a closer look at the dataset, we can see that there is one island where the number of <code>endemics</code> is equal to 0:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>galapagos <span class="sc">|&gt;</span> </span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(endemics) <span class="sc">|&gt;</span></span>
+<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+  species endemics  area elevation nearest
+    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1      24        0  0.08        93       6</code></pre>
+</div>
+</div>
+<p>If we take <code>log(0)</code> we get minus infinity, which isn’t biologically possible. This is where the problem lies.</p>
+<p>We could adjust for this by adding a “pseudo-count”, or adding <code>1</code> to all of the counts. If that is acceptable or not is a matter of debate and we’ll leave it to you to ponder over this.</p>
+<p>Whatever you do, the most important thing is to make sure that you are transparent and clear on what you are doing and what the justification for it it.</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="summary" class="level2" data-number="13.9">
+<h2 data-number="13.9" class="anchored" data-anchor-id="summary"><span class="header-section-number">13.9</span> Summary</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key points
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Negative binomial regression relaxes the assumption made by Poisson regressions that the variance is equal to the mean (dispersion = 1)</li>
+<li>In a negative binomial regression the dispersion parameter <span class="math inline">\(\theta\)</span> is estimated from the data</li>
+<li>However, they both use the log link function and often produce similar-looking models</li>
+</ul>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../materials/glm-12-analysing-count-data.html" class="pagination-link" aria-label="Analysing count data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysing count data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <img src="https://creativecommons.org/images/deed/cc_icon_black_x2.png" class="img-fluid" width="25"> Bioinformatics Training Facility</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>11&nbsp; Checking assumptions</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../materials/glm-12-analysing-count-data.html" rel="next">
+<link href="../materials/glm-10-goodness-of-fit.html" rel="prev">
+<link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-b13b45a669a15caaa44b422aa2b28d1d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Generalised linear models</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/cambiotraining/"> <i class="bi bi-github" role="img" aria-label="Bioinformatics Training Facility GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/bioinfocambs"> <i class="bi bi-twitter" role="img" aria-label="Bioinformatics Training Facility Twitter">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Checking assumptions</span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Welcome</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Course overview</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">References</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Introduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-05-intro-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Linear models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-06-intro-glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Generalise your model</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Binary responses</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-07-binary-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Binary response</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-08-proportional-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Proportional response</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Model assessment</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-09-significance-testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Significance testing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-10-goodness-of-fit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Goodness-of-fit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-11-checking-assumptions.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Checking assumptions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Count responses</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-12-analysing-count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysing count data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-13-overdispersed-count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Overdispersed count data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#context" id="toc-context" class="nav-link active" data-scroll-target="#context"><span class="header-section-number">11.1</span> Context</a></li>
+  <li><a href="#section-setup" id="toc-section-setup" class="nav-link" data-scroll-target="#section-setup"><span class="header-section-number">11.2</span> Section setup</a></li>
+  <li><a href="#assumption-checking" id="toc-assumption-checking" class="nav-link" data-scroll-target="#assumption-checking"><span class="header-section-number">11.3</span> Assumption checking</a>
+  <ul class="collapse">
+  <li><a href="#assumption-1-distribution-of-response-variable" id="toc-assumption-1-distribution-of-response-variable" class="nav-link" data-scroll-target="#assumption-1-distribution-of-response-variable"><span class="header-section-number">11.3.1</span> Assumption 1: Distribution of response variable</a></li>
+  <li><a href="#assumption-2-correct-link-function" id="toc-assumption-2-correct-link-function" class="nav-link" data-scroll-target="#assumption-2-correct-link-function"><span class="header-section-number">11.3.2</span> Assumption 2: Correct link function</a></li>
+  <li><a href="#assumption-3-independence" id="toc-assumption-3-independence" class="nav-link" data-scroll-target="#assumption-3-independence"><span class="header-section-number">11.3.3</span> Assumption 3: Independence</a></li>
+  </ul></li>
+  <li><a href="#other-features-to-check" id="toc-other-features-to-check" class="nav-link" data-scroll-target="#other-features-to-check"><span class="header-section-number">11.4</span> Other features to check</a></li>
+  <li><a href="#assessing-assumptions-quality" id="toc-assessing-assumptions-quality" class="nav-link" data-scroll-target="#assessing-assumptions-quality"><span class="header-section-number">11.5</span> Assessing assumptions &amp; quality</a>
+  <ul class="collapse">
+  <li><a href="#influential-observations" id="toc-influential-observations" class="nav-link" data-scroll-target="#influential-observations"><span class="header-section-number">11.5.1</span> Influential observations</a></li>
+  <li><a href="#lack-of-collinearity-1" id="toc-lack-of-collinearity-1" class="nav-link" data-scroll-target="#lack-of-collinearity-1"><span class="header-section-number">11.5.2</span> Lack of collinearity</a></li>
+  </ul></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">11.6</span> Exercises</a>
+  <ul class="collapse">
+  <li><a href="#sec-exr_levers-again-again" id="toc-sec-exr_levers-again-again" class="nav-link" data-scroll-target="#sec-exr_levers-again-again"><span class="header-section-number">11.6.1</span> Revisiting rats and levers (again)</a></li>
+  <li><a href="#sec-exr_seed-germination" id="toc-sec-exr_seed-germination" class="nav-link" data-scroll-target="#sec-exr_seed-germination"><span class="header-section-number">11.6.2</span> Seed germination</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">11.7</span> Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Checking assumptions</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning outcomes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Know what statistical assumptions apply to logistic regression (and GLMs)</li>
+<li>Be able to evaluate whether a logistic regression meets the assumptions</li>
+</ul>
+</div>
+</div>
+<section id="context" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="context"><span class="header-section-number">11.1</span> Context</h2>
+<p>We can now assess the quality of a generalised linear model. Although we can relax certain assumptions compared to standard linear models (linearity, equality of variance of residuals, and normality of residuals), we cannot relax all of them - some key assumptions still exist. We discuss these below.</p>
+</section>
+<section id="section-setup" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="section-setup"><span class="header-section-number">11.2</span> Section setup</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Click to expand
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We’ll use the following libraries and data:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required R libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggResidpanel)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the required data</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>diabetes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/diabetes.csv"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>levers <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/levers.csv"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>seeds <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/seeds.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required Python libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> variance_inflation_factor</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> patsy <span class="im">import</span> dmatrix</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the required data</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>diabetes <span class="op">=</span> pd.read_csv(<span class="st">"data/diabetes.csv"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>levers <span class="op">=</span> pd.read_csv(<span class="st">"data/levers.csv"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>seeds <span class="op">=</span> pd.read_csv(<span class="st">"data/seeds.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="assumption-checking" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="assumption-checking"><span class="header-section-number">11.3</span> Assumption checking</h2>
+<p>Below we go through the various assumptions we need to consider.</p>
+<section id="assumption-1-distribution-of-response-variable" class="level3" data-number="11.3.1">
+<h3 data-number="11.3.1" class="anchored" data-anchor-id="assumption-1-distribution-of-response-variable"><span class="header-section-number">11.3.1</span> Assumption 1: Distribution of response variable</h3>
+<p>Although we don’t expect our response variable <span class="math inline">\(y\)</span> to be continuous and normally distributed (as we did in linear modelling), we do still expect its distribution to come from the “exponential family” of distributions.</p>
+<section id="the-exponential-family" class="level4 callout.tip">
+<h4 class="anchored" data-anchor-id="the-exponential-family">The exponential family</h4>
+<p>The exponential family contains the following distributions, among others:</p>
+<ul>
+<li>normal</li>
+<li>exponential</li>
+<li>Poisson</li>
+<li>Bernoulli</li>
+<li>binomial (for fixed number of trials)</li>
+<li>chi-squared</li>
+</ul>
+</section>
+<p>You can use a histogram to visualise the distribution of your response variable, but it is typically most useful just to think about the nature of your response variable. For instance, binary variables will follow a Bernoulli distribution, proportional variables follow a binomial distribution, and most count variables will follow a Poisson distribution.</p>
+<p>If you have a very unusual variable that doesn’t follow one of these exponential family distributions, however, then a GLM will not be an appropriate choice. In other words, a GLM is not necessarily a magic fix!</p>
+</section>
+<section id="assumption-2-correct-link-function" class="level3" data-number="11.3.2">
+<h3 data-number="11.3.2" class="anchored" data-anchor-id="assumption-2-correct-link-function"><span class="header-section-number">11.3.2</span> Assumption 2: Correct link function</h3>
+<p>A closely-related assumption to assumption 1 above, is that we have chosen the correct link function for our model.</p>
+<p>If we have done so, then there should be a linear relationship between our <em>transformed</em> model and our response variable; in other words, if we have chosen the right link function, then we have correctly “linearised” our model.</p>
+</section>
+<section id="assumption-3-independence" class="level3" data-number="11.3.3">
+<h3 data-number="11.3.3" class="anchored" data-anchor-id="assumption-3-independence"><span class="header-section-number">11.3.3</span> Assumption 3: Independence</h3>
+<p>We expect that the each observation or data point in our sample is independent of all the others. Specifically, we expect that our set of <span class="math inline">\(y\)</span> response variables are independent of one another.</p>
+<p>For this to be true, we have to make sure:</p>
+<ul>
+<li>that we aren’t treating technical replicates as true/biological replicates;</li>
+<li>that we don’t have observations/data points in our sample that are artificially similar to each other (compared to other data points);</li>
+<li>that we don’t have any nuisance/confounding variables that create “clusters” or hierarchy in our dataset;</li>
+<li>that we haven’t got repeated measures, i.e., multiple measurements/rows per individual in our sample</li>
+</ul>
+<p>There is no diagnostic plot for assessing this assumption. To determine whether your data are independent, you need to understand your experimental design.</p>
+<p>You might find <a href="https://cambiotraining.github.io/experimental-design/materials/04-replication.html#criteria-for-true-independent-replication">this page</a> useful if you’re looking for more information on what counts as truly independent data.</p>
+</section>
+</section>
+<section id="other-features-to-check" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="other-features-to-check"><span class="header-section-number">11.4</span> Other features to check</h2>
+<p>There are a handful of other features or qualities that can affect the quality of model fit, and therefore the quality of the inferences we draw from it.</p>
+<p>These are not necessarily “formal” assumptions, but it’s good practice to check for them.</p>
+<section id="lack-of-influential-observations" class="level4">
+<h4 class="anchored" data-anchor-id="lack-of-influential-observations">Lack of influential observations</h4>
+<p>A data point is overly influential, i.e., has high leverage, if removing that point from the dataset would cause large changes in the model coefficients. Data points with high leverage are typically those that don’t follow the same general “trend” as the rest of the data.</p>
+</section>
+<section id="lack-of-collinearity" class="level4">
+<h4 class="anchored" data-anchor-id="lack-of-collinearity">Lack of collinearity</h4>
+<p>Collinearity is when predictor variables are overly/strongly correlated with each other. This can make it very difficult to estimate the right beta coefficients and individual p-values for those predictors.</p>
+</section>
+<section id="dispersion" class="level4">
+<h4 class="anchored" data-anchor-id="dispersion">Dispersion</h4>
+<p>This is mentioned here for completeness, and as a bit of sizzle for next chapter when we talk about Poisson regression.</p>
+<p>We won’t be worrying about dispersion in logistic regression specifically.</p>
+<p>If you want more detail, you can skip ahead now to <a href="glm-12-analysing-count-data.html#sec-mat_dispersion" class="quarto-xref">Section&nbsp;<span>12.7</span></a>.</p>
+</section>
+</section>
+<section id="assessing-assumptions-quality" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="assessing-assumptions-quality"><span class="header-section-number">11.5</span> Assessing assumptions &amp; quality</h2>
+<p>In linear modelling, we rely heavily on visuals to determine whether various assumptions were met.</p>
+<p>When checking assumptions and assessing quality of fit for GLMs, we don’t use the panel of diagnostic plots that we used for linear models any more. However, there are some visualisations that can help us, plus several metrics we can calculate from our data or model.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 16%">
+<col style="width: 43%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Is it a formal assumption?</th>
+<th>How can I assess it?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><p>Response variable comes from a distribution in the exponential family</p>
+<p>&amp;</p>
+<p>The model uses the right link function</p></td>
+<td>Yes</td>
+<td><p>Knowledge of the experimental design</p>
+<p><em>Some plots, e.g., posterior predictive check/uniform Q-Q, may help</em></p></td>
+</tr>
+<tr class="even">
+<td>Independent observations</td>
+<td>Yes</td>
+<td><p>Knowledge of experimental design</p>
+<p><em>There are <strong>no</strong> formal tests or plots that assess independence reliably</em></p></td>
+</tr>
+<tr class="odd">
+<td>Influential observations</td>
+<td>No</td>
+<td>Cook’s distance/leverage plot</td>
+</tr>
+<tr class="even">
+<td>Lack of collinearity</td>
+<td>No</td>
+<td>Variance inflation factor</td>
+</tr>
+<tr class="odd">
+<td>Dispersion</td>
+<td>Sort of</td>
+<td><p>Calculating the dispersion parameter</p>
+<p>Can also be visualised</p></td>
+</tr>
+</tbody>
+</table>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/diabetes.csv"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>glm_dia <span class="ot">&lt;-</span> <span class="fu">glm</span>(test_result <span class="sc">~</span> glucose <span class="sc">*</span> diastolic,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> diabetes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s fit some useful diagnostic plots, using the <code>diabetes</code> and <code>aphids</code> example datasets.</p>
+<p>We’re going to rely heavily on the <code>performance</code> package in R for assessing the assumptions and fit of our model.</p>
+<p>The <code>check_model</code> function will be our primary workhorse. This function automatically detects the type of model you give it, and produces the appropriate panel of plots all by itself. (So, so cool. And yes, it works for linear models too!)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(glm_dia)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glm`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-chkmodel_glm_dia" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chkmodel_glm_dia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;11.1: Diagnostic plots for the glm_dia model"><img src="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chkmodel_glm_dia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.1: Diagnostic plots for the <code>glm_dia</code> model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>Creating diagnostic plots in Python is not straightforward, since there are no decent packages out there. However, that does not mean we can’t check assumptions! In the next few sections we’ll visit every assumption individually using code.</p>
+<p>If you’re interested in the visual aspect, just look at the R code.</p>
+<p>We’ll start with creating the model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>diabetes_py <span class="op">=</span> pd.read_csv(<span class="st">"data/diabetes.csv"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"test_result ~ glucose * diastolic"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> diabetes_py)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>glm_dia_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<section id="influential-observations" class="level3" data-number="11.5.1">
+<h3 data-number="11.5.1" class="anchored" data-anchor-id="influential-observations"><span class="header-section-number">11.5.1</span> Influential observations</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>We can check for outliers via a leverage plot (in <code>performance</code>), which you may remember from linear modelling.</p>
+<p>Ideally, data points would fall inside the green contour lines. Data points that don’t will be highlighted in red.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(glm_dia, <span class="at">check =</span> <span class="st">'outliers'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glm`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-chkmodel_glm_dia_cookd" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chkmodel_glm_dia_cookd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia_cookd-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;11.2: Influential points check for glm_dia model"><img src="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia_cookd-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chkmodel_glm_dia_cookd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.2: Influential points check for <code>glm_dia</code> model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Alternatively, we can use the <code>check_outliers</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_outliers</span>(glm_dia, <span class="at">threshold =</span> <span class="fu">list</span>(<span class="st">'cook'</span> <span class="ot">=</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>OK: No outliers detected.
+- Based on the following method and threshold: cook (0.5).
+- For variable: (Whole model)</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>That said, this is the one plot we can create quite easily: Cook’s D.</p>
+<p>We can use the <code>get_influence</code> function to extract information like leverage, Cook’s distance etc. about all of our data points:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract the Cook's distances</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>glm_dia_py_resid <span class="op">=</span> pd.DataFrame(glm_dia_py.</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                                get_influence().</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                                summary_frame()[<span class="st">"cooks_d"</span>])</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># add row index </span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>glm_dia_py_resid[<span class="st">'obs'</span>] <span class="op">=</span> glm_dia_py_resid.reset_index().index</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We now have two columns:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>glm_dia_py_resid.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    cooks_d  obs
+0  0.000709    0
+1  0.000069    1
+2  0.000641    2
+3  0.000080    3
+4  0.009373    4</code></pre>
+</div>
+</div>
+<p>We can use these to create the plot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot(glm_dia_py_resid,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>         aes(x <span class="op">=</span> <span class="st">"obs"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>             y <span class="op">=</span> <span class="st">"cooks_d"</span>)) <span class="op">+</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>     geom_segment(aes(x <span class="op">=</span> <span class="st">"obs"</span>, y <span class="op">=</span> <span class="st">"cooks_d"</span>, xend <span class="op">=</span> <span class="st">"obs"</span>, yend <span class="op">=</span> <span class="dv">0</span>)) <span class="op">+</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>     geom_point())</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-chkmodel_glm_dia_cookd_py" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chkmodel_glm_dia_cookd_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia_cookd_py-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;11.3: Influential points check for glm_dia_py model"><img src="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia_cookd_py-1.png" class="img-fluid figure-img" width="614"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chkmodel_glm_dia_cookd_py-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.3: Influential points check for <code>glm_dia_py</code> model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Alternative method using <code>matplotlib</code>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>influence <span class="op">=</span> glm_dia_py.get_influence()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, we can visualise and interrogate that information.</p>
+<p>We can produce a Cook’s distance plot (this uses <code>matplotlib</code>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cooks <span class="op">=</span> influence.cooks_distance[<span class="dv">0</span>]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>plt.stem(np.arange(<span class="bu">len</span>(cooks)), cooks, markerfmt<span class="op">=</span><span class="st">","</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="fl">0.5</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'Threshold'</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Observation'</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Cook's Distance"</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Cook's Distance Plot"</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-chkmodel_glm_dia_cookd_py2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chkmodel_glm_dia_cookd_py2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia_cookd_py2-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;11.4: Influential points check for glm_dia_py model"><img src="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia_cookd_py2-3.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chkmodel_glm_dia_cookd_py2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.4: Influential points check for <code>glm_dia_py</code> model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>and/or we can extract a list of data points with a Cook’s distance greater than some specified threshold:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>influential_points <span class="op">=</span> np.where(cooks <span class="op">&gt;</span> <span class="fl">0.5</span>)[<span class="dv">0</span>] <span class="co"># Set appropriate threshold here</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Influential points:"</span>, influential_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Influential points: []</code></pre>
+</div>
+</div>
+<p>The list is empty, indicating no high leverage points that we need to worry about.</p>
+</div>
+</div>
+</div>
+<p>We can check which points may be influential, for example by setting a threshold of &gt; 0.5:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>influential_points <span class="op">=</span> glm_dia_py_resid[glm_dia_py_resid[<span class="st">"cooks_d"</span>] <span class="op">&gt;</span> <span class="fl">0.5</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Influential points:"</span>, influential_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Influential points: Empty DataFrame
+Columns: [cooks_d, obs]
+Index: []</code></pre>
+</div>
+</div>
+<p>The DataFrame is empty, indicating no high leverage points that we need to worry about.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dealing with “outliers”
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Remember:</p>
+<ul>
+<li>Outliers and influential points aren’t necessarily the same thing; all outliers need to be followed up, to check <em>if</em> they are influential in a problematic way</li>
+<li>You <strong>can’t just drop</strong> data points because they are inconvenient! This is cherry-picking, and it can impact the quality and generalisability of your conclusions</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="lack-of-collinearity-1" class="level3" data-number="11.5.2">
+<h3 data-number="11.5.2" class="anchored" data-anchor-id="lack-of-collinearity-1"><span class="header-section-number">11.5.2</span> Lack of collinearity</h3>
+<p>The best way to assess whether we have collinearity is to look at something called the variance inflation factor (VIF).</p>
+<p>When calculating VIF for a model, a separate VIF value will be generated for each predictor. VIF &gt;5 is worth an eyebrow raise; VIF &gt;10 definitely needs some follow-up; and VIF &gt;20 suggests a really strong correlation that is definitely problematic.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_collinearity</span>(glm_dia)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Model has interaction terms. VIFs might be inflated.
+  Try to center the variables used for the interaction, or check
+  multicollinearity among predictors of a model without interaction terms.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Check for Multicollinearity
+
+High Correlation
+
+              Term   VIF     VIF 95% CI adj. VIF Tolerance Tolerance 95% CI
+           glucose 37.99 [32.97, 43.80]     6.16      0.03     [0.02, 0.03]
+         diastolic 24.24 [21.06, 27.92]     4.92      0.04     [0.04, 0.05]
+ glucose:diastolic 69.45 [60.21, 80.14]     8.33      0.01     [0.01, 0.02]</code></pre>
+</div>
+</div>
+<p>We can also visualise the VIFs, if we prefer, with the VIF plot in <code>check_model</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(glm_dia, <span class="at">check =</span> <span class="st">"vif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glm`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-chkmodel_glm_dia_vif" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chkmodel_glm_dia_vif-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia_vif-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;11.5: Collinearity check for glm_dia model"><img src="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia_vif-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chkmodel_glm_dia_vif-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.5: Collinearity check for <code>glm_dia</code> model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<p>The <code>statsmodels</code> package contains a function for calculating VIF.</p>
+<p>It uses the original data, rather than the model, to do this. This means you have to manually exclude the response variable, and then use the <code>dmatrix</code> function from <code>patsy</code> to create the matrix that can be used to calculate the VIF.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> variance_inflation_factor</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> patsy <span class="im">import</span> dmatrix</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop the response variable</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> diabetes_py.drop(columns<span class="op">=</span><span class="st">'test_result'</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create design matrix based on model formula</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> dmatrix(<span class="st">"glucose * diastolic"</span>, data<span class="op">=</span>diabetes_py, return_type<span class="op">=</span><span class="st">'dataframe'</span>)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate VIF for each feature</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>vif_data <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'feature'</span>] <span class="op">=</span> X.columns</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'VIF'</span>] <span class="op">=</span> [variance_inflation_factor(X.values, i)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>                   <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">1</span>])]</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vif_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             feature         VIF
+0          Intercept  600.539179
+1            glucose   36.879125
+2          diastolic   17.407953
+3  glucose:diastolic   63.987700</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>There is definitely some collinearity going on in our model - these VIF values are way over 10.</p>
+<p>The most likely culprit for this is the interaction term - let’s see if we can improve things by dropping it:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>glm_dia_add <span class="ot">&lt;-</span> <span class="fu">glm</span>(test_result <span class="sc">~</span> glucose <span class="sc">+</span> diastolic,</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> diabetes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_collinearity</span>(glm_dia_add)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Check for Multicollinearity
+
+Low Correlation
+
+      Term  VIF   VIF 95% CI adj. VIF Tolerance Tolerance 95% CI
+   glucose 1.02 [1.00, 1.78]     1.01      0.98     [0.56, 1.00]
+ diastolic 1.02 [1.00, 1.78]     1.01      0.98     [0.56, 1.00]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(glm_dia_add, <span class="at">check =</span> <span class="st">"vif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glm`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-chkmodel_glm_dia_col" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chkmodel_glm_dia_col-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia_col-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;11.6: Collinearity check for glm_dia_add model"><img src="glm-11-checking-assumptions_files/figure-html/fig-chkmodel_glm_dia_col-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chkmodel_glm_dia_col-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.6: Collinearity check for <code>glm_dia_add</code> model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<p>We will try again, this time without manually adding the interaction:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Drop the response variable</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> diabetes_py.drop(columns<span class="op">=</span><span class="st">'test_result'</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Add constant column for intercept</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> sm.add_constant(X)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate VIF for each feature</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>vif_data <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'feature'</span>] <span class="op">=</span> X.columns</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'VIF'</span>] <span class="op">=</span> [variance_inflation_factor(X.values, i)</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>                   <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">1</span>])]</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vif_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     feature        VIF
+0      const  42.747425
+1    glucose   1.052426
+2  diastolic   1.052426</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Much better! This means that dropping the interaction term drastically improves the model.</p>
+<p>Why does this matter? Well, if you want to make specific comments about the predictors, then collinearity is an issue, because dropping one of the predictors can cause large swings in the beta estimates. This is an issue if you try to have a meaningful model.</p>
+<p>If all you care about is the overall accuracy of your model (the machine learning approach, where all we care about is maximum prediction) then collinearity becomes irrelevant, because the model and residuals don’t change due to collinearity.</p>
+</section>
+</section>
+<section id="exercises" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">11.6</span> Exercises</h2>
+<section id="sec-exr_levers-again-again" class="level3" data-number="11.6.1">
+<h3 data-number="11.6.1" class="anchored" data-anchor-id="sec-exr_levers-again-again"><span class="header-section-number">11.6.1</span> Revisiting rats and levers (again)</h3>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise 1 - Revisiting rats and levers (again)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-exercise">
+<p><font style="font-variant: small-caps">Level:</font> <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><br></p>
+<p>In <a href="glm-08-proportional-response.html#sec-exr_levers" class="quarto-xref">Exercise&nbsp;<span>8.7.1</span></a> and <a href="glm-09-significance-testing.html#sec-exr_levers-again" class="quarto-xref">Exercise&nbsp;<span>9.7.3</span></a>, you worked through the <code>levers</code> dataset, fitting an appropriate model and then assessing its significance.</p>
+<p>Now, using what you’ve learned in this chapter, assess whether this logistic regression is appropriate:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>levers <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/levers.csv"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>levers <span class="ot">&lt;-</span> levers <span class="sc">|&gt;</span> </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">incorrect_presses =</span> trials <span class="sc">-</span> correct_presses)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>glm_lev <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(correct_presses, incorrect_presses) <span class="sc">~</span> stress_type <span class="sc">*</span> sex <span class="sc">+</span> rat_age,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> binomial,</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> levers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>levers <span class="op">=</span> pd.read_csv(<span class="st">"data/levers.csv"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>levers[<span class="st">'incorrect_presses'</span>] <span class="op">=</span> levers[<span class="st">'trials'</span>] <span class="op">-</span> levers[<span class="st">'correct_presses'</span>]</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"correct_presses + incorrect_presses ~ stress_type * sex + rat_age"</span>,</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> levers)</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>glm_lev <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer" data-collapse="true">
+<section id="consider-the-response-variable" class="level4">
+<h4 class="anchored" data-anchor-id="consider-the-response-variable">Consider the response variable</h4>
+<p>Is a logistic regression, with a logit link function, appropriate?</p>
+<p>For the answer to be “yes”, then our response variable needs to be either a binary or a proportional variable (binomially distributed). We’re looking for those success/fail trials.</p>
+<p>Sometimes, it can help to visualise the design:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/rats-levers-design.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Experimental design for rat lever experiment"><img src="images/rats-levers-design.png" class="img-fluid figure-img" style="width:70.0%" alt="Experimental design for rat lever experiment"></a></p>
+<figcaption>Experimental design for rat lever experiment</figcaption>
+</figure>
+</div>
+<p>We can see that for each rat, the proportion score is made up of a series of trials, each of which can either be correct (+) or incorrect (-).</p>
+</section>
+<section id="consider-independence" class="level4">
+<h4 class="anchored" data-anchor-id="consider-independence">Consider independence</h4>
+<p>Again, we need to think about the design.</p>
+<p>It might initially seem as if we have multiple observations per animal - since each rat pressed a whole bunch of levers - but actually if we look at each row of our dataset:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(levers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 8
+  rat_id stress_type sex    rat_age trials correct_presses prop_correct
+   &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;
+1      1 control     female      13     20               7         0.35
+2      2 control     female      15     20              11         0.55
+3      3 control     female      11     20               5         0.25
+4      4 control     female      15     20               5         0.25
+5      5 stressed    female      13     20               8         0.4 
+6      6 stressed    male        14     20               8         0.4 
+# ℹ 1 more variable: incorrect_presses &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>levers.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   rat_id stress_type     sex  ...  correct_presses  prop_correct  incorrect_presses
+0       1     control  female  ...                7          0.35                 13
+1       2     control  female  ...               11          0.55                  9
+2       3     control  female  ...                5          0.25                 15
+3       4     control  female  ...                5          0.25                 15
+4       5    stressed  female  ...                8          0.40                 12
+
+[5 rows x 8 columns]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>it becomes clear that each row of the dataset represents a rat, rather than each row representing a separate trial/button press.</p>
+<p>In other words: by collecting the proportion of correct trials, we have averaged across the rat, and so it only appears once in our dataset.</p>
+<p>This means that each of the rows of the dataset truly are independent.</p>
+<p>Now, this does make some assumptions about the nature of the rats’ relationships to each other. Some non-independence could be introduced if:</p>
+<ul>
+<li>Some of the rats are genetically more similar to each other, e.g., if multiple rats from the same litter were included</li>
+<li>Rats were trained together before testing</li>
+<li>Rats were exposed to stress in one big batch (i.e., putting them all in one cage with the smell of a predator) rather than individually</li>
+</ul>
+</section>
+<section id="influential-observations-1" class="level4">
+<h4 class="anchored" data-anchor-id="influential-observations-1">Influential observations</h4>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(glm_lev, <span class="at">check =</span> <span class="st">'outliers'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glm`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-11-checking-assumptions_files/figure-html/unnamed-chunk-27-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="glm-11-checking-assumptions_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_outliers</span>(glm_lev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>OK: No outliers detected.
+- Based on the following method and threshold: cook (0.5).
+- For variable: (Whole model)</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>influence <span class="op">=</span> glm_lev.get_influence()</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>cooks <span class="op">=</span> influence.cooks_distance[<span class="dv">0</span>]</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>plt.stem(np.arange(<span class="bu">len</span>(cooks)), cooks, markerfmt<span class="op">=</span><span class="st">","</span>)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="fl">0.5</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'Threshold'</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Observation'</span>)</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Cook's Distance"</span>)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Cook's Distance Plot"</span>)</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-11-checking-assumptions_files/figure-html/unnamed-chunk-28-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="glm-11-checking-assumptions_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>influential_points <span class="op">=</span> np.where(cooks <span class="op">&gt;</span> <span class="fl">0.5</span>)[<span class="dv">0</span>] <span class="co"># Set appropriate threshold here</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Influential points:"</span>, influential_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Influential points: []</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Looks good!</p>
+</section>
+<section id="collinearity" class="level4">
+<h4 class="anchored" data-anchor-id="collinearity">Collinearity</h4>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_collinearity</span>(glm_lev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Check for Multicollinearity
+
+Low Correlation
+
+            Term  VIF     VIF 95% CI adj. VIF Tolerance Tolerance 95% CI
+     stress_type 1.81 [1.40,   2.64]     1.34      0.55     [0.38, 0.72]
+             sex 2.23 [1.66,   3.28]     1.49      0.45     [0.30, 0.60]
+         rat_age 1.02 [1.00, 287.92]     1.01      0.98     [0.00, 1.00]
+ stress_type:sex 2.70 [1.97,   4.01]     1.64      0.37     [0.25, 0.51]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(glm_lev, <span class="at">check =</span> <span class="st">"vif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cannot simulate residuals for models of class `glm`. Please try
+  `check_model(..., residual_type = "normal")` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-11-checking-assumptions_files/figure-html/unnamed-chunk-30-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="glm-11-checking-assumptions_files/figure-html/unnamed-chunk-30-3.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<p>Remember to drop the response variables (and also rat ID in this case).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop the response variable</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> levers.drop(columns<span class="op">=</span>[<span class="st">'rat_id'</span>,<span class="st">'correct_presses'</span>,<span class="st">'prop_correct'</span>,<span class="st">'incorrect_presses'</span>])</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create design matrix</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> dmatrix(<span class="st">"stress_type * sex + rat_age"</span>, data<span class="op">=</span>levers, return_type<span class="op">=</span><span class="st">'dataframe'</span>)</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate VIF for each feature</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>vif_data <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'feature'</span>] <span class="op">=</span> X.columns</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>vif_data[<span class="st">'VIF'</span>] <span class="op">=</span> [variance_inflation_factor(X.values, i)</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>                   <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">1</span>])]</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vif_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                               feature        VIF
+0                            Intercept  48.157694
+1              stress_type[T.stressed]   1.768004
+2                          sex[T.male]   2.190167
+3  stress_type[T.stressed]:sex[T.male]   2.799690
+4                              rat_age   1.016442</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Again, all good - none of our predictors have a concerning VIF.</p>
+<p>Collectively, it would seem that our model does indeed meet the assumptions, and there are no glaring obstacles to us proceeding with a significance test and an interpretation.</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-exr_seed-germination" class="level3" data-number="11.6.2">
+<h3 data-number="11.6.2" class="anchored" data-anchor-id="sec-exr_seed-germination"><span class="header-section-number">11.6.2</span> Seed germination</h3>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise 2 - Seed germination
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div id="ex-seed_germination" class="callout-exercise">
+<p><font style="font-variant: small-caps">Level:</font> <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><br></p>
+<p>This exercise uses a new dataset, <code>seeds</code>, which is all about a seed germination experiment.</p>
+<p>Each row of the dataset represents a seed tray, in which 25 seeds were planted. The trays were treated with one of two light conditions (<code>sun</code>, <code>shade</code>) and one of three watering frequencies (<code>low</code>, <code>medium</code>, <code>high</code>).</p>
+<p>The researchers want to know whether either or both of these predictors have an affect on the proportion of seeds that successfully germinate.</p>
+<p>In this exercise, you should:</p>
+<ol type="1">
+<li>Visualise the data</li>
+<li>Fit a suitable model</li>
+<li>Test the assumptions and quality of model fit</li>
+<li>Decide whether to draw a biological conclusion from the data</li>
+</ol>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>seeds <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/seeds.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>seeds <span class="op">=</span> pd.read_csv(<span class="st">"data/seeds.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>There is no formal worked answer provided. However, all of the code you will need can be adapted from the <code>diabetes</code> and <code>aphids</code> examples worked through in the chapter.</p>
+<p>You are also strongly encouraged to work with, or share your answer with, a neighbour.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hints
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Consider a possible interaction effect</li>
+<li>Look closely at the dataset itself, and all its columns</li>
+<li>You should find at least two issues and/or failures of assumptions!</li>
+</ul>
+<p>It may help to visualise the experimental design (the number of trays has been simplified so that the figure fits on the page):</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/seeds-design.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Seed germination experiment"><img src="images/seeds-design.png" class="img-fluid figure-img" style="width:70.0%" alt="Seed germination experiment"></a></p>
+<figcaption>Seed germination experiment</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="summary" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="summary"><span class="header-section-number">11.7</span> Summary</h2>
+<p>While generalised linear models make fewer assumptions than standard linear models, we do still expect certain things to be true about the model and our variables for GLMs to be valid.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key points
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>For a generalised linear model, we assume that we have chosen the correct link function, that our response variable follows a distribution from the exponential family, and that our data are independent</li>
+<li>We also want to check that there are no overly influential points, no collinearity, and that the dispersion parameter is close to 1</li>
+<li>To assess some of these assumptions/qualities, we have to rely on our understanding of our dataset</li>
+<li>For others, we can calculate metrics like Cook’s distance and variance inflation factor, or produce diagnostic plots</li>
+</ul>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../materials/glm-10-goodness-of-fit.html" class="pagination-link" aria-label="Goodness-of-fit">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Goodness-of-fit</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../materials/glm-12-analysing-count-data.html" class="pagination-link" aria-label="Analysing count data">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysing count data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <img src="https://creativecommons.org/images/deed/cc_icon_black_x2.png" class="img-fluid" width="25"> Bioinformatics Training Facility</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

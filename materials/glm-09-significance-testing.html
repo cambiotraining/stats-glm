@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Significance testing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../materials/glm-10-goodness-of-fit.html" rel="next">
+<link href="../materials/glm-08-proportional-response.html" rel="prev">
+<link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-b13b45a669a15caaa44b422aa2b28d1d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Generalised linear models</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/cambiotraining/"> <i class="bi bi-github" role="img" aria-label="Bioinformatics Training Facility GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/bioinfocambs"> <i class="bi bi-twitter" role="img" aria-label="Bioinformatics Training Facility Twitter">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Significance testing</span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Welcome</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Course overview</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">References</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Introduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-05-intro-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Linear models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-06-intro-glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Generalise your model</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Binary responses</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-07-binary-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Binary response</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-08-proportional-response.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Proportional response</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Model assessment</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-09-significance-testing.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Significance testing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-10-goodness-of-fit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Goodness-of-fit</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-11-checking-assumptions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Checking assumptions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Count responses</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-12-analysing-count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Analysing count data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/glm-13-overdispersed-count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Overdispersed count data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#context" id="toc-context" class="nav-link active" data-scroll-target="#context"><span class="header-section-number">9.1</span> Context</a></li>
+  <li><a href="#section-setup" id="toc-section-setup" class="nav-link" data-scroll-target="#section-setup"><span class="header-section-number">9.2</span> Section setup</a></li>
+  <li><a href="#sec-mat_deviance" id="toc-sec-mat_deviance" class="nav-link" data-scroll-target="#sec-mat_deviance"><span class="header-section-number">9.3</span> Deviance</a></li>
+  <li><a href="#revisiting-the-diabetes-dataset" id="toc-revisiting-the-diabetes-dataset" class="nav-link" data-scroll-target="#revisiting-the-diabetes-dataset"><span class="header-section-number">9.4</span> Revisiting the diabetes dataset</a></li>
+  <li><a href="#what-are-the-p-values-in-the-summary" id="toc-what-are-the-p-values-in-the-summary" class="nav-link" data-scroll-target="#what-are-the-p-values-in-the-summary"><span class="header-section-number">9.5</span> What are the p-values in the summary?</a></li>
+  <li><a href="#likelihood-ratio-tests-lrts" id="toc-likelihood-ratio-tests-lrts" class="nav-link" data-scroll-target="#likelihood-ratio-tests-lrts"><span class="header-section-number">9.6</span> Likelihood ratio tests (LRTs)</a>
+  <ul class="collapse">
+  <li><a href="#testing-the-model-versus-the-null" id="toc-testing-the-model-versus-the-null" class="nav-link" data-scroll-target="#testing-the-model-versus-the-null"><span class="header-section-number">9.6.1</span> Testing the model versus the null</a></li>
+  <li><a href="#testing-individual-predictors" id="toc-testing-individual-predictors" class="nav-link" data-scroll-target="#testing-individual-predictors"><span class="header-section-number">9.6.2</span> Testing individual predictors</a></li>
+  </ul></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">9.7</span> Exercises</a>
+  <ul class="collapse">
+  <li><a href="#sec-exr_failure" id="toc-sec-exr_failure" class="nav-link" data-scroll-target="#sec-exr_failure"><span class="header-section-number">9.7.1</span> Predicting failure</a></li>
+  <li><a href="#sec-exr_failure-tweak" id="toc-sec-exr_failure-tweak" class="nav-link" data-scroll-target="#sec-exr_failure-tweak"><span class="header-section-number">9.7.2</span> Predicting failure (with a tweak)</a></li>
+  <li><a href="#sec-exr_levers-again" id="toc-sec-exr_levers-again" class="nav-link" data-scroll-target="#sec-exr_levers-again"><span class="header-section-number">9.7.3</span> Revisiting rats and levers</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">9.8</span> Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Significance testing</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning outcomes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Understand the concept of statistical deviance</li>
+<li>Use likelihood ratio tests to perform significance testing for:</li>
+<li>An entire model (versus the null model)</li>
+<li>Individual predictor variables</li>
+</ul>
+</div>
+</div>
+<section id="context" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="context"><span class="header-section-number">9.1</span> Context</h2>
+<p>Up until now we’ve focussed on creating appropriate models for non-continuous data and making model predictions. In this section we’re going to focus on statistical significance testing.</p>
+<p>Generalised linear models are fitted a little differently to standard linear models - namely, using maximum likelihood estimation instead of ordinary least squares for estimating the model coefficients.</p>
+<p>As a result, we can no longer use F-tests for significance, or interpret <span class="math inline">\(R^2\)</span> values in quite the same way. This section will introduce likelihood ratio tests, a method for extracting p-values for GLMs.</p>
+</section>
+<section id="section-setup" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="section-setup"><span class="header-section-number">9.2</span> Section setup</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Click to expand
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We’ll use the following libraries and data:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required R libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the required data</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>diabetes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/diabetes.csv"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>challenger <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/challenger.csv"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>levers <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/levers.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required Python libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the required data</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>diabetes <span class="op">=</span> pd.read_csv(<span class="st">"data/diabetes.csv"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>challenger <span class="op">=</span> pd.read_csv(<span class="st">"data/challenger.csv"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>levers <span class="op">=</span> pd.read_csv(<span class="st">"data/levers.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-mat_deviance" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="sec-mat_deviance"><span class="header-section-number">9.3</span> Deviance</h2>
+<p>Several of the tests and metrics we’ll discuss below are based heavily on deviance. So, what is deviance, and where does it come from?</p>
+<p>Here’s a few key definitions:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 88%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Maximum likelihood estimation</strong></td>
+<td>This is the method by which we fit the GLM (i.e., find the values for the beta coefficients). As the name suggests, we are trying to find the beta coefficients that maximise the likelihood of the dataset/sample.</td>
+</tr>
+<tr class="even">
+<td><strong>Likelihood</strong></td>
+<td><p>In this context, “likelihood” refers to the joint probability of all of the data points in the sample. In other words, how likely is it that you would sample a set of data points like these, if they were being drawn from an underlying population where your model is true?</p>
+<p>Each candidate model fitted to a dataset will have its own unique likelihood.</p></td>
+</tr>
+<tr class="odd">
+<td><strong>Saturated (perfect) model</strong></td>
+<td><p>For each dataset, there is a “saturated”, or perfect, model. This model has the same number of parameters in it as there are data points, meaning the data are fitted exactly - as if connecting the dots between them.</p>
+<p>This model has the largest possible likelihood of any model fitted to the dataset.</p>
+<p>Of course, we don’t actually use the saturated model for drawing real conclusions, but we can use it as a baseline for comparison.</p></td>
+</tr>
+<tr class="even">
+<td><strong>Deviance<br>
+(residual deviance)</strong></td>
+<td><p>Each candidate model is compared back to the saturated model to figure out its deviance.</p>
+<p>Deviance is defined as the difference between the log-likelihood of your fitted model and the log-likelihood of the saturated model (multiplied by 2).</p>
+<p>Because deviance is all about capturing the discrepancy between fitted and actual values, it’s performing a similar function to the residual sum of squares (RSS) in a standard linear model. In fact, the RSS is really just a specific type of deviance.</p>
+<p>Sometimes, the deviance of a candidate (non-null) model is referred to more fully as “residual deviance”.</p></td>
+</tr>
+<tr class="odd">
+<td><strong>Null deviance</strong></td>
+<td><p>One of the models that we can compare against the saturated model is the null model (a model with no predictors). This gives us the deviance value for the null model.</p>
+<p>This is the greatest deviance of any possible model that could be fitted to the data, because it explains zero variance in the response variable.</p></td>
+</tr>
+</tbody>
+</table>
+<div id="fig-modeldeviances" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-modeldeviances-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/LRT_schematic.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;9.1: Different models and their deviances"><img src="images/LRT_schematic.png" class="img-fluid figure-img" style="width:70.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-modeldeviances-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.1: Different models and their deviances
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="revisiting-the-diabetes-dataset" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="revisiting-the-diabetes-dataset"><span class="header-section-number">9.4</span> Revisiting the diabetes dataset</h2>
+<p>As a worked example, we’ll use a logistic regression fitted to the <code>diabetes</code> dataset that we saw in a previous section.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>diabetes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/diabetes.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 728 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (3): glucose, diastolic, test_result
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>diabetes_py <span class="op">=</span> pd.read_csv(<span class="st">"data/diabetes.csv"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>diabetes_py.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   glucose  diastolic  test_result
+0      148         72            1
+1       85         66            0
+2      183         64            1
+3       89         66            0
+4      137         40            1</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>As a reminder, this dataset contains three variables:</p>
+<ul>
+<li><code>test_result</code>, binary results of a diabetes test result (1 for positive, 0 for negative)</li>
+<li><code>glucose</code>, the results of a glucose tolerance test</li>
+<li><code>diastolic</code> blood pressure</li>
+</ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>glm_dia <span class="ot">&lt;-</span> <span class="fu">glm</span>(test_result <span class="sc">~</span> glucose <span class="sc">*</span> diastolic,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> diabetes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"test_result ~ glucose * diastolic"</span>, </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(), </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> diabetes_py)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>glm_dia_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="what-are-the-p-values-in-the-summary" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="what-are-the-p-values-in-the-summary"><span class="header-section-number">9.5</span> What are the p-values in the summary?</h2>
+<p>You might have noticed that when you use <code>summary</code> to see the model output, it comes with some p-values automatically.</p>
+<p>What are they? Can you use/interpret them?</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_dia)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = test_result ~ glucose * diastolic, family = "binomial", 
+    data = diabetes)
+
+Coefficients:
+                    Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept)       -8.5710565  2.7032318  -3.171  0.00152 **
+glucose            0.0547050  0.0209256   2.614  0.00894 **
+diastolic          0.0423651  0.0363681   1.165  0.24406   
+glucose:diastolic -0.0002221  0.0002790  -0.796  0.42590   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 936.60  on 727  degrees of freedom
+Residual deviance: 748.01  on 724  degrees of freedom
+AIC: 756.01
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_dia_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:            test_result   No. Observations:                  728
+Model:                            GLM   Df Residuals:                      724
+Model Family:                Binomial   Df Model:                            3
+Link Function:                  Logit   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -374.00
+Date:                Fri, 25 Jul 2025   Deviance:                       748.01
+Time:                        08:28:22   Pearson chi2:                     720.
+No. Iterations:                     5   Pseudo R-squ. (CS):             0.2282
+Covariance Type:            nonrobust                                         
+=====================================================================================
+                        coef    std err          z      P&gt;|z|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+Intercept            -8.5711      2.703     -3.171      0.002     -13.869      -3.273
+glucose               0.0547      0.021      2.614      0.009       0.014       0.096
+diastolic             0.0424      0.036      1.165      0.244      -0.029       0.114
+glucose:diastolic    -0.0002      0.000     -0.796      0.426      -0.001       0.000
+=====================================================================================</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Each individual parameter, or coefficient, has its own z-value and associated p-value. In each case, a hypothesis test has been performed - these are formally called <strong>Wald tests</strong>.</p>
+<p>The null hypothesis for these Wald tests is that the value of the coefficient = 0. The idea is that if a coefficient isn’t significantly different from 0, then that parameter isn’t useful and could be dropped from the model.</p>
+<p>These tests are the equivalent of the t-tests that are calculated as part of the <code>summary</code> output for standard linear models.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why can’t we just use these p-values?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In some cases, you can. However, there are a few cases where they don’t give you all the info you need.</p>
+<p>Firstly: they don’t tell you about the significance of the model as a whole (versus the null model).</p>
+<p>Secondly: for categorical predictors, you will get a separate Wald p-value for each non-reference group (compared back to the reference group). This is <em>not</em> the same as a p-value for the categorical predictor as a whole. The Wald p-values can also be heavily affected by which group was chosen as the reference.</p>
+</div>
+</div>
+<p>It’s typically preferable to use a likelihood ratio test instead.</p>
+</section>
+<section id="likelihood-ratio-tests-lrts" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="likelihood-ratio-tests-lrts"><span class="header-section-number">9.6</span> Likelihood ratio tests (LRTs)</h2>
+<p>When we were assessing the significance of standard linear models, we were able to use the F-statistic to determine:</p>
+<ul>
+<li>the significance of the model versus a null model, and</li>
+<li>the significance of individual predictors.</li>
+</ul>
+<p>We can’t use these F-tests for GLMs, but we can use LRTs in a very similar way, to calculate p-values for both the model as a whole, and for individual variables. This work because, in general, if you have a test statistic and you know the distribution of that test statistic, then you can use this to calculate a p-value.</p>
+<p>These tests are all built on the idea of deviance, or the likelihood ratio, as discussed above on this page. We can compare any two models fitted to the same dataset by looking at the difference in their deviances, also known as the difference in their log-likelihoods, or more simply as a likelihood ratio.</p>
+<p>Helpfully, this likelihood ratio approximately follows a chi-square distribution, which we can capitalise on to calculate a p-value. All we need is the number of degrees of freedom, which is equal to the difference in the number of parameters of the two models you’re comparing.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Importantly, we are only able to use this sort of test when one of the two models that we are comparing is a “simpler” version of the other, i.e., one model has a subset of the parameters of the other model.</p>
+<p>So while we could perform an LRT just fine between these two models: <code>Y ~ A + B + C</code> and <code>Y ~ A + B + C + D</code>, or between any model and the null (<code>Y ~ 1</code>), we would not be able to use this test to compare <code>Y ~ A + B + C</code> and <code>Y ~ A + B + D</code>.</p>
+</div>
+</div>
+<section id="testing-the-model-versus-the-null" class="level3" data-number="9.6.1">
+<h3 data-number="9.6.1" class="anchored" data-anchor-id="testing-the-model-versus-the-null"><span class="header-section-number">9.6.1</span> Testing the model versus the null</h3>
+<p>Since LRTs involve making a comparison between two models, we must first decide which models we’re comparing, and check that one model is a “subset” of the other.</p>
+<p>Let’s use an example from a previous section of the course, where we fitted a logistic regression to the <code>diabetes</code> dataset.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<p>The first step is to create the two models that we want to compare: our original model, and the null model (with and without predictors, respectively).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>glm_dia <span class="ot">&lt;-</span> <span class="fu">glm</span>(test_result <span class="sc">~</span> glucose <span class="sc">*</span> diastolic,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> diabetes)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>glm_null <span class="ot">&lt;-</span> <span class="fu">glm</span>(test_result <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">family =</span> binomial, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> diabetes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, we use the <code>lrtest</code> function from the <code>lmtest</code> package to perform the test itself; we include both the models that we want to compare, listing them one after another.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(glm_dia, glm_null)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: test_result ~ glucose * diastolic
+Model 2: test_result ~ 1
+  #Df LogLik Df  Chisq Pr(&gt;Chisq)    
+1   4 -374.0                         
+2   1 -468.3 -3 188.59  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>We can see from the output that our chi-square statistic is significant, with a really small p-value. This tells us that, for the difference in degrees of freedom (here, that’s 3), the change in deviance is actually quite big. (In this case, you can use <code>summary(glm_dia)</code> to see those deviances - 936 versus 748!)</p>
+<p>In other words, our model is better than the null.</p>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<p>The first step is to create the two models that we want to compare: our original model, and the null model (with and without our predictor, respectively).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"test_result ~ glucose * diastolic"</span>, </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(), </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> diabetes_py)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>glm_dia_py <span class="op">=</span> model.fit()</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"test_result ~ 1"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> diabetes_py)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>glm_null_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Unlike in R, there isn’t a nice neat function for extracting the <span class="math inline">\(\chi^2\)</span> value, so we have to do a little bit of work by hand.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate the likelihood ratio (i.e. the chi-square value)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(glm_null_py.llf <span class="op">-</span> glm_dia_py.llf)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate the associated p-value</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, glm_null_py.df_resid <span class="op">-</span> glm_dia_py.df_resid)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>188.5931483744455 1.228870036004379e-40</code></pre>
+</div>
+</div>
+<p>This gives us the likelihood ratio, based on the log-likelihoods that we’ve extracted directly from the models, which approximates a chi-square distribution.</p>
+<p>We’ve also calculated the associated p-value, by providing the difference in degrees of freedom between the two models (in this case, that’s simply 1, but for more complicated models it’s easier to extract the degrees of freedom directly from the model as we’ve done here).</p>
+<p>Here, we have a large chi-square statistic and a small p-value. This tells us that, for the difference in degrees of freedom (here, that’s 1), the change in deviance is actually quite big. (In this case, you can use <code>glm_dia_py.summary()</code> to see those deviances - 936 versus 748!)</p>
+<p>In other words, our model is better than the null.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="testing-individual-predictors" class="level3" data-number="9.6.2">
+<h3 data-number="9.6.2" class="anchored" data-anchor-id="testing-individual-predictors"><span class="header-section-number">9.6.2</span> Testing individual predictors</h3>
+<p>As well as testing the overall model versus the null, we might want to test particular predictors to determine whether they are individually significant.</p>
+<p>The way to achieve this is essentially to perform a series of “targeted” likelihood ratio tests. In each LRT, we’ll compare two models that are almost identical - one with, and one without, our variable of interest in each case.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<p>The first step is to construct a new model that doesn’t contain our predictor of interest. Let’s test the <code>glucose:diastolic</code> interaction.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>glm_dia_add <span class="ot">&lt;-</span> <span class="fu">glm</span>(test_result <span class="sc">~</span> glucose <span class="sc">+</span> diastolic,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> diabetes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we can use the <code>lrtest</code> function (or the <code>anova</code> function) to compare the models with and without the interaction:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(glm_dia, glm_dia_add)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: test_result ~ glucose * diastolic
+Model 2: test_result ~ glucose + diastolic
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)
+1   4 -374.00                     
+2   3 -374.32 -1 0.6288     0.4278</code></pre>
+</div>
+</div>
+<p>This tells us that our interaction <code>glucose:diastolic</code> isn’t significant - our more complex model doesn’t have a meaningful reduction in deviance.</p>
+<p>This might, however, seem like a slightly clunky way to test each individual predictor. Luckily, we can also use our trusty <code>anova</code> function with an extra argument to tell us about individual predictors.</p>
+<p>By specifying that we want to use a chi-squared test, we are able to construct an analysis of deviance table (as opposed to an analysis of variance table) that will perform the likelihood ratio tests for us for each predictor:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(glm_dia, <span class="at">test=</span><span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model: binomial, link: logit
+
+Response: test_result
+
+Terms added sequentially (first to last)
+
+                  Df Deviance Resid. Df Resid. Dev Pr(&gt;Chi)    
+NULL                                727     936.60             
+glucose            1  184.401       726     752.20  &lt; 2e-16 ***
+diastolic          1    3.564       725     748.64  0.05905 .  
+glucose:diastolic  1    0.629       724     748.01  0.42779    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>You’ll spot that the p-values we get from the analysis of deviance table match the p-values you could calculate yourself using <code>lrtest</code>; this is just more efficient when you have a complex model!</p>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<p>The first step is to construct a new model that doesn’t contain our predictor of interest. Let’s test the <code>glucose:diastolic</code> interaction.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"test_result ~ glucose + diastolic"</span>, </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(), </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> diabetes_py)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>glm_dia_add_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We’ll then use the same code we used above, to compare the models with and without the interaction:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(glm_dia_add_py.llf <span class="op">-</span> glm_dia_py.llf)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, glm_dia_py.df_model <span class="op">-</span> glm_dia_add_py.df_model)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.6288201373599804 0.42778842576800746</code></pre>
+</div>
+</div>
+<p>This tells us that our interaction <code>glucose:diastolic</code> isn’t significant - our more complex model doesn’t have a meaningful reduction in deviance.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="exercises" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">9.7</span> Exercises</h2>
+<section id="sec-exr_failure" class="level3" data-number="9.7.1">
+<h3 data-number="9.7.1" class="anchored" data-anchor-id="sec-exr_failure"><span class="header-section-number">9.7.1</span> Predicting failure</h3>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise 1 - Predicting failure
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div id="ex-predict_failure" class="callout-exercise">
+<p><font style="font-variant: small-caps">Level:</font> <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><br></p>
+<p>In the <a href="../materials/glm-08-proportional-response.html">previous chapter</a>, we used the <code>challenger.csv</code> dataset as a worked example.</p>
+<p>Our research question was: should NASA have cancelled the Challenger launch, based on the data they had about o-rings in previous launches?</p>
+<p>Let’s try to come up with an interpretation from these data, with the help of a likelihood ratio test.</p>
+<p>You should:</p>
+<ol type="1">
+<li>Refit the model (if it’s not still in your environment from last chapter)</li>
+<li>Fit a null model (no predictors)</li>
+<li>Perform a likelihood ratio test to compare the model to the null model</li>
+<li>Decide what you think the answer is to the research question</li>
+</ol>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer" data-collapse="true">
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<p>Let’s read in our data and mutate it to contain the relevant variables (this is borrowed from the last chapter):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>challenger <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/challenger.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total =</span> <span class="dv">6</span>,                     <span class="co"># total number of o-rings</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">intact =</span> <span class="dv">6</span> <span class="sc">-</span> damage,           <span class="co"># number of undamaged o-rings</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">prop_damaged =</span> damage <span class="sc">/</span> total) <span class="co"># proportion damaged o-rings</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 23 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (2): temp, damage
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<p>We create our logistic model like so:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>glm_chl <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(damage, intact) <span class="sc">~</span> temp,</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> binomial,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> challenger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can get the model parameters as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_chl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = cbind(damage, intact) ~ temp, family = binomial, 
+    data = challenger)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) 11.66299    3.29626   3.538 0.000403 ***
+temp        -0.21623    0.05318  -4.066 4.78e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 38.898  on 22  degrees of freedom
+Residual deviance: 16.912  on 21  degrees of freedom
+AIC: 33.675
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+</div>
+<p>And let’s visualise the model, just to make sure it looks sensible.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(challenger, <span class="fu">aes</span>(temp, prop_damaged)) <span class="sc">+</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">fullrange =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> binomial)) <span class="sc">+</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">25</span>,<span class="dv">85</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-09-significance-testing_files/figure-html/unnamed-chunk-23-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="glm-09-significance-testing_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="comparing-against-the-null" class="level4">
+<h4 class="anchored" data-anchor-id="comparing-against-the-null">Comparing against the null</h4>
+<p>The next question we can ask is: is our model any better than the null model?</p>
+<p>First, we define the null model; then we use <code>lrtest</code> to compare them.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>glm_chl_null <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(damage, intact) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">family =</span> binomial,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> challenger)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(glm_chl, glm_chl_null)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: cbind(damage, intact) ~ temp
+Model 2: cbind(damage, intact) ~ 1
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)    
+1   2 -14.837                         
+2   1 -25.830 -1 21.985  2.747e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>With a very small p-value (and a large chi-square statistic), it would seem that the model is indeed significantly better than the null.</p>
+<p>Since there’s only one predictor variable, this is pretty much equivalent to saying that <code>temp</code> does predict the proportion of o-rings that are damaged.</p>
+</section>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<p>We need to make sure we’ve read in our data, and mutated it to contain the relevant variables (this is borrowed from the last chapter):</p>
+<p>Our logistic regression is fitted like so:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a generalised linear model</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"damage + intact ~ temp"</span>,</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> challenger_py)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>glm_chl_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can get the model parameters as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_chl_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Generalized Linear Model Regression Results                   
+================================================================================
+Dep. Variable:     ['damage', 'intact']   No. Observations:                   23
+Model:                              GLM   Df Residuals:                       21
+Model Family:                  Binomial   Df Model:                            1
+Link Function:                    Logit   Scale:                          1.0000
+Method:                            IRLS   Log-Likelihood:                -14.837
+Date:                  Fri, 25 Jul 2025   Deviance:                       16.912
+Time:                          08:28:22   Pearson chi2:                     28.1
+No. Iterations:                       7   Pseudo R-squ. (CS):             0.6155
+Covariance Type:              nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     11.6630      3.296      3.538      0.000       5.202      18.124
+temp          -0.2162      0.053     -4.066      0.000      -0.320      -0.112
+==============================================================================</code></pre>
+</div>
+</div>
+<p>Generate new model data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> pd.DataFrame({<span class="st">'temp'</span>: <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">25</span>, <span class="dv">86</span>))})</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>model[<span class="st">"pred"</span>] <span class="op">=</span> glm_chl_py.predict(model)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>model.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   temp      pred
+0    25  0.998087
+1    26  0.997626
+2    27  0.997055
+3    28  0.996347
+4    29  0.995469</code></pre>
+</div>
+</div>
+<p>And let’s visualise the model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot() <span class="op">+</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>   geom_point(challenger_py, aes(x <span class="op">=</span> <span class="st">"temp"</span>, y <span class="op">=</span> <span class="st">"prop_damaged"</span>)) <span class="op">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>   geom_line(model, aes(x <span class="op">=</span> <span class="st">"temp"</span>, y <span class="op">=</span> <span class="st">"pred"</span>), colour <span class="op">=</span> <span class="st">"blue"</span>, size <span class="op">=</span> <span class="dv">1</span>))</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-09-significance-testing_files/figure-html/unnamed-chunk-29-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="glm-09-significance-testing_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="614"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="comparing-against-the-null-1" class="level4">
+<h4 class="anchored" data-anchor-id="comparing-against-the-null-1">Comparing against the null</h4>
+<p>The next question we can ask is: is our model any better than the null model?</p>
+<p>First we need to define the null model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a linear model</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"damage + intact ~ 1"</span>,</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> challenger_py)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>glm_chl_null_py <span class="op">=</span> model.fit()</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_chl_null_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Generalized Linear Model Regression Results                   
+================================================================================
+Dep. Variable:     ['damage', 'intact']   No. Observations:                   23
+Model:                              GLM   Df Residuals:                       22
+Model Family:                  Binomial   Df Model:                            0
+Link Function:                    Logit   Scale:                          1.0000
+Method:                            IRLS   Log-Likelihood:                -25.830
+Date:                  Fri, 25 Jul 2025   Deviance:                       38.898
+Time:                          08:28:22   Pearson chi2:                     58.5
+No. Iterations:                       5   Pseudo R-squ. (CS):              0.000
+Covariance Type:              nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     -2.4463      0.314     -7.783      0.000      -3.062      -1.830
+==============================================================================</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(glm_chl_null_py.llf <span class="op">-</span> glm_chl_py.llf)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, glm_chl_null_py.df_resid <span class="op">-</span> glm_chl_py.df_resid)</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>21.985381067707717 2.747351270353041e-06</code></pre>
+</div>
+</div>
+<p>With a very small p-value (and a large chi-square statistic), it would seem that the model is indeed significantly better than the null.</p>
+<p>Since there’s only one predictor variable, this is pretty much equivalent to saying that <code>temp</code> does predict the proportion of o-rings that are damaged.</p>
+</section>
+</div>
+</div>
+</div>
+<p>So, could NASA have predicted what happened?</p>
+<p>Probably, yes. They certainly should have listened to the engineers who were raising concerns based on these data. But that’s the subject of many documentaries, if you’re interested in the topic, so we won’t get into it here…</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-exr_failure-tweak" class="level3" data-number="9.7.2">
+<h3 data-number="9.7.2" class="anchored" data-anchor-id="sec-exr_failure-tweak"><span class="header-section-number">9.7.2</span> Predicting failure (with a tweak)</h3>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise 2 - Predicting failure (with a tweak)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div id="ex-failure_tweak" class="callout-exercise">
+<p><font style="font-variant: small-caps">Level:</font> <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><br></p>
+<p>In the <code>challenger</code> dataset, the data point at 53 degrees Fahrenheit is quite influential.</p>
+<p>Would the conclusions from the previous exercise still hold without that point?</p>
+<p>You should:</p>
+<ol type="1">
+<li>Fit a model without this data point</li>
+<li>Visualise the new model</li>
+<li>Determine whether there is a significant link between launch temperature and o-ring failure in the new model</li>
+</ol>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer" data-collapse="true">
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<p>First, we need to remove the influential data point:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>challenger_new <span class="ot">&lt;-</span> challenger <span class="sc">|&gt;</span> <span class="fu">filter</span>(temp <span class="sc">!=</span> <span class="dv">53</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can create a new generalised linear model, based on these data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>glm_chl_new <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(damage, intact) <span class="sc">~</span> temp,</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> binomial,</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> challenger_new)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can get the model parameters as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_chl_new)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = cbind(damage, intact) ~ temp, family = binomial, 
+    data = challenger_new)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)  5.68223    4.43138   1.282   0.1997  
+temp        -0.12817    0.06697  -1.914   0.0556 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 16.375  on 21  degrees of freedom
+Residual deviance: 12.633  on 20  degrees of freedom
+AIC: 27.572
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p>And let’s visualise the model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(challenger_new, <span class="fu">aes</span>(temp, prop_damaged)) <span class="sc">+</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"glm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">fullrange =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> binomial)) <span class="sc">+</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">25</span>,<span class="dv">85</span>) <span class="sc">+</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># add a vertical line at 53 F temperature</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">53</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-09-significance-testing_files/figure-html/unnamed-chunk-35-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="glm-09-significance-testing_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The prediction proportion of damaged o-rings is markedly less than what was observed.</p>
+<section id="comparing-against-the-null-2" class="level4">
+<h4 class="anchored" data-anchor-id="comparing-against-the-null-2">Comparing against the null</h4>
+<p>So is our new model any better than the null?</p>
+<p>We need to construct a new null model - we can’t use the one from the previous exercise, because it was fitted to a different dataset that had an extra observation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>glm_chl_null_new <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(damage, intact) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">family =</span> binomial,</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> challenger_new)</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(glm_chl_new, glm_chl_null_new)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: cbind(damage, intact) ~ temp
+Model 2: cbind(damage, intact) ~ 1
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)  
+1   2 -11.786                       
+2   1 -13.657 -1 3.7421    0.05306 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>The model is not significantly better than the null in this case, with a p-value here of just over 0.05.</p>
+</section>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<p>First, we need to remove the influential data point:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>challenger_new_py <span class="op">=</span> challenger_py.query(<span class="st">"temp != 53"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can create a new generalised linear model, based on these data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a generalised linear model</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"damage + intact ~ temp"</span>,</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> challenger_new_py)</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>glm_chl_new_py <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can get the model parameters as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_chl_new_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Generalized Linear Model Regression Results                   
+================================================================================
+Dep. Variable:     ['damage', 'intact']   No. Observations:                   22
+Model:                              GLM   Df Residuals:                       20
+Model Family:                  Binomial   Df Model:                            1
+Link Function:                    Logit   Scale:                          1.0000
+Method:                            IRLS   Log-Likelihood:                -11.786
+Date:                  Fri, 25 Jul 2025   Deviance:                       12.633
+Time:                          08:28:23   Pearson chi2:                     16.6
+No. Iterations:                       6   Pseudo R-squ. (CS):             0.1564
+Covariance Type:              nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept      5.6822      4.431      1.282      0.200      -3.003      14.368
+temp          -0.1282      0.067     -1.914      0.056      -0.259       0.003
+==============================================================================</code></pre>
+</div>
+</div>
+<p>Generate new model data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> pd.DataFrame({<span class="st">'temp'</span>: <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">25</span>, <span class="dv">86</span>))})</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>model[<span class="st">"pred"</span>] <span class="op">=</span> glm_chl_new_py.predict(model)</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>model.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   temp      pred
+0    25  0.922585
+1    26  0.912920
+2    27  0.902177
+3    28  0.890269
+4    29  0.877107</code></pre>
+</div>
+</div>
+<p>And let’s visualise the model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (ggplot() <span class="op">+</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>   geom_point(challenger_new_py, aes(x <span class="op">=</span> <span class="st">"temp"</span>, y <span class="op">=</span> <span class="st">"prop_damaged"</span>)) <span class="op">+</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>   geom_line(model, aes(x <span class="op">=</span> <span class="st">"temp"</span>, y <span class="op">=</span> <span class="st">"pred"</span>), colour <span class="op">=</span> <span class="st">"blue"</span>, size <span class="op">=</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>   <span class="co"># add a vertical line at 53 F temperature</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>   geom_vline(xintercept <span class="op">=</span> <span class="dv">53</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>))</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="glm-09-significance-testing_files/figure-html/unnamed-chunk-41-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="glm-09-significance-testing_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="614"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The prediction proportion of damaged o-rings is markedly less than what was observed.</p>
+<section id="comparing-against-the-null-3" class="level4">
+<h4 class="anchored" data-anchor-id="comparing-against-the-null-3">Comparing against the null</h4>
+<p>So is our new model any better than the null?</p>
+<p>We need to construct a new null model - we can’t use the one from the previous exercise, because it was fitted to a different dataset that had an extra observation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a linear model</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"damage + intact ~ 1"</span>,</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> challenger_new_py)</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="co"># and get the fitted parameters of the model</span></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>glm_chl_new_null_py <span class="op">=</span> model.fit()</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(glm_chl_new_null_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Generalized Linear Model Regression Results                   
+================================================================================
+Dep. Variable:     ['damage', 'intact']   No. Observations:                   22
+Model:                              GLM   Df Residuals:                       21
+Model Family:                  Binomial   Df Model:                            0
+Link Function:                    Logit   Scale:                          1.0000
+Method:                            IRLS   Log-Likelihood:                -13.657
+Date:                  Fri, 25 Jul 2025   Deviance:                       16.375
+Time:                          08:28:23   Pearson chi2:                     16.8
+No. Iterations:                       6   Pseudo R-squ. (CS):         -2.220e-16
+Covariance Type:              nonrobust                                         
+==============================================================================
+                 coef    std err          z      P&gt;|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     -3.0445      0.418     -7.286      0.000      -3.864      -2.226
+==============================================================================</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(glm_chl_new_null_py.llf <span class="op">-</span> glm_chl_new_py.llf)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, glm_chl_new_null_py.df_resid <span class="op">-</span> glm_chl_new_py.df_resid)</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3.7421161935342973 0.053057208274015694</code></pre>
+</div>
+</div>
+<p>The model is not significantly better than the null in this case, with a p-value here of just over 0.05.</p>
+</section>
+</div>
+</div>
+</div>
+<p>So, could NASA have predicted what happened? This model is not significantly different from the null, i.e., temperature is not a significant predictor.</p>
+<p>However, note that it’s only marginally non-significant, and this is with a data point removed.</p>
+<p>It is possible that if more data points were available that followed a similar trend, the story might be different). Even if we did use our non-significant model to make a prediction, it doesn’t give us a value anywhere near 5 failures for a temperature of 53 degrees Fahrenheit. So overall, based on the model we’ve fitted with these data, there was no clear indication that a temperature just a few degrees cooler than previous missions could have been so disastrous for the Challenger.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-exr_levers-again" class="level3" data-number="9.7.3">
+<h3 data-number="9.7.3" class="anchored" data-anchor-id="sec-exr_levers-again"><span class="header-section-number">9.7.3</span> Revisiting rats and levers</h3>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise 3 - Revisiting rats and levers
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div id="ex-levers_again" class="callout-exercise">
+<p><font style="font-variant: small-caps">Level:</font> <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><br></p>
+<p>Last chapter, we fitted a model to the <code>levers.csv</code> dataset in <a href="glm-08-proportional-response.html#sec-exr_levers" class="quarto-xref">Exercise&nbsp;<span>8.7.1</span></a>.</p>
+<p>Now, let’s test significance.</p>
+<p>In this exercise, you should:</p>
+<ol type="1">
+<li>Fit a model with the predictors <code>~ stress_type * sex + rat_age</code></li>
+<li>Assess whether this model is significant over the null model</li>
+<li>Assess whether any of the 4 individual predictors (including the interaction) are significant</li>
+</ol>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer" data-collapse="true">
+<section id="fit-the-model" class="level4">
+<h4 class="anchored" data-anchor-id="fit-the-model">Fit the model</h4>
+<p>Before we fit the model, we need to:</p>
+<ul>
+<li>Read the data in</li>
+<li>Mutate to create an <code>incorrect_presses</code> variable</li>
+</ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>levers <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/levers.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 62 Columns: 7
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (2): stress_type, sex
+dbl (5): rat_id, rat_age, trials, correct_presses, prop_correct
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>levers <span class="ot">&lt;-</span> levers <span class="sc">|&gt;</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">incorrect_presses =</span> trials <span class="sc">-</span> correct_presses)</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>glm_lev <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(correct_presses, incorrect_presses) <span class="sc">~</span> stress_type <span class="sc">*</span> sex <span class="sc">+</span> rat_age,</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> binomial,</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> levers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>levers <span class="op">=</span> pd.read_csv(<span class="st">"data/levers.csv"</span>)</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>levers[<span class="st">'incorrect_presses'</span>] <span class="op">=</span> levers[<span class="st">'trials'</span>] <span class="op">-</span> levers[<span class="st">'correct_presses'</span>]</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"correct_presses + incorrect_presses ~ stress_type * sex + rat_age"</span>,</span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> levers)</span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>glm_lev <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="compare-to-the-null" class="level4">
+<h4 class="anchored" data-anchor-id="compare-to-the-null">Compare to the null</h4>
+<p>We also need to fit a null model to these data before we can do any comparisons.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>glm_lev_null <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(correct_presses, incorrect_presses) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> binomial,</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> levers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"correct_presses + incorrect_presses ~ 1"</span>,</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> levers)</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>glm_lev_null <span class="op">=</span> model.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>Now, we run our likelihood ratio test comparing the two models.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-11-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-2" role="tab" aria-controls="tabset-11-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(glm_lev, glm_lev_null)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: cbind(correct_presses, incorrect_presses) ~ stress_type * sex + 
+    rat_age
+Model 2: cbind(correct_presses, incorrect_presses) ~ 1
+  Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)    
+1        57     60.331                         
+2        61    120.646 -4  -60.315 2.49e-12 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-11-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-11-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(glm_lev_null.llf <span class="op">-</span> glm_lev.llf)</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, glm_lev_null.df_resid <span class="op">-</span> glm_lev.df_resid)</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>60.31519356442419 2.490497342946823e-12</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>This is pretty significant, suggesting that our model is quite a bit better than the null.</p>
+</section>
+<section id="test-individual-predictors" class="level4">
+<h4 class="anchored" data-anchor-id="test-individual-predictors">Test individual predictors</h4>
+<p>Now, let’s test individual predictors.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
+<p>This is extremely easy to do in R. We produce an analysis of deviance table with <code>anova</code>, using the chi-square statistic for our likelihood ratios.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(glm_lev, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model: binomial, link: logit
+
+Response: cbind(correct_presses, incorrect_presses)
+
+Terms added sequentially (first to last)
+
+                Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+NULL                               61    120.646              
+stress_type      1    8.681        60    111.965 0.0032150 ** 
+sex              1    5.389        59    106.576 0.0202584 *  
+rat_age          1   12.216        58     94.359 0.0004738 ***
+stress_type:sex  1   34.028        57     60.331 5.432e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
+<p>Let’s build two new candidate models: one with <code>rat_age</code> removed, and one with the <code>stress:sex</code> interaction removed.</p>
+<p>(If the interaction isn’t significant, then we’ll push on and look at the main effects of <code>stress</code> and <code>sex</code>, if needed.)</p>
+<section id="the-age-effect" class="level4">
+<h4 class="anchored" data-anchor-id="the-age-effect">The age effect</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"correct_presses + incorrect_presses ~ stress_type * sex"</span>,</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> levers)</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>glm_lev_dropage <span class="op">=</span> model.fit()</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(glm_lev_dropage.llf <span class="op">-</span> glm_lev.llf)</span>
+<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, glm_lev_dropage.df_resid <span class="op">-</span> glm_lev.df_resid)</span>
+<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-9"><a href="#cb77-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>17.8705812026094 2.364481283464226e-05</code></pre>
+</div>
+</div>
+</section>
+<section id="the-stresssex-interaction" class="level4">
+<h4 class="anchored" data-anchor-id="the-stresssex-interaction">The stress:sex interaction</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.glm(formula <span class="op">=</span> <span class="st">"correct_presses + incorrect_presses ~ stress_type + sex + rat_age"</span>,</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>                family <span class="op">=</span> sm.families.Binomial(),</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> levers)</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>glm_lev_dropint <span class="op">=</span> model.fit()</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>lrstat <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">*</span>(glm_lev_dropint.llf <span class="op">-</span> glm_lev.llf)</span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a>pvalue <span class="op">=</span> chi2.sf(lrstat, glm_lev_dropint.df_resid <span class="op">-</span> glm_lev.df_resid)</span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lrstat, pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>34.02832899366183 5.431548556703029e-09</code></pre>
+</div>
+</div>
+<p>Since the interaction is significant, we don’t really need the specifics of the main effects (it becomes hard to interpret!)</p>
+</section>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="summary" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="summary"><span class="header-section-number">9.8</span> Summary</h2>
+<p>Likelihood and deviance are very important in generalised linear models - not just for fitting the model via maximum likelihood estimation, but for assessing significance and <a href="../materials/glm-10-goodness-of-fit.html">goodness-of-fit</a>. To determine the quality of a model and draw conclusions from it, it’s important to assess both of these things.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key points
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Deviance is the difference between predicted and actual values, and is calculated by comparing a model’s log-likelihood to that of the perfect “saturated” model</li>
+<li>Using deviance, likelihood ratio tests can be used in lieu of F-tests for generalised linear models</li>
+<li>This is distinct from (and often better than) using the Wald p-values that are reported automatically in the model summary</li>
+</ul>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../materials/glm-08-proportional-response.html" class="pagination-link" aria-label="Proportional response">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Proportional response</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../materials/glm-10-goodness-of-fit.html" class="pagination-link" aria-label="Goodness-of-fit">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Goodness-of-fit</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <img src="https://creativecommons.org/images/deed/cc_icon_black_x2.png" class="img-fluid" width="25"> Bioinformatics Training Facility</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
