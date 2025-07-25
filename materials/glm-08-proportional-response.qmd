@@ -26,7 +26,9 @@ exec(open('setup_files/setup.py').read())
 :::
 
 ## Context
-In the previous section we've seen how we can use logistic regression to analyse binary outcomes. We can use the same approach when we have proportional outcomes. These are variables where we tally the number of times an event happens, out of a fixed number of trials or cases. Below, we illustrate this with the Challenger data.
+In the previous section, we explored how logistic regression can be used to model binary outcomes. We can extend this approach to **proportional outcomes** — situations where we count how many times an event occurs out of a fixed number of trials (for example, the number of successes out of 10 attempts).
+
+In this section, we illustrate how to model proportional data using logistic regression, using the well-known Challenger dataset as an example.
 
 ## Section setup
 
