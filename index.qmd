@@ -1,6 +1,7 @@
 ---
 title: "Course overview"
 date: today
+author: "Vicki Hodgson, Matt Castle, Rob Nicholls and Martin van Rongen*"
 number-sections: false
 ---
 
