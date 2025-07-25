@@ -9,5 +9,5 @@ import scikit_posthocs as sp
 from scipy.stats import chi2
 import math
 import matplotlib.pyplot as plt
-#exec(open('setup_files/dgplots_knitr.py').read())
+
 theme_set(theme_bw())

@@ -48,6 +48,7 @@ We'll use the following libraries and data:
 
 # Load required R libraries
 library(tidyverse)
+library(broom)
 library(ggResidpanel)
 
 # Read in the required data
@@ -110,7 +111,7 @@ early_finches_py = pd.read_csv("data/finches_early.csv")
 
 Looking at the data, we can see that the `pointed_beak` column contains zeros and ones. These are actually yes/no classification outcomes and not numeric representations.
 
-We'll have to deal with this soon. For now, we can plot the data:
+We'll have to deal with this soon. For now, we can plot the data.
 
 ::: {.panel-tabset group="language"}
 ## R
