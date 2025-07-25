@@ -26,7 +26,11 @@ exec(open('setup_files/setup.py').read())
 
 ## Context
 
-Binary response data takes only one of two values. This can be `0` or `1`, `"yes"` or `"no"` etc. Because these data are not continuous, we can't analyse them with a standard linear model. Instead, we need to use something called a **logistic regression**. We illustrate how to do this with an example below.
+When a response variable is binary — such as success/failure, yes/no, or 0/1 — a standard linear model is not appropriate because it can produce predicted values outside the valid range of probabilities (0 to 1).
+
+**Logistic regression** is a type of generalised linear model (GLM) that solves this by applying a **link function**. The link function transforms the probability of the outcome into a scale where a linear relationship with the predictors is appropriate.
+
+This ensures that predictions remain valid probabilities and allows us to estimate the chance of an event occurring based on one or more explanatory variables, while respecting the structure of binary response data.
 
 ## Section setup
 
@@ -42,13 +46,11 @@ We'll use the following libraries and data:
 #| message: false
 #| results: false
 
-# A collection of R packages designed for data science
+# Load required R libraries
 library(tidyverse)
-
-# A package for creating panels of diagnostic plots for a model
 library(ggResidpanel)
 
-# Data
+# Read in the required data
 early_finches <- read_csv("data/finches_early.csv")
 diabetes <- read_csv("data/diabetes.csv")
 aphids <- read_csv("data/aphids.csv")
@@ -57,28 +59,18 @@ aphids <- read_csv("data/aphids.csv")
 ## Python
 
 ```{python}
-# A maths library
+# Load required Python libraries
 import math
-
-# A Python data analysis and manipulation tool
 import pandas as pd
-
-# Python equivalent of `ggplot2`
 from plotnine import *
-
-# Statistical models, conducting tests and statistical data exploration
 import statsmodels.api as sm
-
-# Convenience interface for specifying models using formula strings and DataFrames
 import statsmodels.formula.api as smf
-
-# Needed for additional probability functionality
 from scipy.stats import *
 
 # Custom function to create diagnostic plots
 from dgplots import *
 
-# Data
+# Read in the required data
 early_finches_py = pd.read_csv("data/finches_early.csv")
 diabetes_py = pd.read_csv("data/diabetes.csv")
 aphids = pd.read_csv("data/aphids.csv")
@@ -94,7 +86,7 @@ The example in this section uses the `finches_early` data. These come from an an
 
 The data focus on two species, *Geospiza fortis* and *G. scandens*. The original measurements are split by a uniquely timed event: a particularly strong El Niño event in 1983. This event changed the vegetation and food supply of the finches, allowing F1 hybrids of the two species to survive, whereas before 1983 they could not. The measurements are classed as `early` (pre-1983) and `late` (1983 onwards).
 
-Here we are looking only at the `early` data. We are specifically focussing on the beak shape classification, which we saw earlier in @fig-beak_shape_glm.
+Here we are looking only at the `early` data. We are specifically focussing on the beak shape classification, which we saw earlier in @fig-beak_shape_glm. We want to predict beak shape from `species` and `year`.
 
 ## Load and visualise the data
 

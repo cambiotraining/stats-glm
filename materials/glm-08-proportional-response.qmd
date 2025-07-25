@@ -28,46 +28,45 @@ exec(open('setup_files/setup.py').read())
 ## Context
 In the previous section we've seen how we can use logistic regression to analyse binary outcomes. We can use the same approach when we have proportional outcomes. These are variables where we tally the number of times an event happens, out of a fixed number of trials or cases. Below, we illustrate this with the Challenger data.
 
-## Libraries and functions
+## Section setup
 
-::: {.callout-note collapse="true"}
+:::: {.callout-note collapse="true"}
 ## Click to expand
+
+We'll use the following libraries and data:
 
 ::: {.panel-tabset group="language"}
 ## R
 
-### Libraries
-
 ```{r}
-#| eval: false
-library(broom)
+#| message: false
+#| results: false
+
+# Load required R libraries
 library(tidyverse)
-library(ggResidpanel)
-```
+library(broom)
 
-### Functions
-
-```{r}
-#| eval: false
-# create diagnostic plots
-ggResidpanel::resid_panel()
+# Read in the required data
+challenger_data <- read_csv("data/challenger.csv")
 ```
 
 ## Python
 
-### Libraries
-
 ```{python}
-#| eval: false
-import math
+# Load required Python libraries
 import pandas as pd
-from plotnine import *
+import math
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from scipy.stats import *
+from plotnine import *
+
+# Read in the required data
+challenger_data = pd.read_csv("data/challenger.csv")
 ```
+
 :::
-:::
+::::
 
 ## The Challenger dataset
 

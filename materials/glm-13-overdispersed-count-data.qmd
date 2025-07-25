@@ -30,42 +30,53 @@ exec(open('setup_files/setup.py').read())
 ## Context
 In the previous chapter we looked at how to analyse count data. We used a Poisson regression to do this, which makes assumptions about the dispersion parameter. If everything is as expected (the mean and variance are they same) it's 1. But, data are rarely that compliant so we need to be able to deal with situations where this is not the case. Here, we look at the situation where we have overdispersion.
 
-## Libraries and functions
+## Section setup
 
-::: {.callout-note collapse="true"}
+:::: {.callout-note collapse="true"}
 ## Click to expand
+
+We'll use the following libraries and data:
 
 ::: {.panel-tabset group="language"}
 ## R
 
-### Libraries
-
 ```{r}
-#| eval: false
-library(MASS)
-library(performance)
+#| message: false
+#| results: false
+
+# Load required R libraries
 library(tidyverse)
 library(broom)
+library(performance)
+library(MASS)
+
+# Read in the required data
+parasites <- read_csv("data/parasites.csv")
+bacteria <- read_csv("data/bacteria.csv")
+galapagos <- read_csv("data/galapagos.csv")
 ```
 
 ## Python
 
-### Libraries
-
 ```{python}
-#| eval: false
-# A maths library
-import math
+# Load required Python libraries
 import pandas as pd
-from plotnine import *
+import numpy as np
+import math
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
-from scipy.stats import *
-import numpy as np
 from statsmodels.discrete.discrete_model import NegativeBinomial
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+from scipy.stats import *
+from patsy import dmatrix
+from plotnine import *
+
+# Read in the required data
+parasites = pd.read_csv("data/parasites.csv")
+bacteria = pd.read_csv("data/bacteria.csv")
 ```
 :::
-:::
+::::
 
 ## Removing dispersion assumptions
 

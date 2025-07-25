@@ -38,36 +38,50 @@ Generalised linear models are fitted a little differently to standard linear mod
 
 As a result, we can no longer use F-tests for significance, or interpret $R^2$ values in quite the same way. This section will introduce likelihood ratio tests, a method for extracting p-values for GLMs.
 
-## Libraries and functions
+## Section setup
 
 :::: {.callout-note collapse="true"}
 ## Click to expand
+
+We'll use the following libraries and data:
 
 ::: {.panel-tabset group="language"}
 ## R
 
 ```{r}
-#| eval: false
-library(broom)
+#| message: false
+#| results: false
+
+# Load required R libraries
 library(tidyverse)
+library(broom)
+library(lmtest)
 library(performance)
 
-# You will likely need to install this package first
-library(lmtest)
+# Read in the required data
+diabetes <- read_csv("data/diabetes.csv")
+challenger <- read_csv("data/challenger.csv")
+levers <- read_csv("data/levers.csv")
 ```
 
 ## Python
 
 ```{python}
-#| eval: false
-import math
+# Load required Python libraries
 import pandas as pd
-from plotnine import *
+import numpy as np
+import math
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from scipy.stats import *
-import numpy as np
+from plotnine import *
+
+# Read in the required data
+diabetes = pd.read_csv("data/diabetes.csv")
+challenger = pd.read_csv("data/challenger.csv")
+levers = pd.read_csv("data/levers.csv")
 ```
+
 :::
 ::::
 

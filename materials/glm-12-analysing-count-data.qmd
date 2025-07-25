@@ -29,31 +29,43 @@ exec(open('setup_files/setup.py').read())
 ## Context
 We have now covered analysing binary responses and learned how to assess the quality and appropriateness of the resulting models. In the next sections we extend this further, by looking at a different type of response variable: count data. The humble count may look innocent, but often hides a whole lot of nuances that are hard to spot. So, pay attention!
 
-## Libraries and functions
+## Section setup
 
 :::: {.callout-note collapse="true"}
 ## Click to expand
+
+We'll use the following libraries and data:
 
 ::: {.panel-tabset group="language"}
 ## R
 
 ```{r}
-#| eval: false
-library(performance)
+#| message: false
+#| results: false
+
+# Load required R libraries
 library(tidyverse)
+library(performance)
+
+# Read in the required data
+islands <- read_csv("data/islands.csv")
+seatbelts <- read_csv("data/seatbelts.csv")
 ```
 
 ## Python
 
 ```{python}
-#| eval: false
-# A maths library
-import math
+# Load required Python libraries
 import pandas as pd
-from plotnine import *
+import math
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from scipy.stats import *
+from plotnine import *
+
+# Read in the required data
+islands = pd.read_csv("data/islands.csv")
+seatbelts = pd.read_csv("data/seatbelts.csv")
 ```
 :::
 ::::

@@ -33,36 +33,55 @@ exec(open('setup_files/setup.py').read())
 ## Context
 We can now assess the quality of a generalised linear model. Although we can relax certain assumptions compared to standard linear models (linearity, equality of variance of residuals, and normality of residuals), we cannot relax all of them - some key assumptions still exist. We discuss these below.
 
-## Libraries and functions
+## Section setup
 
 :::: {.callout-note collapse="true"}
 ## Click to expand
+
+We'll use the following libraries and data:
 
 ::: {.panel-tabset group="language"}
 ## R
 
 ```{r}
-#| eval: false
+#| message: false
+#| results: false
+
+# Load required R libraries
+library(tidyverse)
 library(ggResidpanel)
 library(performance)
+
+# Read in the required data
+diabetes <- read_csv("data/diabetes.csv")
+levers <- read_csv("data/levers.csv")
+seeds <- read_csv("data/seeds.csv")
 ```
 
 ## Python
 
 ```{python}
-#| eval: false
+# Load required Python libraries
 import pandas as pd
-from plotnine import *
+import numpy as np
+import matplotlib.pyplot as plt
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
-from scipy.stats import *
-import matplotlib.pyplot as plt
-import numpy as np
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from patsy import dmatrix
+from scipy.stats import *
+from plotnine import *
+
+# Read in the required data
+diabetes = pd.read_csv("data/diabetes.csv")
+levers = pd.read_csv("data/levers.csv")
+seeds = pd.read_csv("data/seeds.csv")
 ```
 :::
-:::
+::::
+
+## Assumption checking
+Below we go through the various assumptions we need to consider.
 
 ### Assumption 1: Distribution of response variable
 

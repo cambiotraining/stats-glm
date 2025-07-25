@@ -35,25 +35,38 @@ In the previous chapter we've discussed significance testing. Here we are focusi
 
 Though closely linked, it's important to realise that goodness-of-fit and significance don't come hand-in-hand automatically: we might find a model that is significantly better than the null, but is still overall pretty rubbish at matching the data. So, to understand the quality of our model better, we should ideally perform both types of test.
 
-## Libraries and functions
+## Section setup
 
 :::: {.callout-note collapse="true"}
 ## Click to expand
+
+We'll use the following libraries and data:
 
 ::: {.panel-tabset group="language"}
 ## R
 
 ```{r}
-#| eval: false
-install.packages("lmtest")
+#| message: false
+#| results: false
+
+# Load required R libraries
+library(tidyverse)
 library(lmtest)
+
+# Read in the required data
+diabetes <- read_csv("data/diabetes.csv")
+aphids <- read_csv("data/aphids.csv")
 ```
 
 ## Python
 
 ```{python}
-#| eval: false
+# Load required Python libraries
 from scipy.stats import *
+
+# Read in the required data
+diabetes = pd.read_csv("data/diabetes.csv")
+aphids = pd.read_csv("data/aphids.csv")
 ```
 :::
 ::::
